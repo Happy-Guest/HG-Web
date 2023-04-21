@@ -1,5 +1,6 @@
 import { createApp } from "vue";
 import { createPinia } from "pinia";
+import axios from "axios";
 
 import App from "./App.vue";
 import router from "./router";
@@ -13,7 +14,22 @@ import "./css/main.css";
 const pinia = createPinia();
 
 /* Create Vue app */
-createApp(App).use(router).use(pinia).mount("#app");
+const app = createApp(App);
+const serverUrl = import.meta.env.SERVER_URL;
+
+app.provide(
+    "axios",
+    axios.create({
+        baseURL: serverUrl + "/api",
+        headers: {
+            "Content-Type": "application/json",
+        },
+    })
+);
+
+app.provide("apiUrl", serverUrl);
+app.use(router).use(pinia);
+app.mount("#app");
 
 /* Init Pinia stores */
 const mainStore = useMainStore(pinia);
@@ -28,19 +44,19 @@ styleStore.setStyle(localStorage[styleKey] ?? "basic");
 
 /* Dark mode */
 if (
-  (!localStorage[darkModeKey] &&
-    window.matchMedia("(prefers-color-scheme: dark)").matches) ||
-  localStorage[darkModeKey] === "1"
+    (!localStorage[darkModeKey] &&
+        window.matchMedia("(prefers-color-scheme: dark)").matches) ||
+    localStorage[darkModeKey] === "1"
 ) {
-  styleStore.setDarkMode(true);
+    styleStore.setDarkMode(true);
 }
 
 /* Default title tag */
-const defaultDocumentTitle = "Admin One Vue 3 Tailwind";
+const defaultDocumentTitle = "HappyGuest";
 
 /* Set document title from route meta */
 router.afterEach((to) => {
-  document.title = to.meta?.title
-    ? `${to.meta.title} — ${defaultDocumentTitle}`
-    : defaultDocumentTitle;
+    document.title = to.meta?.title
+        ? `${to.meta.title} — ${defaultDocumentTitle}`
+        : defaultDocumentTitle;
 });
