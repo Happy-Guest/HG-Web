@@ -5,7 +5,13 @@ Desenvolvimento de um dashboard web que permita
 gerir os dados de uma unidade hoteleira.
 
 ## 📖 Notas:
-1. xxx: xxx
+1. Instalação: 
+    * npm install
+2. URL:
+    * WEB -> http://127.0.0.1:5173/happyguest-web/
+    
+3. Iniciar:
+    * npm run dev
 
 ## 🧑 Participantes:
 * Diogo Mendes nº2191181 -> 2191181@ipleiria.pt
