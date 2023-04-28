@@ -8,55 +8,27 @@ import {
     mdiEmail,
     mdiLogout,
     mdiThemeLightDark,
-    mdiGithub,
-    mdiReact,
 } from "@mdi/js";
 
 export default [
     {
         icon: mdiMenu,
-        label: "Sample menu",
+        label: "Menu",
         menu: [
             {
                 icon: mdiClockOutline,
-                label: "Item One",
+                label: "Item Um",
             },
             {
                 icon: mdiCloud,
-                label: "Item Two",
+                label: "Item Dois",
             },
             {
                 isDivider: true,
             },
             {
                 icon: mdiCrop,
-                label: "Item Last",
-            },
-        ],
-    },
-    {
-        isCurrentUser: true,
-        menu: [
-            {
-                icon: mdiAccount,
-                label: "My Profile",
-                to: "/profile",
-            },
-            {
-                icon: mdiCogOutline,
-                label: "Settings",
-            },
-            {
-                icon: mdiEmail,
-                label: "Messages",
-            },
-            {
-                isDivider: true,
-            },
-            {
-                icon: mdiLogout,
-                label: "Log Out",
-                isLogout: true,
+                label: "Item Três",
             },
         ],
     },
@@ -67,22 +39,29 @@ export default [
         isToggleLightDark: true,
     },
     {
-        icon: mdiGithub,
-        label: "GitHub",
-        isDesktopNoLabel: true,
-        href: "https://github.com/justboil/admin-one-vue-tailwind",
-        target: "_blank",
-    },
-    {
-        icon: mdiReact,
-        label: "React version",
-        isDesktopNoLabel: true,
-        href: "https://github.com/justboil/admin-one-react-tailwind",
-        target: "_blank",
+        isCurrentUser: true,
+        menu: [
+            {
+                icon: mdiAccount,
+                label: "Meu Perfil",
+                to: "/perfil",
+            },
+            {
+                icon: mdiEmail,
+                label: "Mensagens",
+            },
+            {
+                isDivider: true,
+            },
+            {
+                icon: mdiCogOutline,
+                label: "Configurações",
+            },
+        ],
     },
     {
         icon: mdiLogout,
-        label: "Log out",
+        label: "Sair",
         isDesktopNoLabel: true,
         isLogout: true,
     },

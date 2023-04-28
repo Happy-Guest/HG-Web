@@ -1,86 +1,35 @@
 import {
-    mdiAccountCircle,
-    mdiMonitor,
-    mdiGithub,
-    mdiLock,
-    mdiAlertCircle,
+    mdiHomeOutline,
     mdiSquareEditOutline,
     mdiTable,
-    mdiViewList,
     mdiTelevisionGuide,
-    mdiResponsive,
-    mdiPalette,
-    mdiReact,
 } from "@mdi/js";
 
 export default [
     {
-        to: "/dashboard",
-        icon: mdiMonitor,
-        label: "Dashboard",
+        to: "/",
+        icon: mdiHomeOutline,
+        label: "Página Inicial",
+    },
+
+    // Template
+
+    {
+        isDivider: true,
     },
     {
-        to: "/tables",
-        label: "Tables",
+        to: "/tabelas",
+        label: "Tabelas",
         icon: mdiTable,
     },
     {
-        to: "/forms",
-        label: "Forms",
+        to: "/formularios",
+        label: "Formulários",
         icon: mdiSquareEditOutline,
     },
     {
-        to: "/ui",
-        label: "UI",
+        to: "/interface",
+        label: "Interface",
         icon: mdiTelevisionGuide,
-    },
-    {
-        to: "/responsive",
-        label: "Responsive",
-        icon: mdiResponsive,
-    },
-    {
-        to: "/",
-        label: "Styles",
-        icon: mdiPalette,
-    },
-    {
-        to: "/profile",
-        label: "Profile",
-        icon: mdiAccountCircle,
-    },
-    {
-        to: "/login",
-        label: "Login",
-        icon: mdiLock,
-    },
-    {
-        to: "/error",
-        label: "Error",
-        icon: mdiAlertCircle,
-    },
-    {
-        label: "Dropdown",
-        icon: mdiViewList,
-        menu: [
-            {
-                label: "Item One",
-            },
-            {
-                label: "Item Two",
-            },
-        ],
-    },
-    {
-        href: "https://github.com/justboil/admin-one-vue-tailwind",
-        label: "GitHub",
-        icon: mdiGithub,
-        target: "_blank",
-    },
-    {
-        href: "https://github.com/justboil/admin-one-react-tailwind",
-        label: "React version",
-        icon: mdiReact,
-        target: "_blank",
     },
 ];
