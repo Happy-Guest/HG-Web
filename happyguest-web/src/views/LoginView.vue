@@ -2,13 +2,13 @@
 import { reactive } from "vue";
 import { useRouter } from "vue-router";
 import { mdiAccount, mdiAsterisk } from "@mdi/js";
-import SectionFullScreen from "@/components/SectionFullScreen.vue";
-import CardBox from "@/components/CardBox.vue";
-import FormCheckRadio from "@/components/FormCheckRadio.vue";
-import FormField from "@/components/FormField.vue";
-import FormControl from "@/components/FormControl.vue";
-import BaseButton from "@/components/BaseButton.vue";
-import BaseButtons from "@/components/BaseButtons.vue";
+import SectionFullScreen from "@/components/Sections/SectionFullScreen.vue";
+import CardBox from "@/components/CardBoxs/CardBox.vue";
+import FormCheckRadio from "@/components/Forms/FormCheckRadio.vue";
+import FormField from "@/components/Forms/FormField.vue";
+import FormControl from "@/components/Forms/FormControl.vue";
+import BaseButton from "@/components/Bases/BaseButton.vue";
+import BaseButtons from "@/components/Bases/BaseButtons.vue";
 import LayoutGuest from "@/layouts/LayoutGuest.vue";
 
 const form = reactive({
@@ -26,7 +26,7 @@ const submit = () => {
 
 <template>
     <LayoutGuest>
-        <SectionFullScreen v-slot="{ cardClass }" bg="purplePink">
+        <SectionFullScreen v-slot="{ cardClass }" bg="blueGray">
             <CardBox :class="cardClass" is-form @submit.prevent="submit">
                 <FormField label="Login" help="Please enter your login">
                     <FormControl

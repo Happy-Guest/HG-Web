@@ -8,17 +8,17 @@ import {
     mdiFormTextboxPassword,
     mdiGithub,
 } from "@mdi/js";
-import SectionMain from "@/components/SectionMain.vue";
-import CardBox from "@/components/CardBox.vue";
-import BaseDivider from "@/components/BaseDivider.vue";
-import FormField from "@/components/FormField.vue";
-import FormControl from "@/components/FormControl.vue";
-import FormFilePicker from "@/components/FormFilePicker.vue";
-import BaseButton from "@/components/BaseButton.vue";
-import BaseButtons from "@/components/BaseButtons.vue";
-import UserCard from "@/components/UserCard.vue";
+import SectionMain from "@/components/Sections/SectionMain.vue";
+import CardBox from "@/components/CardBoxs/CardBox.vue";
+import BaseDivider from "@/components/Bases/BaseDivider.vue";
+import FormField from "@/components/Forms/FormField.vue";
+import FormControl from "@/components/Forms/FormControl.vue";
+import FormFilePicker from "@/components/Forms/FormFilePicker.vue";
+import BaseButton from "@/components/Bases/BaseButton.vue";
+import BaseButtons from "@/components/Bases/BaseButtons.vue";
+import UserCard from "@/components/Users/UserCard.vue";
 import LayoutAuthenticated from "@/layouts/LayoutAuthenticated.vue";
-import SectionTitleLineWithButton from "@/components/SectionTitleLineWithButton.vue";
+import SectionTitleLine from "@/components/Sections/SectionTitleLine.vue";
 
 const mainStore = useMainStore();
 
@@ -45,7 +45,7 @@ const submitPass = () => {
 <template>
     <LayoutAuthenticated>
         <SectionMain>
-            <SectionTitleLineWithButton :icon="mdiAccount" title="Profile" main>
+            <SectionTitleLine :icon="mdiAccount" title="Profile" main>
                 <BaseButton
                     href="https://github.com/justboil/admin-one-vue-tailwind"
                     target="_blank"
@@ -55,7 +55,7 @@ const submitPass = () => {
                     rounded-full
                     small
                 />
-            </SectionTitleLineWithButton>
+            </SectionTitleLine>
 
             <UserCard class="mb-6" />
 

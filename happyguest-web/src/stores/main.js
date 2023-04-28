@@ -7,6 +7,7 @@ export const useMainStore = defineStore("main", {
         userName: null,
         userEmail: null,
         userAvatar: null,
+        userType: null,
 
         /* Field focus with ctrl+k (to register only once) */
         isFieldFocusRegistered: false,

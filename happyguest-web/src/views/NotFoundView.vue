@@ -1,13 +1,13 @@
 <script setup>
 import { mdiArrowLeft } from "@mdi/js";
-import SectionFullScreen from "@/components/SectionFullScreen.vue";
-import BaseButton from "@/components/BaseButton.vue";
+import SectionFullScreen from "@/components/Sections/SectionFullScreen.vue";
+import BaseButton from "@/components/Bases/BaseButton.vue";
 import LayoutGuest from "../layouts/LayoutGuest.vue";
 </script>
 
 <template>
     <LayoutGuest>
-        <SectionFullScreen bg="purplePink">
+        <SectionFullScreen bg="blueGray">
             <div class="container flex items-center justify-center">
                 <div class="text-center">
                     <h3 class="font-black text-9xl text-blue-500">

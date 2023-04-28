@@ -1,19 +1,19 @@
 <script setup>
 import { reactive, ref } from "vue";
 import { mdiBallotOutline, mdiAccount, mdiMail, mdiGithub } from "@mdi/js";
-import SectionMain from "@/components/SectionMain.vue";
-import CardBox from "@/components/CardBox.vue";
-import FormCheckRadioGroup from "@/components/FormCheckRadioGroup.vue";
-import FormFilePicker from "@/components/FormFilePicker.vue";
-import FormField from "@/components/FormField.vue";
-import FormControl from "@/components/FormControl.vue";
-import BaseDivider from "@/components/BaseDivider.vue";
-import BaseButton from "@/components/BaseButton.vue";
-import BaseButtons from "@/components/BaseButtons.vue";
-import SectionTitle from "@/components/SectionTitle.vue";
+import SectionMain from "@/components/Sections/SectionMain.vue";
+import CardBox from "@/components/CardBoxs/CardBox.vue";
+import FormCheckRadioGroup from "@/components/Forms/FormCheckRadioGroup.vue";
+import FormFilePicker from "@/components/Forms/FormFilePicker.vue";
+import FormField from "@/components/Forms/FormField.vue";
+import FormControl from "@/components/Forms/FormControl.vue";
+import BaseDivider from "@/components/Bases/BaseDivider.vue";
+import BaseButton from "@/components/Bases/BaseButton.vue";
+import BaseButtons from "@/components/Bases/BaseButtons.vue";
+import SectionTitle from "@/components/Sections/SectionTitle.vue";
 import LayoutAuthenticated from "@/layouts/LayoutAuthenticated.vue";
-import SectionTitleLineWithButton from "@/components/SectionTitleLineWithButton.vue";
-import NotificationBarInCard from "@/components/NotificationBarInCard.vue";
+import SectionTitleLine from "@/components/Sections/SectionTitleLine.vue";
+import NotificationBarInCard from "@/components/Others/NotificationBarInCard.vue";
 
 const selectOptions = [
     { id: 1, label: "Business development" },
@@ -57,7 +57,7 @@ const formStatusSubmit = () => {
 <template>
     <LayoutAuthenticated>
         <SectionMain>
-            <SectionTitleLineWithButton
+            <SectionTitleLine
                 :icon="mdiBallotOutline"
                 title="Forms example"
                 main
@@ -71,7 +71,7 @@ const formStatusSubmit = () => {
                     rounded-full
                     small
                 />
-            </SectionTitleLineWithButton>
+            </SectionTitleLine>
             <CardBox form @submit.prevent="submit">
                 <FormField label="Grouped with icons">
                     <FormControl v-model="form.name" :icon="mdiAccount" />

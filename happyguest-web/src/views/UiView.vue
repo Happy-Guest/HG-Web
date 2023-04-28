@@ -12,21 +12,21 @@ import {
     mdiReload,
     mdiTrendingUp,
 } from "@mdi/js";
-import SectionMain from "@/components/SectionMain.vue";
-import CardBox from "@/components/CardBox.vue";
-import BaseButtons from "@/components/BaseButtons.vue";
-import BaseButton from "@/components/BaseButton.vue";
-import NotificationBar from "@/components/NotificationBar.vue";
-import BaseDivider from "@/components/BaseDivider.vue";
-import CardBoxModal from "@/components/CardBoxModal.vue";
-import SectionTitle from "@/components/SectionTitle.vue";
-import FormField from "@/components/FormField.vue";
-import FormCheckRadioGroup from "@/components/FormCheckRadioGroup.vue";
+import SectionMain from "@/components/Sections/SectionMain.vue";
+import CardBox from "@/components/CardBoxs/CardBox.vue";
+import BaseButtons from "@/components/Bases/BaseButtons.vue";
+import BaseButton from "@/components/Bases/BaseButton.vue";
+import NotificationBar from "@/components/Others/NotificationBar.vue";
+import BaseDivider from "@/components/Bases/BaseDivider.vue";
+import CardBoxModal from "@/components/CardBoxs/CardBoxModal.vue";
+import SectionTitle from "@/components/Sections/SectionTitle.vue";
+import FormField from "@/components/Forms/FormField.vue";
+import FormCheckRadioGroup from "@/components/Forms/FormCheckRadioGroup.vue";
 import LayoutAuthenticated from "@/layouts/LayoutAuthenticated.vue";
-import SectionTitleLineWithButton from "@/components/SectionTitleLineWithButton.vue";
-import CardBoxComponentEmpty from "@/components/CardBoxComponentEmpty.vue";
-import CardBoxComponentTitle from "@/components/CardBoxComponentTitle.vue";
-import PillTag from "@/components/PillTag.vue";
+import SectionTitleLine from "@/components/Sections/SectionTitleLine.vue";
+import CardBoxComponentEmpty from "@/components/CardBoxs/CardBoxComponentEmpty.vue";
+import CardBoxComponentTitle from "@/components/CardBoxs/CardBoxComponentTitle.vue";
+import PillTag from "@/components/PillTags/PillTag.vue";
 
 const modalOneActive = ref(false);
 
@@ -560,10 +560,7 @@ const styleStore = useStyleStore();
                 </CardBox>
             </div>
 
-            <SectionTitleLineWithButton
-                :icon="mdiAlertCircle"
-                title="Empty variation"
-            />
+            <SectionTitleLine :icon="mdiAlertCircle" title="Empty variation" />
 
             <CardBox>
                 <CardBoxComponentEmpty />

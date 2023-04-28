@@ -12,17 +12,17 @@ import {
 } from "@mdi/js";
 import * as chartConfig from "@/components/Charts/chart.config.js";
 import LineChart from "@/components/Charts/LineChart.vue";
-import SectionMain from "@/components/SectionMain.vue";
-import CardBoxWidget from "@/components/CardBoxWidget.vue";
-import CardBox from "@/components/CardBox.vue";
-import TableSampleClients from "@/components/TableSampleClients.vue";
-import NotificationBar from "@/components/NotificationBar.vue";
-import BaseButton from "@/components/BaseButton.vue";
-import CardBoxTransaction from "@/components/CardBoxTransaction.vue";
-import CardBoxClient from "@/components/CardBoxClient.vue";
+import SectionMain from "@/components/Sections/SectionMain.vue";
+import CardBoxWidget from "@/components/CardBoxs/CardBoxWidget.vue";
+import CardBox from "@/components/CardBoxs/CardBox.vue";
+import TableSampleClients from "@/components/Tables/TableSampleClients.vue";
+import NotificationBar from "@/components/Others/NotificationBar.vue";
+import BaseButton from "@/components/Bases/BaseButton.vue";
+import CardBoxTransaction from "@/components/CardBoxsCustom/CardBoxTransaction.vue";
+import CardBoxClient from "@/components/CardBoxsCustom/CardBoxClient.vue";
 import LayoutAuthenticated from "@/layouts/LayoutAuthenticated.vue";
-import SectionTitleLineWithButton from "@/components/SectionTitleLineWithButton.vue";
-import SectionBannerStarOnGitHub from "@/components/SectionBannerStarOnGitHub.vue";
+import SectionTitleLine from "@/components/Sections/SectionTitleLine.vue";
+import SectionBannerStarOnGitHub from "@/components/Sections/SectionBannerStarOnGitHub.vue";
 
 const chartData = ref(null);
 
@@ -44,7 +44,7 @@ const transactionBarItems = computed(() => mainStore.history);
 <template>
     <LayoutAuthenticated>
         <SectionMain>
-            <SectionTitleLineWithButton
+            <SectionTitleLine
                 :icon="mdiChartTimelineVariant"
                 title="Overview"
                 main
@@ -58,7 +58,7 @@ const transactionBarItems = computed(() => mainStore.history);
                     rounded-full
                     small
                 />
-            </SectionTitleLineWithButton>
+            </SectionTitleLine>
 
             <div class="grid grid-cols-1 gap-6 lg:grid-cols-3 mb-6">
                 <CardBoxWidget
@@ -116,16 +116,13 @@ const transactionBarItems = computed(() => mainStore.history);
 
             <SectionBannerStarOnGitHub class="mt-6 mb-6" />
 
-            <SectionTitleLineWithButton
-                :icon="mdiChartPie"
-                title="Trends overview"
-            >
+            <SectionTitleLine :icon="mdiChartPie" title="Trends overview">
                 <BaseButton
                     :icon="mdiReload"
                     color="whiteDark"
                     @click="fillChartData"
                 />
-            </SectionTitleLineWithButton>
+            </SectionTitleLine>
 
             <CardBox class="mb-6">
                 <div v-if="chartData">
@@ -133,10 +130,7 @@ const transactionBarItems = computed(() => mainStore.history);
                 </div>
             </CardBox>
 
-            <SectionTitleLineWithButton
-                :icon="mdiAccountMultiple"
-                title="Clients"
-            />
+            <SectionTitleLine :icon="mdiAccountMultiple" title="Clients" />
 
             <NotificationBar color="info" :icon="mdiMonitorCellphone">
                 <b>Responsive table.</b> Collapses on mobile
