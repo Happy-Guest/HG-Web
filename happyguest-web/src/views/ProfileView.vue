@@ -45,7 +45,7 @@ const submitPass = () => {
 <template>
     <LayoutAuthenticated>
         <SectionMain>
-            <SectionTitleLine :icon="mdiAccount" title="Profile" main>
+            <SectionTitleLine :icon="mdiAccount" title="Perfil" main>
                 <BaseButton
                     href="https://github.com/justboil/admin-one-vue-tailwind"
                     target="_blank"

@@ -1,8 +1,4 @@
 import {
-    mdiMenu,
-    mdiClockOutline,
-    mdiCloud,
-    mdiCrop,
     mdiAccount,
     mdiCogOutline,
     mdiEmail,
@@ -11,27 +7,6 @@ import {
 } from "@mdi/js";
 
 export default [
-    {
-        icon: mdiMenu,
-        label: "Menu",
-        menu: [
-            {
-                icon: mdiClockOutline,
-                label: "Item Um",
-            },
-            {
-                icon: mdiCloud,
-                label: "Item Dois",
-            },
-            {
-                isDivider: true,
-            },
-            {
-                icon: mdiCrop,
-                label: "Item Três",
-            },
-        ],
-    },
     {
         icon: mdiThemeLightDark,
         label: "Claro/Escuro",

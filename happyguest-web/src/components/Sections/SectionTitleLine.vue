@@ -23,7 +23,7 @@ const hasSlot = computed(() => useSlots().default);
 
 <template>
     <section
-        :class="{ 'pt-6': !main }"
+        :class="{ 'pt-6': !main, 'pt-7': main }"
         class="mb-6 flex items-center justify-between"
     >
         <div class="flex items-center justify-start">

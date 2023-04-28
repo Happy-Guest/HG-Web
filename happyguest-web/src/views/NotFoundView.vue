@@ -19,7 +19,7 @@ import LayoutGuest from "../layouts/LayoutGuest.vue";
                         Oops, página não encontrada...
                     </h3>
                     <BaseButton
-                        class="mt-6 hover:bg-white hover:text-black dark:hover:bg-sky-700 dark:hover:text-white font-semibold"
+                        class="mt-6 hover:bg-white hover:text-black dark:hover:bg-sky-800 dark:hover:text-white font-semibold"
                         color="contrast"
                         :icon="mdiArrowLeft"
                         label="Voltar"
