@@ -2,6 +2,19 @@ import { createRouter, createWebHistory } from "vue-router";
 import Home from "@/views/HomeView.vue";
 
 const routes = [
+    // Auth
+
+    {
+        meta: {
+            title: "Login",
+        },
+        path: "/login",
+        name: "login",
+        component: () => import("@/views/Auth/LoginView.vue"),
+    },
+
+    // Dashboard
+
     {
         meta: {
             title: "Página Inicial",
@@ -12,11 +25,22 @@ const routes = [
     },
     {
         meta: {
+            title: "Perfil",
+        },
+        path: "/perfil",
+        name: "profile",
+        component: () => import("@/views/ProfileView.vue"),
+    },
+
+    // Template
+
+    {
+        meta: {
             title: "Tabelas",
         },
         path: "/tabelas",
         name: "tables",
-        component: () => import("@/views/TablesView.vue"),
+        component: () => import("@/views/Template/TablesView.vue"),
     },
     {
         meta: {
@@ -24,15 +48,7 @@ const routes = [
         },
         path: "/formularios",
         name: "forms",
-        component: () => import("@/views/FormsView.vue"),
-    },
-    {
-        meta: {
-            title: "Perfil",
-        },
-        path: "/perfil",
-        name: "profile",
-        component: () => import("@/views/ProfileView.vue"),
+        component: () => import("@/views/Template/FormsView.vue"),
     },
     {
         meta: {
@@ -40,15 +56,7 @@ const routes = [
         },
         path: "/interface",
         name: "ui",
-        component: () => import("@/views/UiView.vue"),
-    },
-    {
-        meta: {
-            title: "Login",
-        },
-        path: "/login",
-        name: "login",
-        component: () => import("@/views/LoginView.vue"),
+        component: () => import("@/views/Template/UiView.vue"),
     },
 
     // Not Found

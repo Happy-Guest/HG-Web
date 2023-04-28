@@ -9,9 +9,6 @@ export const useMainStore = defineStore("main", {
         userAvatar: null,
         userType: null,
 
-        /* Field focus with ctrl+k (to register only once) */
-        isFieldFocusRegistered: false,
-
         /* Sample data (commonly used) */
         clients: [],
         history: [],

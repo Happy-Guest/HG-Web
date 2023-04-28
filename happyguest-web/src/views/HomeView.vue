@@ -9,6 +9,7 @@ import {
     mdiReload,
     mdiGithub,
     mdiChartPie,
+    mdiHome,
 } from "@mdi/js";
 import * as chartConfig from "@/components/Charts/chart.config.js";
 import LineChart from "@/components/Charts/LineChart.vue";
@@ -22,7 +23,6 @@ import CardBoxTransaction from "@/components/CardBoxsCustom/CardBoxTransaction.v
 import CardBoxClient from "@/components/CardBoxsCustom/CardBoxClient.vue";
 import LayoutAuthenticated from "@/layouts/LayoutAuthenticated.vue";
 import SectionTitleLine from "@/components/Sections/SectionTitleLine.vue";
-import SectionBannerStarOnGitHub from "@/components/Sections/SectionBannerStarOnGitHub.vue";
 
 const chartData = ref(null);
 
@@ -44,11 +44,7 @@ const transactionBarItems = computed(() => mainStore.history);
 <template>
     <LayoutAuthenticated>
         <SectionMain>
-            <SectionTitleLine
-                :icon="mdiChartTimelineVariant"
-                title="Overview"
-                main
-            >
+            <SectionTitleLine :icon="mdiHome" title="Página Inicial" main>
                 <BaseButton
                     href="https://github.com/justboil/admin-one-vue-tailwind"
                     target="_blank"
@@ -113,8 +109,6 @@ const transactionBarItems = computed(() => mainStore.history);
                     />
                 </div>
             </div>
-
-            <SectionBannerStarOnGitHub class="mt-6 mb-6" />
 
             <SectionTitleLine :icon="mdiChartPie" title="Trends overview">
                 <BaseButton

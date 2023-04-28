@@ -2,12 +2,11 @@
 import { mdiForwardburger, mdiBackburger, mdiMenu } from "@mdi/js";
 import { ref } from "vue";
 import { useRouter } from "vue-router";
-import menuAside from "@/menuAside.js";
-import menuNavBar from "@/menuNavBar.js";
+import menuAside from "@/menus/menuAside.js";
+import menuNavBar from "@/menus/menuNavBar.js";
 import { useMainStore } from "@/stores/main.js";
 import { useStyleStore } from "@/stores/style.js";
 import BaseIcon from "@/components/Bases/BaseIcon.vue";
-import FormControl from "@/components/Forms/FormControl.vue";
 import NavBar from "@/components/NavBars/NavBar.vue";
 import NavBarItemPlain from "@/components/NavBars/NavBarItemPlain.vue";
 import AsideMenu from "@/components/Asides/AsideMenu.vue";
@@ -87,14 +86,6 @@ const menuClick = (event, item) => {
                 >
                     <BaseIcon :path="mdiMenu" size="24" />
                 </NavBarItemPlain>
-                <NavBarItemPlain use-margin>
-                    <FormControl
-                        placeholder="Search (ctrl+k)"
-                        ctrl-k-focus
-                        transparent
-                        borderless
-                    />
-                </NavBarItemPlain>
             </NavBar>
             <AsideMenu
                 :is-aside-mobile-expanded="isAsideMobileExpanded"
@@ -104,15 +95,7 @@ const menuClick = (event, item) => {
                 @aside-lg-close-click="isAsideLgActive = false"
             />
             <slot />
-            <FooterBar>
-                Get more with
-                <a
-                    href="https://tailwind-vue.justboil.me/"
-                    target="_blank"
-                    class="text-blue-600"
-                    >Premium version</a
-                >
-            </FooterBar>
+            <FooterBar> IPL ESTG</FooterBar>
         </div>
     </div>
 </template>

@@ -18,7 +18,7 @@ import CardBoxComponentEmpty from "@/components/CardBoxs/CardBoxComponentEmpty.v
 <template>
     <LayoutAuthenticated>
         <SectionMain>
-            <SectionTitleLine :icon="mdiTableBorder" title="Tables" main>
+            <SectionTitleLine :icon="mdiTableBorder" title="Tabelas" main>
                 <BaseButton
                     href="https://github.com/justboil/admin-one-vue-tailwind"
                     target="_blank"

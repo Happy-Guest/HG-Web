@@ -1,6 +1,5 @@
 <script setup>
-import { computed, ref, onMounted, onBeforeUnmount } from "vue";
-import { useMainStore } from "@/stores/main";
+import { computed, ref, onMounted } from "vue";
 import FormControlIcon from "@/components/Forms/FormControlIcon.vue";
 
 const props = defineProps({
@@ -91,8 +90,6 @@ const controlIconH = computed(() =>
     props.type === "textarea" ? "h-full" : "h-12"
 );
 
-const mainStore = useMainStore();
-
 const selectEl = ref(null);
 
 const textareaEl = ref(null);
@@ -108,31 +105,6 @@ onMounted(() => {
         emit("setRef", inputEl.value);
     }
 });
-
-if (props.ctrlKFocus) {
-    const fieldFocusHook = (e) => {
-        if (e.ctrlKey && e.key === "k") {
-            e.preventDefault();
-            inputEl.value.focus();
-        } else if (e.key === "Escape") {
-            inputEl.value.blur();
-        }
-    };
-
-    onMounted(() => {
-        if (!mainStore.isSearchFocusRegistered) {
-            window.addEventListener("keydown", fieldFocusHook);
-            mainStore.isSearchFocusRegistered = true;
-        } else {
-            // console.error('Duplicate field focus event')
-        }
-    });
-
-    onBeforeUnmount(() => {
-        window.removeEventListener("keydown", fieldFocusHook);
-        mainStore.isSearchFocusRegistered = false;
-    });
-}
 </script>
 
 <template>

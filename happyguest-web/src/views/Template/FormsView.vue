@@ -57,11 +57,7 @@ const formStatusSubmit = () => {
 <template>
     <LayoutAuthenticated>
         <SectionMain>
-            <SectionTitleLine
-                :icon="mdiBallotOutline"
-                title="Forms example"
-                main
-            >
+            <SectionTitleLine :icon="mdiBallotOutline" title="Formulários" main>
                 <BaseButton
                     href="https://github.com/justboil/admin-one-vue-tailwind"
                     target="_blank"
