@@ -1,7 +1,11 @@
 <script setup>
-import { reactive } from "vue";
-import { useRouter } from "vue-router";
-import { mdiAccount, mdiAsterisk } from "@mdi/js";
+import { ref } from "vue";
+import {
+    mdiAccount,
+    mdiAsterisk,
+    mdiCloseCircleOutline,
+    mdiLoginVariant,
+} from "@mdi/js";
 import SectionFullScreen from "@/components/Sections/SectionFullScreen.vue";
 import CardBox from "@/components/CardBoxs/CardBox.vue";
 import FormCheckRadio from "@/components/Forms/FormCheckRadio.vue";
@@ -10,60 +14,131 @@ import FormControl from "@/components/Forms/FormControl.vue";
 import BaseButton from "@/components/Bases/BaseButton.vue";
 import BaseButtons from "@/components/Bases/BaseButtons.vue";
 import LayoutGuest from "@/layouts/LayoutGuest.vue";
+import { useAuthStore } from "@/stores/auth";
+import router from "@/router/index";
 
-const form = reactive({
-    login: "john.doe",
-    pass: "highly-secure-password-fYjUw-",
-    remember: true,
+const form = ref({
+    email: "",
+    password: "",
+    remember: false,
 });
 
-const router = useRouter();
+const authStore = useAuthStore();
 
-const submit = () => {
-    router.push("/dashboard");
+const errors = ref({
+    data: [],
+    message: [],
+    status: String,
+});
+
+
+const submit = async () => {
+    var response = await authStore.login(form.value);
+    if (response == true) {
+        router.push({ name: "dashboard" });
+    } else if (response.data.errors) {
+        errors.value.data = JSON.parse(JSON.stringify(response.data.errors));
+    } else {
+        errors.value.data = [];
+        errors.value.data = JSON.parse(JSON.stringify(response.data.errors));
+        errors.value.status = JSON.stringify(response.status);
+        errors.value.message = JSON.parse(
+            JSON.stringify(response.data.message)
+        );
+    }
 };
 </script>
 
 <template>
     <LayoutGuest>
-        <SectionFullScreen v-slot="{ cardClass }" bg="blueGray">
+        <SectionFullScreen v-slot="{ cardClass }" bg="purplePink">
             <CardBox :class="cardClass" is-form @submit.prevent="submit">
-                <FormField label="Login" help="Please enter your login">
+                <FormField
+                    label="Email"
+                    :help="
+                        errors.status == '422'
+                            ? errors.message
+                            : 'Insira o seu email.' && errors.data.email
+                            ? errors.data.email[0]
+                            : 'Insira o seu email.'
+                    "
+                    :error="
+                        errors.data.email || errors.status == '422'
+                            ? true
+                            : false
+                    "
+                >
                     <FormControl
-                        v-model="form.login"
+                        v-model="form.email"
                         :icon="mdiAccount"
-                        name="login"
-                        autocomplete="username"
+                        name="email"
+                        autocomplete="user-email"
+                        :error="
+                            errors.data.email || errors.status == '422'
+                                ? true
+                                : false
+                        "
+                        required
                     />
                 </FormField>
-
-                <FormField label="Password" help="Please enter your password">
+                <FormField
+                    label="Password"
+                    :help="
+                        errors.status == '422'
+                            ? errors.message
+                            : 'Insira a sua password.' && errors.data.password
+                            ? errors.data.password[0]
+                            : 'Insira a sua password.'
+                    "
+                    :error="
+                        errors.data.password || errors.status == '422'
+                            ? true
+                            : false
+                    "
+                >
                     <FormControl
-                        v-model="form.pass"
+                        v-model="form.password"
                         :icon="mdiAsterisk"
                         type="password"
                         name="password"
                         autocomplete="current-password"
+                        :error="
+                            errors.data.password || errors.status == '422'
+                                ? true
+                                : false
+                        "
+                        required
                     />
                 </FormField>
 
                 <FormCheckRadio
                     v-model="form.remember"
                     name="remember"
-                    label="Remember"
+                    label="Lembrar"
                     :input-value="true"
                 />
 
                 <template #footer>
-                    <BaseButtons>
-                        <BaseButton type="submit" color="info" label="Login" />
-                        <BaseButton
-                            to="/dashboard"
-                            color="info"
-                            outline
-                            label="Back"
-                        />
-                    </BaseButtons>
+                    <div class="relative flex flex-row pb-10">
+                        <div class="absolute left-0">
+                            <BaseButtons>
+                                <BaseButton
+                                    type="submit"
+                                    color="info"
+                                    :icon="mdiLoginVariant"
+                                    :class="{ 'opacity-25': form.processing }"
+                                    label="Login"
+                                />
+                                <BaseButton
+                                    to="/"
+                                    color="danger"
+                                    outline
+                                    :icon="mdiCloseCircleOutline"
+                                    label="Voltar"
+                                />
+                            </BaseButtons>
+                        </div>
+                    </div>
                 </template>
             </CardBox>
         </SectionFullScreen>

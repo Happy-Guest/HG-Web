@@ -1,6 +1,7 @@
 <script setup>
 import { computed, ref, onMounted } from "vue";
 import FormControlIcon from "@/components/Forms/FormControlIcon.vue";
+import { mdiAlertCircle } from "@mdi/js";
 
 const props = defineProps({
     name: {
@@ -47,6 +48,7 @@ const props = defineProps({
     borderless: Boolean,
     transparent: Boolean,
     ctrlKFocus: Boolean,
+    error: Boolean,
     disabled: Boolean,
     uppercase: Boolean,
 });
@@ -79,6 +81,10 @@ const inputElClass = computed(() => {
 
     if (props.uppercase) {
         base.push("uppercase");
+    }
+
+    if (props.error) {
+        base.push("ring ring-red-600");
     }
 
     return base;
@@ -153,5 +159,11 @@ onMounted(() => {
             :step="computedType === 'number' ? '0.01' : null"
         />
         <FormControlIcon v-if="icon" :icon="icon" :h="controlIconH" />
+        <FormControlIcon
+            v-if="error"
+            :icon="mdiAlertCircle"
+            :h="controlIconH"
+            error
+        />
     </div>
 </template>

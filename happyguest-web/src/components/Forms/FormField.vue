@@ -14,14 +14,9 @@ const props = defineProps({
         type: String,
         default: null,
     },
-    flex: {
-        type: Boolean,
-        default: false,
-    },
-    noMargin: {
-        type: Boolean,
-        default: false,
-    },
+    error: Boolean,
+    noMargin: Boolean,
+    flex: Boolean,
 });
 
 const slots = useSlots();
@@ -47,14 +42,23 @@ const wrapperClass = computed(() => {
 </script>
 
 <template>
-    <div :class="props.noMargin ? '' : 'mb-6 last:mb-0'">
+    <div class="mb-6 last:-mb-4">
         <label v-if="label" :for="labelFor" class="block font-bold mb-2">{{
             label
         }}</label>
         <div :class="wrapperClass">
             <slot />
         </div>
-        <div v-if="help" class="text-xs text-gray-500 dark:text-slate-400 mt-1">
+        <div
+            v-if="help && error"
+            class="text-xs text-red-700 dark:text-red-600 mt-1"
+        >
+            {{ help }}
+        </div>
+        <div
+            v-else-if="help"
+            class="text-xs text-gray-500 dark:text-slate-400 mt-1"
+        >
             {{ help }}
         </div>
     </div>

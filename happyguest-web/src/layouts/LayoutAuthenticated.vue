@@ -4,19 +4,16 @@ import { ref } from "vue";
 import { useRouter } from "vue-router";
 import menuAside from "@/menus/menuAside.js";
 import menuNavBar from "@/menus/menuNavBar.js";
-import { useMainStore } from "@/stores/main.js";
 import { useStyleStore } from "@/stores/style.js";
 import BaseIcon from "@/components/Bases/BaseIcon.vue";
 import NavBar from "@/components/NavBars/NavBar.vue";
 import NavBarItemPlain from "@/components/NavBars/NavBarItemPlain.vue";
 import AsideMenu from "@/components/Asides/AsideMenu.vue";
 import FooterBar from "@/components/Others/FooterBar.vue";
+import { useAuthStore } from "@/stores/auth";
 
-useMainStore().setUser({
-    name: "John Doe",
-    email: "john@example.com",
-    avatar: "https://avatars.dicebear.com/api/avataaars/example.svg?options[top][]=shortHair&options[accessoriesChance]=93",
-});
+const authStore = useAuthStore();
+
 
 const layoutAsidePadding = "xl:pl-60";
 
@@ -38,7 +35,7 @@ const menuClick = (event, item) => {
     }
 
     if (item.isLogout) {
-        //
+        if (authStore.logout()) router.push({ name: "home" });
     }
 };
 </script>

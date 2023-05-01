@@ -1,16 +1,18 @@
 <script setup>
 import UserAvatar from "@/components/Users/UserAvatar.vue";
+import { useAuthStore } from "@/stores/auth";
 
-defineProps({
-    userName: {
+const authStore = useAuthStore();
+const props = defineProps({
+    name: {
         type: String,
-        default: null,
+        default: "",
     },
 });
 </script>
 
 <template>
-    <UserAvatar :username="userName" api="initials">
+    <UserAvatar :username="props.name" :avatar="authStore.user?.photo_url">
         <slot />
     </UserAvatar>
 </template>

@@ -1,12 +1,11 @@
 <script setup>
-import { reactive } from "vue";
-import { useMainStore } from "@/stores/main";
+import { ref } from "vue";
+
 import {
     mdiAccount,
     mdiMail,
     mdiAsterisk,
     mdiFormTextboxPassword,
-    mdiGithub,
 } from "@mdi/js";
 import SectionMain from "@/components/Sections/SectionMain.vue";
 import CardBox from "@/components/CardBoxs/CardBox.vue";
@@ -19,26 +18,25 @@ import BaseButtons from "@/components/Bases/BaseButtons.vue";
 import UserCard from "@/components/Users/UserCard.vue";
 import LayoutAuthenticated from "@/layouts/LayoutAuthenticated.vue";
 import SectionTitleLine from "@/components/Sections/SectionTitleLine.vue";
+import { useAuthStore } from "@/stores/auth";
 
-const mainStore = useMainStore();
+const authStore = useAuthStore();
 
-const profileForm = reactive({
-    name: mainStore.userName,
-    email: mainStore.userEmail,
-});
-
-const passwordForm = reactive({
-    password_current: "",
+const passwordForm = ref({
+    current_password: "",
     password: "",
     password_confirmation: "",
 });
 
-const submitProfile = () => {
-    mainStore.setUser(profileForm);
-};
 
 const submitPass = () => {
     //
+};
+
+const clearPasswordFields = () => {
+    passwordForm.value.current_password = "";
+    passwordForm.value.password = "";
+    passwordForm.value.password_confirmation = "";
 };
 </script>
 
@@ -46,42 +44,32 @@ const submitPass = () => {
     <LayoutAuthenticated>
         <SectionMain>
             <SectionTitleLine :icon="mdiAccount" title="Perfil" main>
-                <BaseButton
-                    href="https://github.com/justboil/admin-one-vue-tailwind"
-                    target="_blank"
-                    :icon="mdiGithub"
-                    label="Star on GitHub"
-                    color="contrast"
-                    rounded-full
-                    small
-                />
             </SectionTitleLine>
 
-            <UserCard class="mb-6" />
-
+            <UserCard class="mb-6" :user="authStore.user" currentUser />
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 <CardBox is-form @submit.prevent="submitProfile">
                     <FormField label="Avatar" help="Max 500kb">
                         <FormFilePicker label="Upload" />
                     </FormField>
 
-                    <FormField label="Name" help="Required. Your name">
+                    <FormField label="Name" >
                         <FormControl
-                            v-model="profileForm.name"
+                            :modelValue="authStore.user?.name"
                             :icon="mdiAccount"
                             name="username"
-                            required
-                            autocomplete="username"
+                            disabled
+                            transparent
                         />
                     </FormField>
-                    <FormField label="E-mail" help="Required. Your e-mail">
+                    <FormField label="E-mail" >
                         <FormControl
-                            v-model="profileForm.email"
+                            :modelValue="authStore.user?.email"
                             :icon="mdiMail"
                             type="email"
                             name="email"
-                            required
-                            autocomplete="email"
+                            disabled
+                            transparent
                         />
                     </FormField>
 
@@ -103,7 +91,7 @@ const submitPass = () => {
                         help="Required. Your current password"
                     >
                         <FormControl
-                            v-model="passwordForm.password_current"
+                            v-model="passwordForm.current_password"
                             :icon="mdiAsterisk"
                             name="password_current"
                             type="password"
