@@ -36,9 +36,14 @@ const submit = async () => {
     var response = await authStore.login(form.value);
     if (response == true) {
         router.push({ name: "dashboard" });
-    } else if (response.data.errors) {
-        errors.value.data = JSON.parse(JSON.stringify(response.data.errors));
-    } else {
+    } 
+    else if( response.status == 401){
+        errors.value.message = JSON.parse(
+            JSON.stringify(response.data.message)
+        );
+        errors.value.status = JSON.stringify(response.status);
+    }
+    else {
         errors.value.data = [];
         errors.value.data = JSON.parse(JSON.stringify(response.data.errors));
         errors.value.status = JSON.stringify(response.status);
@@ -84,14 +89,12 @@ const submit = async () => {
                 <FormField
                     label="Password"
                     :help="
-                        errors.status == '422'
+                        errors.status == '401'
                             ? errors.message
-                            : 'Insira a sua password.' && errors.data.password
-                            ? errors.data.password[0]
-                            : 'Insira a sua password.'
+                            : 'Insira a sua password.' 
                     "
                     :error="
-                        errors.data.password || errors.status == '422'
+                         errors.status == '401'
                             ? true
                             : false
                     "
@@ -103,7 +106,7 @@ const submit = async () => {
                         name="password"
                         autocomplete="current-password"
                         :error="
-                            errors.data.password || errors.status == '422'
+                            errors.status == '401'
                                 ? true
                                 : false
                         "

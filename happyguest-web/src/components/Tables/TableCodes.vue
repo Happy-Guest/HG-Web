@@ -47,7 +47,7 @@ const pagesList = computed(() => {
             <tr>
                 <th>ID:</th>
                 <th>Código:</th>
-                <th>Quarto:</th>
+                <th>Quarto(s):</th>
                 <th>Estado:</th>
                 <th />
             </tr>
@@ -60,7 +60,7 @@ const pagesList = computed(() => {
                 <td data-label="Código">
                    {{ code.code }}
                 </td>
-                <td data-label="Quarto">
+                <td data-label="Quarto(s)">
                     <PillTag
                         class="justify-center"
                         :label="code.rooms"

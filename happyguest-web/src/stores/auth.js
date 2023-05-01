@@ -16,7 +16,16 @@ export const useAuthStore = defineStore("auth", () => {
         try {
             const response = await axios.get("me");
             user.value = response.data;
-            console.log(user.value);
+        } catch (error) {
+            clearUser();
+            return error;
+        }
+    }
+
+    async function loadUserById(id) {
+        try {
+            const response = await axios.get("users/" + id);
+            return response.data.data;
         } catch (error) {
             clearUser();
             return error;
@@ -33,7 +42,6 @@ export const useAuthStore = defineStore("auth", () => {
         let response;
         try {
             response = await axios.post("login", credentials);
-            console.log(response);
             axios.defaults.headers.common.Authorization =
                 "Bearer " + response.data.access_token;
             localStorage.setItem("token", response.data.access_token);
@@ -115,5 +123,6 @@ export const useAuthStore = defineStore("auth", () => {
         login,
         restoreToken,
         logout,
+        loadUserById,
     };
 });

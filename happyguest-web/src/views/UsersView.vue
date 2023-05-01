@@ -46,7 +46,7 @@ onUpdated(() => {
                     <BaseButton
                        
                         :icon="mdiPlus"
-                        label="Registar Utilzador"
+                        label="Registar Utilizador"
                         color="success"
                         rounded-full
                         small
