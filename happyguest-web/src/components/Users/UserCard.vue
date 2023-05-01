@@ -41,7 +41,7 @@ const props = defineProps({
                 >
                     <PillTag
                         v-if="props.user?.role == 'M'"
-                        label="Administrador"
+                        label="Gestor"
                         class="mr-4"
                         color="warning"
                         :icon="mdiCrown"

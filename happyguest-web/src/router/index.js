@@ -32,7 +32,23 @@ const routes = [
         component: () => import("@/views/ProfileView.vue"),
     },
 
-    // Template
+    {
+        meta: {
+            title: "Utilizadores",
+        },
+        path: "/utilizadores",
+        name: "users",
+        component: () => import("@/views/UsersView.vue"),
+    },
+
+    {
+        meta: {
+            title: "Códigos",
+        },
+        path: "/codigos",
+        name: "codes",
+        component: () => import("@/views/CodesView.vue"),
+    },
 
     {
         meta: {

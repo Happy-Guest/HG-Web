@@ -6,6 +6,7 @@ import {
     mdiMail,
     mdiAsterisk,
     mdiFormTextboxPassword,
+    mdiPhone,
 } from "@mdi/js";
 import SectionMain from "@/components/Sections/SectionMain.vue";
 import CardBox from "@/components/CardBoxs/CardBox.vue";
@@ -53,7 +54,7 @@ const clearPasswordFields = () => {
                         <FormFilePicker label="Upload" />
                     </FormField>
 
-                    <FormField label="Name" >
+                    <FormField label="Nome" >
                         <FormControl
                             :modelValue="authStore.user?.name"
                             :icon="mdiAccount"
@@ -72,8 +73,18 @@ const clearPasswordFields = () => {
                             transparent
                         />
                     </FormField>
+                    <FormField label="Nº Telefone" >
+                        <FormControl
+                            :modelValue="authStore.user?.phone"
+                            :icon="mdiPhone"
+                            type="phone"
+                            name="phone"
+                            disabled
+                            transparent
+                        />
+                    </FormField>
 
-                    <template #footer>
+                    <!--<template #footer>
                         <BaseButtons>
                             <BaseButton
                                 color="info"
@@ -82,7 +93,7 @@ const clearPasswordFields = () => {
                             />
                             <BaseButton color="info" label="Options" outline />
                         </BaseButtons>
-                    </template>
+                    </template>-->
                 </CardBox>
 
                 <CardBox is-form @submit.prevent="submitPass">

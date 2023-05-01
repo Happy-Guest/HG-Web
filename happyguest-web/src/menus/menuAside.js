@@ -3,6 +3,8 @@ import {
     mdiSquareEditOutline,
     mdiTable,
     mdiTelevisionGuide,
+    mdiBarcode,
+    mdiAccountGroup,
 } from "@mdi/js";
 
 export default [
@@ -11,8 +13,19 @@ export default [
         icon: mdiHomeOutline,
         label: "Página Inicial",
     },
-
-    // Template
+    {
+        isDivider: true,
+    },
+    {
+        to: "/utilizadores",
+        label: "Utilizadores",
+        icon: mdiAccountGroup,
+    },
+    {
+        to: "/codigos",
+        label: "Códigos",
+        icon: mdiBarcode,
+    },
 
     {
         isDivider: true,
