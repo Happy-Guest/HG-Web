@@ -1,27 +1,51 @@
 <script setup>
-import { ref } from "vue";
-
+import { ref, onMounted } from "vue";
 import {
     mdiAccount,
-    mdiMail,
+    mdiClipboardAccount,
+    mdiEmail,
     mdiAsterisk,
     mdiFormTextboxPassword,
-    mdiPhone,
+    mdiLockCheck,
+    mdiLockReset,
+    mdiCellphone,
+    mdiCheckAll,
+    mdiLock,
+    mdiTrashCan,
+    mdiContentSaveCheck,
+    mdiAccountGroup,
 } from "@mdi/js";
 import SectionMain from "@/components/Sections/SectionMain.vue";
 import CardBox from "@/components/CardBoxs/CardBox.vue";
 import BaseDivider from "@/components/Bases/BaseDivider.vue";
 import FormField from "@/components/Forms/FormField.vue";
 import FormControl from "@/components/Forms/FormControl.vue";
-import FormFilePicker from "@/components/Forms/FormFilePicker.vue";
 import BaseButton from "@/components/Bases/BaseButton.vue";
 import BaseButtons from "@/components/Bases/BaseButtons.vue";
 import UserCard from "@/components/Users/UserCard.vue";
 import LayoutAuthenticated from "@/layouts/LayoutAuthenticated.vue";
 import SectionTitleLine from "@/components/Sections/SectionTitleLine.vue";
+import NotificationBarInCard from "@/components/Others/NotificationBarInCard.vue";
+import CardBoxModal from "@/components/CardBoxs/CardBoxModal.vue";
 import { useAuthStore } from "@/stores/auth";
 
 const authStore = useAuthStore();
+
+const user = ref(authStore.user ?? {});
+const account = ref(false);
+
+const statusPassword = ref(null);
+const statusProfile = ref(null);
+
+const isModalDeleteActive = ref(false);
+const isModalBlockActive = ref(false);
+const isModalUnblockActive = ref(false);
+
+const profileForm = ref({
+    name: user.value.name,
+    email: user.value.email,
+    phone: user.value.phone ?? "",
+});
 
 const passwordForm = ref({
     current_password: "",
@@ -29,81 +53,220 @@ const passwordForm = ref({
     password_confirmation: "",
 });
 
-const submitPass = () => {
+const confirmPasswordForm = ref({
+    password: "",
+});
+
+const clearProfileFields = () => {
+    profileForm.value.name = user.value.name;
+    profileForm.value.email = user.value.email;
+    profileForm.value.phone = user.value.phone ?? "";
+};
+
+const submitProfile = () => {
+    statusProfile.value = false;
+    statusPassword.value = null;
     //
 };
 
-const clearPasswordFields = () => {
-    passwordForm.value.current_password = "";
-    passwordForm.value.password = "";
-    passwordForm.value.password_confirmation = "";
+const submitPassword = () => {
+    statusProfile.value = null;
+    statusPassword.value = false;
+    //
+};
+
+const submitDelete = (password) => {
+    //
+};
+
+const submitChangeState = (password) => {
+    //
 };
 </script>
 
 <template>
     <LayoutAuthenticated>
+        <CardBoxModal
+            v-model="isModalDeleteActive"
+            title="Remover Utilizador"
+            button="danger"
+            :icon-title="mdiTrashCan"
+            has-cancel
+            has-close
+            has-password
+            @confirm="submitDelete"
+        >
+            <p>Tem a certeza que <b>deseja remover</b> a conta?</p>
+            <p v-if="!account">A sua sessão <b>será terminada</b>.</p>
+        </CardBoxModal>
+        <CardBoxModal
+            v-model="isModalBlockActive"
+            title="Bloquear Utilizador"
+            button="warning"
+            :icon-title="mdiLock"
+            has-cancel
+            has-close
+            has-password
+            @confirm="submitChangeState"
+        >
+            <p>Tem a certeza que <b>deseja bloquear</b> a conta?</p>
+            <p v-if="!account">A sua sessão <b>será terminada</b>.</p>
+        </CardBoxModal>
+        <CardBoxModal
+            v-model="isModalUnblockActive"
+            title="Ativar Utilizador"
+            button="success"
+            :icon-title="mdiCheckAll"
+            has-cancel
+            has-close
+            has-password
+            @confirm="submitChangeState"
+        >
+            <p>Tem a certeza que <b>deseja ativar</b> a conta?</p>
+        </CardBoxModal>
         <SectionMain>
-            <SectionTitleLine :icon="mdiAccount" title="Perfil" main>
+            <SectionTitleLine
+                :icon="account ? mdiAccountGroup : mdiClipboardAccount"
+                :title="account ? 'Perfil ➯ ' + user.id : 'O Meu Perfil'"
+                main
+            >
+                <BaseButtons no-margin>
+                    <BaseButton
+                        v-if="user?.blocked === 1"
+                        :icon="mdiCheckAll"
+                        label="Ativar"
+                        color="success"
+                        rounded-full
+                        small
+                        @click="isModalUnblockActive = true"
+                    />
+                    <BaseButton
+                        v-else
+                        :icon="mdiLock"
+                        label="Bloquear"
+                        color="warning"
+                        rounded-full
+                        small
+                        @click="isModalBlockActive = true"
+                    />
+                    <BaseButton
+                        v-if="!account || account.type != 'A'"
+                        :icon="mdiTrashCan"
+                        label="Remover"
+                        color="danger"
+                        rounded-full
+                        small
+                        @click="isModalDeleteActive = true"
+                    />
+                </BaseButtons>
             </SectionTitleLine>
 
-            <UserCard class="mb-6" :user="authStore.user" current-user />
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <CardBox is-form @submit.prevent="submitProfile">
-                    <FormField label="Avatar" help="Max 500kb">
-                        <FormFilePicker label="Upload" />
-                    </FormField>
+            <UserCard
+                class="mb-6"
+                :user-name="user.name"
+                :user-role="user.role"
+                :user-blocked="user.blocked === 1"
+                :current-user="account ? false : true"
+                :user-avatar="user.photo_url"
+            />
 
-                    <FormField label="Nome">
+            <div v-if="!account" class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <CardBox
+                    is-form
+                    class="my-auto"
+                    @submit.prevent="submitProfile"
+                >
+                    <Transition name="fade">
+                        <NotificationBarInCard
+                            v-if="statusProfile"
+                            color="success"
+                        >
+                            <b>{{ statusProfile }}</b>
+                        </NotificationBarInCard>
+                    </Transition>
+                    <FormField label="Nome" help="O seu nome. Obrigatório">
                         <FormControl
-                            :model-value="authStore.user?.name"
+                            v-model="profileForm.name"
                             :icon="mdiAccount"
                             name="username"
-                            disabled
-                            transparent
+                            required
+                            autocomplete="username"
                         />
                     </FormField>
-                    <FormField label="E-mail">
+
+                    <FormField label="Email" help="O seu e-mail. Obrigatório">
                         <FormControl
-                            :model-value="authStore.user?.email"
-                            :icon="mdiMail"
+                            v-model="profileForm.email"
+                            :icon="mdiEmail"
                             type="email"
                             name="email"
-                            disabled
-                            transparent
-                        />
-                    </FormField>
-                    <FormField label="Nº Telefone">
-                        <FormControl
-                            :model-value="authStore.user?.phone"
-                            :icon="mdiPhone"
-                            type="phone"
-                            name="phone"
-                            disabled
-                            transparent
+                            required
+                            autocomplete="email"
                         />
                     </FormField>
 
-                    <!--<template #footer>
+                    <BaseDivider />
+
+                    <FormField
+                        label="Nº Telefone"
+                        help="O seu número de telefone. Opcional"
+                    >
+                        <FormControl
+                            v-model="profileForm.phone"
+                            :icon="mdiCellphone"
+                            type="number"
+                            name="phone"
+                            maxlength="1"
+                            autocomplete="phone"
+                            :placeholder="
+                                profileForm.phone.length === 0
+                                    ? 'Não definido'
+                                    : ''
+                            "
+                        />
+                    </FormField>
+
+                    <template #footer>
                         <BaseButtons>
                             <BaseButton
-                                color="info"
                                 type="submit"
-                                label="Submit"
+                                color="success"
+                                label="Atualizar"
+                                :icon="mdiContentSaveCheck"
                             />
-                            <BaseButton color="info" label="Options" outline />
+                            <BaseButton
+                                color="info"
+                                label="Repor"
+                                outline
+                                :icon="mdiLockReset"
+                                @click="clearProfileFields"
+                            />
                         </BaseButtons>
-                    </template>-->
+                    </template>
                 </CardBox>
 
-                <CardBox is-form @submit.prevent="submitPass">
+                <CardBox
+                    is-form
+                    class="my-auto"
+                    @submit.prevent="submitPassword"
+                >
+                    <Transition name="fade">
+                        <NotificationBarInCard
+                            v-if="statusPassword"
+                            color="success"
+                        >
+                            <b>{{ statusPassword }}</b>
+                        </NotificationBarInCard>
+                    </Transition>
+
                     <FormField
-                        label="Current password"
-                        help="Required. Your current password"
+                        label="Palavra-passe Atual"
+                        help="A sua palavra-passe atual. Obrigatório"
                     >
                         <FormControl
                             v-model="passwordForm.current_password"
                             :icon="mdiAsterisk"
-                            name="password_current"
+                            name="current_password"
                             type="password"
                             required
                             autocomplete="current-password"
@@ -113,8 +276,8 @@ const clearPasswordFields = () => {
                     <BaseDivider />
 
                     <FormField
-                        label="New password"
-                        help="Required. New password"
+                        label="Nova Palavra-passe"
+                        help="A sua nova palavra-passe. Deve conter pelo menos 8 caracteres. Obrigatório"
                     >
                         <FormControl
                             v-model="passwordForm.password"
@@ -127,8 +290,8 @@ const clearPasswordFields = () => {
                     </FormField>
 
                     <FormField
-                        label="Confirm password"
-                        help="Required. New password one more time"
+                        label="Confirmar Palavra-passe"
+                        help="Confirme a sua nova palavra-passe. Obrigatório"
                     >
                         <FormControl
                             v-model="passwordForm.password_confirmation"
@@ -144,14 +307,80 @@ const clearPasswordFields = () => {
                         <BaseButtons>
                             <BaseButton
                                 type="submit"
-                                color="info"
-                                label="Submit"
+                                color="success"
+                                label="Alterar"
+                                :icon="mdiLockCheck"
                             />
-                            <BaseButton color="info" label="Options" outline />
+                            <BaseButton
+                                color="info"
+                                label="Limpar"
+                                outline
+                                :icon="mdiLockReset"
+                                @click="
+                                    passwordForm.reset(
+                                        'current_password',
+                                        'password',
+                                        'password_confirmation'
+                                    )
+                                "
+                            />
                         </BaseButtons>
                     </template>
+                </CardBox>
+            </div>
+            <div v-else>
+                <CardBox is-form class="pb-2">
+                    <FormField
+                        label="Nome"
+                        help="O nome do utilizador. Obrigatório"
+                    >
+                        <FormControl
+                            v-model="profileForm.name"
+                            :icon="mdiAccount"
+                            name="username"
+                            disabled
+                        />
+                    </FormField>
+
+                    <FormField
+                        label="Email"
+                        help="O email do utilizador. Obrigatório"
+                    >
+                        <FormControl
+                            v-model="profileForm.email"
+                            :icon="mdiEmail"
+                            name="email"
+                            disabled
+                        />
+                    </FormField>
+
+                    <BaseDivider />
+
+                    <FormField
+                        label="Nº Telefone"
+                        help="O número de telefone do utilizador. Opcional"
+                    >
+                        <FormControl
+                            v-model="profileForm.phone"
+                            :icon="mdiCellphone"
+                            name="phone"
+                            :placeholder="
+                                user.phone === null ? 'Não definido' : ''
+                            "
+                            disabled
+                        />
+                    </FormField>
                 </CardBox>
             </div>
         </SectionMain>
     </LayoutAuthenticated>
 </template>
+
+<style>
+.fade-leave-active {
+    transition: all 1s ease;
+}
+.fade-leave-to {
+    opacity: 0;
+}
+</style>

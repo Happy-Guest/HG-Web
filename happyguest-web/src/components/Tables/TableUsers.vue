@@ -1,30 +1,29 @@
 <script setup>
 import { computed, ref, watch, onMounted } from "vue";
-import { mdiEye, mdiClose, mdiCheck } from "@mdi/js";
+import { mdiEye } from "@mdi/js";
 import BaseLevel from "@/components/Bases/BaseLevel.vue";
 import BaseButtons from "@/components/Bases/BaseButtons.vue";
 import BaseButton from "@/components/Bases/BaseButton.vue";
 import PillTag from "@/components/PillTags/PillTag.vue";
-import CardBoxModal from "@/components/CardBoxs/CardBoxModal.vue";
 import UserAvatar from "@/components/Users/UserAvatar.vue";
-import { useAuthStore } from "@/stores/auth";
+import { useUserStore } from "@/stores/user";
 
-const authStore = useAuthStore();
+const userStore = useUserStore();
 
 const currentPage = ref(0);
 const users = ref([]);
-const numPages = computed(() => authStore.lastPage);
+const numPages = computed(() => userStore.lastPage);
 const currentPageHuman = computed(() => currentPage.value + 1);
 const isModalActive = ref(false);
 const userIdSelect = ref(0);
 const userInfo = ref([]);
 
 watch(currentPageHuman, async () => {
-    users.value = await authStore.getUsers(currentPage.value + 1);
+    users.value = await userStore.getUsers(currentPage.value + 1);
 });
 
 onMounted(async () => {
-    users.value = await authStore.getUsers(1);
+    users.value = await userStore.getUsers(1);
 });
 
 const pagesList = computed(() => {
@@ -46,68 +45,15 @@ const pagesList = computed(() => {
 });
 
 watch(isModalActive, async () => {
-    if(isModalActive.value) {
-        userInfo.value = await authStore.loadUserById(userIdSelect.value);
-    }
-    else {
+    if (isModalActive.value) {
+        userInfo.value = await userStore.loadUserById(userIdSelect.value);
+    } else {
         userInfo.value = [];
     }
 });
 </script>
 
 <template>
-    
-    <CardBoxModal
-        has-close
-        v-model="isModalActive"
-        :title="`Utilizador - ` + userInfo.id"
-    >
-        <table>
-            <tr>
-                <td class="leading-loose">
-                    <p>
-                        <span class="font-bold">Nome:</span> {{ userInfo.name }}
-                    </p>
-                    <p>
-                        <span class="font-bold">Email:</span>
-                        {{ userInfo.email }}
-                    </p>
-                    <p>
-                        <span class="font-bold">Telefone:</span>
-                        {{ userInfo.phone }}
-                    </p>
-                    <p class="my-2">
-                        <span class="font-bold mr-3">Tipo:</span>
-                        <PillTag
-                        v-if="userInfo.role == 'M'"
-                        class="justify-center"
-                        label="Gestor"
-                        color="warning"
-                    />
-                    <PillTag
-                        v-else-if="userInfo.role == 'C'"
-                        class="justify-center"
-                        label="Cliente"
-                        color="info"
-                    />
-                    </p>
-                    <p>
-                        <span class="font-bold">Data Criação:</span>
-                        {{ userInfo.created_at }}
-                    </p>
-                </td>
-                <td class="flex items-center justify-center">
-                    <UserAvatar
-                        api="initials"
-                        :avatar="userInfo.photo_url"
-                        :username="userInfo.name"
-                        class="w-12 h-12 mx-auto lg:w-36 lg:h-36"
-                        table
-                    />
-                </td>
-            </tr>
-        </table>
-    </CardBoxModal>
     <table class="w-full">
         <thead>
             <tr>
@@ -120,14 +66,12 @@ watch(isModalActive, async () => {
             </tr>
         </thead>
         <tbody>
-            <tr v-for="user in users" v-bind:key="user.id">
+            <tr v-for="user in users" :key="user.id">
                 <td class="border-b-0 lg:w-6 before:hidden">
                     <UserAvatar
-                        api="initials"
-                        avatar="https://api.dicebear.com/6.x/avataaars/svg?seed=Diogo"
+                        :avatar="user.photo_url"
                         :username="user.name"
                         class="w-24 h-24 mx-auto lg:w-6 lg:h-6"
-                        minitable
                     />
                 </td>
                 <td data-label="Id">
@@ -173,17 +117,17 @@ watch(isModalActive, async () => {
         <BaseLevel>
             <BaseButtons>
                 <BaseButton
+                    v-if="currentPage > 0"
                     :label="'➤'"
                     class="font-bold rotate-180"
                     small
-                    v-if="currentPage > 0"
                     @click="currentPage = 0"
                 />
                 <BaseButton
+                    v-if="currentPage > 0"
                     :label="'➜'"
                     class="font-bold rotate-180"
                     small
-                    v-if="currentPage > 0"
                     @click="currentPage--"
                 />
                 <BaseButton
@@ -197,17 +141,17 @@ watch(isModalActive, async () => {
                 />
 
                 <BaseButton
+                    v-if="currentPage < numPages - 1"
                     :label="'➜'"
                     class="font-bold"
                     small
-                    v-if="currentPage < numPages - 1"
                     @click="currentPage++"
                 />
                 <BaseButton
+                    v-if="currentPage < numPages - 1"
                     :label="'➤'"
                     class="font-bold"
                     small
-                    v-if="currentPage < numPages - 1"
                     @click="currentPage = numPages - 1"
                 />
             </BaseButtons>

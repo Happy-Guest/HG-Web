@@ -17,7 +17,7 @@ defineProps({
         type: String,
         default: "Nome",
     },
-    userType: {
+    userRole: {
         type: String,
         default: "Outro",
     },
@@ -29,6 +29,10 @@ defineProps({
         type: Boolean,
         default: false,
     },
+    userAvatar: {
+        type: String,
+        default: null,
+    },
 });
 </script>
 
@@ -37,6 +41,7 @@ defineProps({
         <BaseLevel type="justify-around lg:justify-center">
             <UserAvatarCurrentUser
                 :user-name="userName"
+                :user-avatar="userAvatar"
                 class="lg:mx-12 my-1 w-3/5"
             />
             <div class="space-y-3 text-center md:text-left lg:mx-12">
@@ -49,24 +54,24 @@ defineProps({
                 </h1>
                 <div class="flex justify-center md:block">
                     <PillTag
-                        v-if="userType === 'A'"
+                        v-if="userRole === 'A'"
                         label="Administrador"
                         class="mr-4"
                         color="warning"
                         :icon="mdiCrown"
                     />
                     <PillTag
-                        v-else-if="userType === 'M'"
+                        v-else-if="userRole === 'M'"
                         label="Gestor"
                         class="mr-4"
-                        color="primary"
+                        color="info"
                         :icon="mdiAccountTie"
                     />
                     <PillTag
-                        v-else-if="userType === 'C'"
+                        v-else-if="userRole === 'C'"
                         label="Cliente"
                         class="mr-4"
-                        color="primary"
+                        color="contrast"
                         :icon="mdiBriefcaseAccount"
                     />
                     <PillTag

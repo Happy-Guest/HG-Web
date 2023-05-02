@@ -1,5 +1,6 @@
 import { inject, ref, computed } from "vue";
 import { defineStore } from "pinia";
+import router from "@/router";
 
 export const useAuthStore = defineStore("auth", () => {
     const axios = inject("axios");
@@ -26,7 +27,9 @@ export const useAuthStore = defineStore("auth", () => {
     function clearUser() {
         delete axios.defaults.headers.common.Authorization;
         localStorage.removeItem("token");
+        localStorage.removeItem("remember");
         user.value = null;
+        router.push({ name: "login" });
     }
 
     async function login(credentials) {
@@ -69,7 +72,11 @@ export const useAuthStore = defineStore("auth", () => {
             response = await axios.post("logout");
             clearUser();
             return true;
-        } catch {
+        } catch (error) {
+            if (error.response.status == 401) {
+                clearUser();
+                return true;
+            }
             return response.data;
         }
     }
