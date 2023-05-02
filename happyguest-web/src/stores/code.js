@@ -12,7 +12,7 @@ export const useCodeStore = defineStore("code", () => {
         let response;
         if (page == 0) {
             response = await axios.get("codes/");
-            lastPage.value = response.data.meta.last_page
+            lastPage.value = response.data.meta.last_page;
             if (response.data.meta.total == 0) {
                 return false;
             }
@@ -26,19 +26,16 @@ export const useCodeStore = defineStore("code", () => {
     }
 
     async function getCodes(page) {
-            if (pagesCodes.value.includes(page)) {
-                return codes.value[
-                    pagesCodes.value.indexOf(page)
-                ];
-            }
-            return await loadCodes(page);
-        
+        if (pagesCodes.value.includes(page)) {
+            return codes.value[pagesCodes.value.indexOf(page)];
+        }
+        return await loadCodes(page);
     }
 
     return {
         codes,
         lastPage,
         pagesCodes,
-        getCodes
+        getCodes,
     };
 });

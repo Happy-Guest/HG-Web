@@ -50,6 +50,8 @@ const routes = [
         component: () => import("@/views/CodesView.vue"),
     },
 
+    // Template
+
     {
         meta: {
             title: "Tabelas",

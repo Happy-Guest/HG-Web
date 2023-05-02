@@ -13,11 +13,9 @@ import FooterBar from "@/components/Others/FooterBar.vue";
 import { useAuthStore } from "@/stores/auth";
 
 const authStore = useAuthStore();
-
+const styleStore = useStyleStore();
 
 const layoutAsidePadding = "xl:pl-60";
-
-const styleStore = useStyleStore();
 
 const router = useRouter();
 

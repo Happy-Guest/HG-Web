@@ -31,19 +31,16 @@ const errors = ref({
     status: String,
 });
 
-
 const submit = async () => {
     var response = await authStore.login(form.value);
     if (response == true) {
         router.push({ name: "dashboard" });
-    } 
-    else if( response.status == 401){
+    } else if (response.status == 401) {
         errors.value.message = JSON.parse(
             JSON.stringify(response.data.message)
         );
         errors.value.status = JSON.stringify(response.status);
-    }
-    else {
+    } else {
         errors.value.data = [];
         errors.value.data = JSON.parse(JSON.stringify(response.data.errors));
         errors.value.status = JSON.stringify(response.status);
@@ -56,7 +53,7 @@ const submit = async () => {
 
 <template>
     <LayoutGuest>
-        <SectionFullScreen v-slot="{ cardClass }" bg="purplePink">
+        <SectionFullScreen v-slot="{ cardClass }" bg="blueGray">
             <CardBox :class="cardClass" is-form @submit.prevent="submit">
                 <FormField
                     label="Email"
@@ -91,13 +88,9 @@ const submit = async () => {
                     :help="
                         errors.status == '401'
                             ? errors.message
-                            : 'Insira a sua password.' 
+                            : 'Insira a sua password.'
                     "
-                    :error="
-                         errors.status == '401'
-                            ? true
-                            : false
-                    "
+                    :error="errors.status == '401' ? true : false"
                 >
                     <FormControl
                         v-model="form.password"
@@ -105,11 +98,7 @@ const submit = async () => {
                         type="password"
                         name="password"
                         autocomplete="current-password"
-                        :error="
-                            errors.status == '401'
-                                ? true
-                                : false
-                        "
+                        :error="errors.status == '401' ? true : false"
                         required
                     />
                 </FormField>

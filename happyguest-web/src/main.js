@@ -14,7 +14,7 @@ const pinia = createPinia();
 
 /* Create Vue app */
 const app = createApp(App);
-const serverUrl = import.meta.env.VITE_SERVER_URL;
+const serverUrl = import.meta.env.SERVER_URL;
 
 app.provide(
     "axios",
