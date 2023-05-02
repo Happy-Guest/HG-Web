@@ -29,7 +29,6 @@ const passwordForm = ref({
     password_confirmation: "",
 });
 
-
 const submitPass = () => {
     //
 };
@@ -47,25 +46,25 @@ const clearPasswordFields = () => {
             <SectionTitleLine :icon="mdiAccount" title="Perfil" main>
             </SectionTitleLine>
 
-            <UserCard class="mb-6" :user="authStore.user" currentUser />
+            <UserCard class="mb-6" :user="authStore.user" current-user />
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 <CardBox is-form @submit.prevent="submitProfile">
                     <FormField label="Avatar" help="Max 500kb">
                         <FormFilePicker label="Upload" />
                     </FormField>
 
-                    <FormField label="Nome" >
+                    <FormField label="Nome">
                         <FormControl
-                            :modelValue="authStore.user?.name"
+                            :model-value="authStore.user?.name"
                             :icon="mdiAccount"
                             name="username"
                             disabled
                             transparent
                         />
                     </FormField>
-                    <FormField label="E-mail" >
+                    <FormField label="E-mail">
                         <FormControl
-                            :modelValue="authStore.user?.email"
+                            :model-value="authStore.user?.email"
                             :icon="mdiMail"
                             type="email"
                             name="email"
@@ -73,9 +72,9 @@ const clearPasswordFields = () => {
                             transparent
                         />
                     </FormField>
-                    <FormField label="Nº Telefone" >
+                    <FormField label="Nº Telefone">
                         <FormControl
-                            :modelValue="authStore.user?.phone"
+                            :model-value="authStore.user?.phone"
                             :icon="mdiPhone"
                             type="phone"
                             name="phone"

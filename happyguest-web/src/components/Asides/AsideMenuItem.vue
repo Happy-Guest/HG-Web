@@ -2,6 +2,7 @@
 import { ref, computed } from "vue";
 import { RouterLink } from "vue-router";
 import { useStyleStore } from "@/stores/style.js";
+import { useAuthStore } from "@/stores/auth.js";
 import { mdiMinus, mdiPlus } from "@mdi/js";
 import { getButtonColor } from "@/colors.js";
 import BaseIcon from "@/components/Bases/BaseIcon.vue";
@@ -49,7 +50,7 @@ const asideMenuItemActiveStyle = computed(() =>
     <li
         v-if="
             !item.middleware ||
-            item.middleware.includes(useMainStore().userType)
+            item.middleware.includes(useAuthStore().user?.type)
         "
     >
         <component

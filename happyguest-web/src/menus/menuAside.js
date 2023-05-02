@@ -1,7 +1,6 @@
 import {
     mdiHomeOutline,
     mdiSquareEditOutline,
-    mdiTable,
     mdiTelevisionGuide,
     mdiBarcode,
     mdiAccountGroup,
@@ -29,11 +28,6 @@ export default [
 
     {
         isDivider: true,
-    },
-    {
-        to: "/tabelas",
-        label: "Tabelas",
-        icon: mdiTable,
     },
     {
         to: "/formularios",

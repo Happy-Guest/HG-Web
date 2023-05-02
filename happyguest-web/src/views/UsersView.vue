@@ -15,12 +15,9 @@ const authStore = useAuthStore();
 
 const hasUsers = ref(false);
 
-
 const checkUsers = async () => {
     setTimeout(async function () {
-        hasUsers.value = await authStore.getUsers(
-            0
-        );
+        hasUsers.value = await authStore.getUsers(0);
     }, 700);
 };
 
@@ -38,13 +35,11 @@ onUpdated(() => {
         <SectionMain>
             <SectionTitleLineWithButton
                 :icon="mdiAccountGroup"
-                :title="
-                    'Utilizadores'"
+                :title="'Utilizadores'"
                 main
             >
                 <BaseButtons>
                     <BaseButton
-                       
                         :icon="mdiPlus"
                         label="Registar Utilizador"
                         color="success"
@@ -54,12 +49,10 @@ onUpdated(() => {
                 </BaseButtons>
             </SectionTitleLineWithButton>
             <CardBox class="mb-6" has-table>
-                <TableUsers
-                    v-if="hasUsers"
-                />
+                <TableUsers v-if="hasUsers" />
                 <CardBoxComponentEmpty
-                    message="Sem utilizadores registados..."
                     v-else
+                    message="Sem utilizadores registados..."
                 />
             </CardBox>
         </SectionMain>

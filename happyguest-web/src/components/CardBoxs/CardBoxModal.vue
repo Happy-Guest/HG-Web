@@ -13,8 +13,6 @@ import OverlayLayer from "@/components/Others/OverlayLayer.vue";
 import CardBoxComponentTitle from "@/components/CardBoxs/CardBoxComponentTitle.vue";
 import FormControl from "@/components/Forms/FormControl.vue";
 import FormField from "@/components/Forms/FormField.vue";
-//import FormValidationErrors from "@/components/Forms/FormValidationErrors.vue";
-//import { usePage } from "@inertiajs/vue3";
 
 const props = defineProps({
     title: {
@@ -77,7 +75,6 @@ const confirmForm = () => {
 
 const cancel = () => {
     confirmCancel("cancel");
-    //usePage().props.errors = {};
 };
 
 window.addEventListener("keydown", (e) => {
@@ -96,7 +93,6 @@ window.addEventListener("keydown", (e) => {
             :is-form="hasPassword || hasErrors"
             @submit.prevent="confirmForm"
         >
-            <!-- <FormValidationErrors v-if="hasErrors || hasPassword" /> -->
             <CardBoxComponentTitle :title="title" :icon="iconTitle">
                 <BaseButton
                     v-if="hasClose"

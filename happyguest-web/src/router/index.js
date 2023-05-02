@@ -59,17 +59,7 @@ const routes = [
 
     {
         meta: {
-            title: "Tabelas",
-            middleware: auth,
-        },
-        path: "/tabelas",
-        name: "tables",
-        component: () => import("@/views/Template/TablesView.vue"),
-    },
-    {
-        meta: {
             title: "Formulários",
-            middleware: auth,
         },
         path: "/formularios",
         name: "forms",
@@ -78,7 +68,6 @@ const routes = [
     {
         meta: {
             title: "Interface",
-            middleware: auth,
         },
         path: "/interface",
         name: "ui",

@@ -15,12 +15,9 @@ const codeStore = useCodeStore();
 
 const hasCodes = ref(false);
 
-
 const checkCodes = async () => {
     setTimeout(async function () {
-        hasCodes.value = await codeStore.getCodes(
-            0
-        );
+        hasCodes.value = await codeStore.getCodes(0);
     }, 700);
 };
 
@@ -38,13 +35,11 @@ onUpdated(() => {
         <SectionMain>
             <SectionTitleLineWithButton
                 :icon="mdiBarcode"
-                :title="
-                    'Códigos'"
+                :title="'Códigos'"
                 main
             >
                 <BaseButtons>
                     <BaseButton
-                       
                         :icon="mdiPlus"
                         label="Associar Código"
                         color="success"
@@ -54,12 +49,10 @@ onUpdated(() => {
                 </BaseButtons>
             </SectionTitleLineWithButton>
             <CardBox class="mb-6" has-table>
-                <TableCodes
-                    v-if="hasCodes"
-                />
+                <TableCodes v-if="hasCodes" />
                 <CardBoxComponentEmpty
-                    message="Sem códigos registados..."
                     v-else
+                    message="Sem códigos registados..."
                 />
             </CardBox>
         </SectionMain>
