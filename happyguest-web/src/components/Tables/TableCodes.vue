@@ -1,10 +1,11 @@
 <script setup>
 import { computed, ref, watch, onMounted } from "vue";
-import { mdiEye, mdiClose, mdiCheck } from "@mdi/js";
+import { mdiRename, mdiClose, mdiCheck } from "@mdi/js";
 import BaseLevel from "@/components/Bases/BaseLevel.vue";
 import BaseButtons from "@/components/Bases/BaseButtons.vue";
 import BaseButton from "@/components/Bases/BaseButton.vue";
 import PillTag from "@/components/PillTags/PillTag.vue";
+import CardBoxCode from "@/components/CardBoxsCustom/CardBoxCode.vue";
 import { useCodeStore } from "@/stores/code";
 
 const codeStore = useCodeStore();
@@ -13,6 +14,9 @@ const currentPage = ref(0);
 const codes = ref([]);
 const numPages = computed(() => codeStore.lastPage);
 const currentPageHuman = computed(() => currentPage.value + 1);
+
+const isModalActive = ref(false);
+const selected = ref(0);
 
 watch(currentPageHuman, async () => {
     codes.value = await codeStore.getCodes(currentPage.value + 1);
@@ -39,15 +43,36 @@ const pagesList = computed(() => {
     }
     return pagesList[parseInt(currentPage.value / 10)];
 });
+
+const getDateString = (date) => {
+    var dateString = new Date(date);
+    return (
+        (dateString.getDate() > 9
+            ? dateString.getDate()
+            : "0" + dateString.getDate()) +
+        "/" +
+        (dateString.getMonth() > 8
+            ? dateString.getMonth() + 1
+            : "0" + (dateString.getMonth() + 1)) +
+        "/" +
+        dateString.getFullYear()
+    );
+};
 </script>
 
 <template>
+    <CardBoxCode
+        :selected="selected"
+        :active="isModalActive"
+        @update:active="isModalActive = $event"
+    />
     <table class="w-full">
         <thead>
             <tr>
                 <th>ID:</th>
                 <th>Código:</th>
                 <th>Quarto(s):</th>
+                <th>Entrada:</th>
                 <th>Estado:</th>
                 <th />
             </tr>
@@ -68,6 +93,9 @@ const pagesList = computed(() => {
                         small
                     />
                 </td>
+                <td data-label="Código">
+                   {{ getDateString(code.entry_date) }}
+                </td>
                 <td data-label="Estado" class="text-center">
                     <PillTag
                         v-if="code.used == '1'"
@@ -84,9 +112,17 @@ const pagesList = computed(() => {
                         :icon="mdiClose"
                     />
                 </td>
-                <td class="before:hidden lg:w-1 whitespace-nowrap">
+                <td
+                    class="before:hidden lg:w-1 whitespace-nowrap place-content-center"
+                >
                     <BaseButtons type="justify-start lg:justify-end" no-wrap>
-                        <BaseButton color="info" :icon="mdiEye" small />
+                        <BaseButton
+                            color="warning"
+                            title="Editar"
+                            :icon="mdiRename"
+                            small
+                            @click="isModalActive = true; selected = code.id;"
+                        />
                     </BaseButtons>
                 </td>
             </tr>

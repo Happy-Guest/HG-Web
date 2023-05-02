@@ -8,26 +8,18 @@ import BaseButton from "@/components/Bases/BaseButton.vue";
 import CardBoxComponentEmpty from "@/components/CardBoxs/CardBoxComponentEmpty.vue";
 import TableUsers from "@/components/Tables/TableUsers.vue";
 import CardBox from "@/components/CardBoxs/CardBox.vue";
-import { onMounted, ref, onUpdated } from "vue";
+import { onMounted, ref } from "vue";
 import { useUserStore } from "@/stores/user";
 
 const userStore = useUserStore();
 
 const hasUsers = ref(false);
 
-const checkUsers = async () => {
-    setTimeout(async function () {
-        hasUsers.value = await userStore.getUsers(0);
-    }, 700);
-};
-
 onMounted(() => {
-    checkUsers();
+    hasUsers.value = userStore.getUsers(0);
 });
 
-onUpdated(() => {
-    checkUsers();
-});
+
 </script>
 
 <template>

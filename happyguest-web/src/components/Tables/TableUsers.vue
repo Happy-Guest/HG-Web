@@ -1,6 +1,6 @@
 <script setup>
 import { computed, ref, watch, onMounted } from "vue";
-import { mdiEye } from "@mdi/js";
+import { mdiEye, mdiCrown, mdiAccountTie, mdiBriefcaseAccount, mdiAccountHardHat} from "@mdi/js";
 import BaseLevel from "@/components/Bases/BaseLevel.vue";
 import BaseButtons from "@/components/Bases/BaseButtons.vue";
 import BaseButton from "@/components/Bases/BaseButton.vue";
@@ -74,7 +74,7 @@ watch(isModalActive, async () => {
                         class="w-24 h-24 mx-auto lg:w-6 lg:h-6"
                     />
                 </td>
-                <td data-label="Id">
+                <td data-label="Id" class="text-center">
                     {{ user.id }}
                 </td>
                 <td data-label="Nome">
@@ -85,16 +85,32 @@ watch(isModalActive, async () => {
                 </td>
                 <td data-label="Tipo" class="text-center">
                     <PillTag
-                        v-if="user.role == 'M'"
-                        class="justify-center"
-                        label="Gestor"
+                        v-if="user.role === 'A'"
+                        label="Administrador"
+                        class="mr-4"
                         color="warning"
+                        :icon="mdiCrown"
                     />
                     <PillTag
-                        v-else-if="user.role == 'C'"
-                        class="justify-center"
-                        label="Cliente"
+                        v-else-if="user.role === 'M'"
+                        label="Gestor"
+                        class="mr-4"
                         color="info"
+                        :icon="mdiAccountTie"
+                    />
+                    <PillTag
+                        v-else-if="user.role === 'C'"
+                        label="Cliente"
+                        class="mr-4"
+                        color="contrast"
+                        :icon="mdiBriefcaseAccount"
+                    />
+                    <PillTag
+                        v-else
+                        label="Outro"
+                        class="mr-4"
+                        color="info"
+                        :icon="mdiAccountHardHat"
                     />
                 </td>
                 <td class="before:hidden lg:w-1 whitespace-nowrap">

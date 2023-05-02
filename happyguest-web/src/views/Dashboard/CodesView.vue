@@ -8,26 +8,18 @@ import BaseButton from "@/components/Bases/BaseButton.vue";
 import CardBoxComponentEmpty from "@/components/CardBoxs/CardBoxComponentEmpty.vue";
 import TableCodes from "@/components/Tables/TableCodes.vue";
 import CardBox from "@/components/CardBoxs/CardBox.vue";
-import { onMounted, ref, onUpdated } from "vue";
+import { onMounted, ref } from "vue";
 import { useCodeStore } from "@/stores/code";
 
 const codeStore = useCodeStore();
 
 const hasCodes = ref(false);
 
-const checkCodes = async () => {
-    setTimeout(async function () {
-        hasCodes.value = await codeStore.getCodes(0);
-    }, 700);
-};
-
 onMounted(() => {
-    checkCodes();
+    hasCodes.value = codeStore.getCodes(0);
 });
 
-onUpdated(() => {
-    checkCodes();
-});
+
 </script>
 
 <template>
