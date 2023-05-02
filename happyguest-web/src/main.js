@@ -15,8 +15,6 @@ const pinia = createPinia();
 const app = createApp(App);
 const serverUrl = import.meta.env.VITE_SERVER_URL;
 
-console.log("Server URL: " + serverUrl);
-
 app.provide(
     "axios",
     axios.create({

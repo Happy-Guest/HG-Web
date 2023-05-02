@@ -29,7 +29,6 @@ const form = ref({
 const authStore = useAuthStore();
 
 const errors = ref({
-    data: [],
     message: "",
     status: "",
 });
@@ -38,14 +37,10 @@ const submit = async () => {
     var response = await authStore.login(form.value);
     if (response == true) {
         router.push({ name: "dashboard" });
-    } else if (response.status == 401) {
+    } else {
         errors.value.message = JSON.parse(
             JSON.stringify(response.data.message)
         );
-        errors.value.status = JSON.stringify(response.status);
-    } else {
-        errors.value.data = JSON.parse(JSON.stringify(response.data.errors));
-        errors.value.message = JSON.stringify(response.data.message);
         errors.value.status = JSON.stringify(response.status);
     }
 };
@@ -55,10 +50,10 @@ const submit = async () => {
     <LayoutGuest>
         <SectionFullScreen v-slot="{ cardClass }" bg="blueGray">
             <CardBox :class="cardClass" is-form @submit.prevent="submit">
-                <NotificationBarInCard
-                    v-if="errors.data.length > 0 || errors.message.length > 0"
-                    color="danger"
-                >
+                <NotificationBarInCard v-if="errors.message" color="danger">
+                    <div>
+                        <b>Whoops! Algo correu mal.</b>
+                    </div>
                     {{ errors.message }}
                 </NotificationBarInCard>
 
