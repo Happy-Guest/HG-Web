@@ -1,13 +1,25 @@
 import { createRouter, createWebHistory } from "vue-router";
 import Home from "@/views/HomeView.vue";
 import auth from "@/middleware/auth";
+import guest from "@/middleware/guest";
 
 const routes = [
+    // Home
+    {
+        meta: {
+            title: "Página Inicial",
+        },
+        path: "/",
+        name: "home",
+        component: Home,
+    },
+
     // Auth
 
     {
         meta: {
             title: "Login",
+            middleware: guest,
         },
         path: "/login",
         name: "login",
@@ -18,12 +30,12 @@ const routes = [
 
     {
         meta: {
-            title: "Página Inicial",
+            title: "Painel",
             middleware: auth,
         },
-        path: "/",
+        path: "/painel",
         name: "dashboard",
-        component: Home,
+        component: () => import("@/views/Dashboard/HomeView.vue"),
     },
     {
         meta: {
@@ -32,7 +44,7 @@ const routes = [
         },
         path: "/perfil",
         name: "profile",
-        component: () => import("@/views/ProfileView.vue"),
+        component: () => import("@/views/Dashboard/ProfileView.vue"),
     },
 
     {
@@ -42,7 +54,7 @@ const routes = [
         },
         path: "/utilizadores",
         name: "users",
-        component: () => import("@/views/UsersView.vue"),
+        component: () => import("@/views/Dashboard/UsersView.vue"),
     },
 
     {
@@ -52,7 +64,7 @@ const routes = [
         },
         path: "/codigos",
         name: "codes",
-        component: () => import("@/views/CodesView.vue"),
+        component: () => import("@/views/Dashboard/CodesView.vue"),
     },
 
     // Template

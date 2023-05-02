@@ -9,6 +9,10 @@ export const useAuthStore = defineStore("auth", () => {
         return user.value?.id ?? -1;
     });
 
+    const isLogged = computed(() => {
+        return localStorage.getItem("token") != null;
+    });
+
     async function loadUser() {
         try {
             const response = await axios.get("me");
@@ -73,6 +77,7 @@ export const useAuthStore = defineStore("auth", () => {
     return {
         user,
         userId,
+        isLogged,
         login,
         restoreToken,
         logout,

@@ -8,7 +8,7 @@ import {
 
 export default [
     {
-        to: "/",
+        to: "/painel",
         icon: mdiHomeOutline,
         label: "Página Inicial",
     },

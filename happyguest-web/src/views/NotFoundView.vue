@@ -23,7 +23,7 @@ import LayoutGuest from "../layouts/LayoutGuest.vue";
                         color="contrast"
                         :icon="mdiArrowLeft"
                         label="Voltar"
-                        to="/"
+                        to="/painel"
                     />
                 </div>
             </div>
