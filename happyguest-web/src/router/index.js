@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from "vue-router";
 import Home from "@/views/HomeView.vue";
+import auth from "@/middleware/auth";
 
 const routes = [
     // Auth
@@ -18,6 +19,7 @@ const routes = [
     {
         meta: {
             title: "Página Inicial",
+            middleware: auth,
         },
         path: "/",
         name: "dashboard",
@@ -26,6 +28,7 @@ const routes = [
     {
         meta: {
             title: "Perfil",
+            middleware: auth,
         },
         path: "/perfil",
         name: "profile",
@@ -35,6 +38,7 @@ const routes = [
     {
         meta: {
             title: "Utilizadores",
+            middleware: auth,
         },
         path: "/utilizadores",
         name: "users",
@@ -44,6 +48,7 @@ const routes = [
     {
         meta: {
             title: "Códigos",
+            middleware: auth,
         },
         path: "/codigos",
         name: "codes",
@@ -55,6 +60,7 @@ const routes = [
     {
         meta: {
             title: "Tabelas",
+            middleware: auth,
         },
         path: "/tabelas",
         name: "tables",
@@ -63,6 +69,7 @@ const routes = [
     {
         meta: {
             title: "Formulários",
+            middleware: auth,
         },
         path: "/formularios",
         name: "forms",
@@ -71,6 +78,7 @@ const routes = [
     {
         meta: {
             title: "Interface",
+            middleware: auth,
         },
         path: "/interface",
         name: "ui",
@@ -88,9 +96,36 @@ const routes = [
 const router = createRouter({
     history: createWebHistory(),
     routes,
-    scrollBehavior(to, from, savedPosition) {
+    scrollBehavior(savedPosition) {
         return savedPosition || { top: 0 };
     },
+});
+
+function nextFactory(context, middleware, index) {
+    const subsequentMiddleware = middleware[index];
+    if (!subsequentMiddleware) return context.next;
+    return (...parameters) => {
+        context.next(...parameters);
+        const nextMiddleware = nextFactory(context, middleware, index + 1);
+        subsequentMiddleware({ ...context, next: nextMiddleware });
+    };
+}
+
+router.beforeEach((to, from, next) => {
+    if (to.meta.middleware) {
+        const middleware = Array.isArray(to.meta.middleware)
+            ? to.meta.middleware
+            : [to.meta.middleware];
+        const context = {
+            from,
+            next,
+            router,
+            to,
+        };
+        const nextMiddleware = nextFactory(context, middleware, 1);
+        return middleware[0]({ ...context, next: nextMiddleware });
+    }
+    return next();
 });
 
 export default router;
