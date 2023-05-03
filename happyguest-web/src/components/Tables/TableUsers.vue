@@ -1,6 +1,6 @@
 <script setup>
 import { computed, ref, watch, onMounted } from "vue";
-import { mdiEye, mdiCrown, mdiAccountTie, mdiBriefcaseAccount, mdiAccountHardHat} from "@mdi/js";
+import { mdiEye, mdiCrown, mdiAccountTie, mdiBriefcaseAccount, mdiAccountHardHat,mdiLock,mdiCheckAll} from "@mdi/js";
 import BaseLevel from "@/components/Bases/BaseLevel.vue";
 import BaseButtons from "@/components/Bases/BaseButtons.vue";
 import BaseButton from "@/components/Bases/BaseButton.vue";
@@ -62,6 +62,7 @@ watch(isModalActive, async () => {
                 <th>Nome:</th>
                 <th>Email:</th>
                 <th>Tipo:</th>
+                <th>Estado:</th>
                 <th />
             </tr>
         </thead>
@@ -87,30 +88,51 @@ watch(isModalActive, async () => {
                     <PillTag
                         v-if="user.role === 'A'"
                         label="Administrador"
-                        class="mr-4"
+                        class="w-40 justify-center"
                         color="warning"
                         :icon="mdiCrown"
                     />
                     <PillTag
                         v-else-if="user.role === 'M'"
                         label="Gestor"
-                        class="mr-4"
+                        class="w-40 justify-center"
                         color="info"
                         :icon="mdiAccountTie"
                     />
                     <PillTag
                         v-else-if="user.role === 'C'"
                         label="Cliente"
-                        class="mr-4"
+                        class="w-40 justify-center"
                         color="contrast"
                         :icon="mdiBriefcaseAccount"
                     />
                     <PillTag
                         v-else
                         label="Outro"
-                        class="mr-4"
+                        class="w-40 justify-center"
                         color="info"
                         :icon="mdiAccountHardHat"
+                    />
+                </td>
+                <td
+                    data-label="Estado"
+                    class="lg:w-4 whitespace-nowrap text-center"
+                >
+                    <PillTag
+                        v-if="user.blocked == 1"
+                        label="Bloqueado"
+                        color="danger"
+                        :icon="mdiLock"
+                        class="w-28 justify-center"
+                        small
+                    />
+                    <PillTag
+                        v-else
+                        label="Ativo"
+                        color="success"
+                        class="w-28 justify-center"
+                        :icon="mdiCheckAll"
+                        small
                     />
                 </td>
                 <td class="before:hidden lg:w-1 whitespace-nowrap">

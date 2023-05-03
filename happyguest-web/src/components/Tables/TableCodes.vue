@@ -18,8 +18,9 @@ const currentPageHuman = computed(() => currentPage.value + 1);
 const isModalActive = ref(false);
 const selected = ref(0);
 
+
 watch(currentPageHuman, async () => {
-    codes.value = await codeStore.getCodes(currentPage.value + 1);
+    codes.value = await codeStore.getCodes(currentPage.value + 1);    
 });
 
 onMounted(async () => {
@@ -87,8 +88,9 @@ const getDateString = (date) => {
                 </td>
                 <td data-label="Quarto(s)">
                     <PillTag
-                        class="justify-center"
-                        :label="code.rooms"
+                        v-for="room in JSON.parse(code.rooms)"
+                        class="justify-center ml-4"
+                        :label="room"
                         color="contrast"
                         small
                     />
@@ -99,14 +101,14 @@ const getDateString = (date) => {
                 <td data-label="Estado" class="text-center">
                     <PillTag
                         v-if="code.used == '1'"
-                        class="justify-center"
+                        class="w-36 justify-center"
                         label="Utilizado"
                         color="success"
                         :icon="mdiCheck"
                     />
                     <PillTag
                         v-else
-                        class="justify-center"
+                        class="w-36 justify-center"
                         label="Não Utilizado"
                         color="danger"
                         :icon="mdiClose"
