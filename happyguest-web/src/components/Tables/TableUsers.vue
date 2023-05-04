@@ -1,14 +1,30 @@
 <script setup>
 import { computed, ref, watch, onMounted } from "vue";
-import { mdiEye, mdiCrown, mdiAccountTie, mdiBriefcaseAccount, mdiAccountHardHat,mdiLock,mdiCheckAll} from "@mdi/js";
+import {
+    mdiEye,
+    mdiCrown,
+    mdiAccountTie,
+    mdiBriefcaseAccount,
+    mdiAccountHardHat,
+    mdiLock,
+    mdiCheckAll,
+    mdiCancel,
+    mdiAccountCheck,
+    mdiAlertCircle,
+    mdiCheckCircle,
+} from "@mdi/js";
 import BaseLevel from "@/components/Bases/BaseLevel.vue";
 import BaseButtons from "@/components/Bases/BaseButtons.vue";
 import BaseButton from "@/components/Bases/BaseButton.vue";
 import PillTag from "@/components/PillTags/PillTag.vue";
 import UserAvatar from "@/components/Users/UserAvatar.vue";
+import CardBoxModal from "@/components/CardBoxs/CardBoxModal.vue";
+import NotificationBar from "@/components/Others/NotificationBar.vue";
 import { useUserStore } from "@/stores/user";
+import { useAuthStore } from "@/stores/auth";
 
 const userStore = useUserStore();
+const authStore = useAuthStore();
 
 const currentPage = ref(0);
 const users = ref([]);
@@ -17,6 +33,10 @@ const currentPageHuman = computed(() => currentPage.value + 1);
 const isModalActive = ref(false);
 const userIdSelect = ref(0);
 const userInfo = ref([]);
+const notifText = ref();
+const isModalBlockActive = ref(false);
+const isSuccessNotifActive = ref(false);
+const isErrorNotifActive = ref(false);
 
 watch(currentPageHuman, async () => {
     users.value = await userStore.getUsers(currentPage.value + 1);
@@ -44,16 +64,85 @@ const pagesList = computed(() => {
     return pagesList[parseInt(currentPage.value / 10)];
 });
 
-watch(isModalActive, async () => {
-    if (isModalActive.value) {
-        userInfo.value = await userStore.loadUserById(userIdSelect.value);
+const update = (arr, cb, blocked) => {
+    arr.forEach((item) => {
+        if (cb(item)) {
+            item.blocked = blocked;
+        }
+    });
+
+    return arr;
+};
+
+const blockUser = async (userInfo) => {
+  
+    var response = await userStore.blockUnblockUser(userInfo);
+    if (response == true) {
+        users.value = update(
+            users.value,
+            (row) => row.id === userInfo.id,
+            !userInfo.blocked
+        );
+        return true;
     } else {
-        userInfo.value = [];
+        return response;
     }
-});
+};
+
+const blockUnBlockUser = async (userInfo) => {
+    var response = await userStore.blockUnblockUser(userInfo);
+    if (response == true) {
+
+    }
+    if (blockUser(userInfo)) {
+        if (userInfo.blocked == 0) notifText.value = "Utilizador Bloqueado com sucesso!";
+        else notifText.value = "Utilizador Desbloqueado com sucesso!";
+        isSuccessNotifActive.value = true;
+        setTimeout(function () {
+            isSuccessNotifActive.value = false;
+        }, 7000);
+    } else {
+        if (userInfo.blocked == 0) notifText.value = "Erro ao Bloquear utilizador!";
+        else notifText.value = "Erro ao Desbloquear utilizador!";
+        isErrorNotifActive.value = true;
+        setTimeout(function () {
+            isErrorNotifActive.value = false;
+        }, 7000);
+    }
+};
 </script>
 
 <template>
+    <NotificationBar
+        color="success"
+        :icon="mdiCheckCircle"
+        v-if="isSuccessNotifActive"
+        class="motion-safe:animate-bounce-slow -mb-2"
+    >
+        {{ notifText }}
+    </NotificationBar>
+    <NotificationBar
+        color="danger"
+        :icon="mdiAlertCircle"
+        v-if="isErrorNotifActive"
+        class="motion-safe:animate-bounce-slow -mb-2"
+    >
+        {{ notifText }}
+    </NotificationBar>
+    <CardBoxModal
+        v-model="isModalBlockActive"
+        :title="userInfo.blocked==0 ? 'Bloquear Utilizador' : 'Desbloquear Utilizador'"
+        :buttonLabel="userInfo.blocked==0 ? 'Bloquear ' : 'Desbloquear'"
+        :icon="mdiLock"
+        button="info"
+        has-cancel
+        has-close
+        @confirm="blockUnBlockUser(userInfo)"
+    >
+        <p>
+            Tem a certeza que deseja <b>{{userInfo.blocked==0 ? 'bloquear ' : 'desbloquear'}}</b> o utilizador selecionado?
+        </p>
+    </CardBoxModal>
     <table class="w-full">
         <thead>
             <tr>
@@ -145,6 +234,40 @@ watch(isModalActive, async () => {
                                 isModalActive = true;
                                 userIdSelect = user.id;
                             "
+                        />
+                        <BaseButton
+                            v-if="
+                                user.blocked == 0 
+                            "
+                            color="warning"
+                            :icon="
+                                user.id == authStore.userId || (authStore.user.role == 'M' && user.role == 'A')
+                                    ? mdiCancel
+                                    : mdiLock
+                            "
+                            small
+                            @click="
+                                isModalBlockActive = true;
+                                userInfo = user;
+                            "
+                            :disabled="user.id == authStore.userId || (authStore.user.role == 'M' && user.role == 'A')"
+                        />
+                        <BaseButton
+                            v-else-if="
+                                user.blocked == 1
+                            "
+                            color="info"
+                            :icon="
+                                user.id == authStore.userId || (authStore.user.role == 'M' && user.role == 'A')
+                                    ? mdiCancel
+                                    : mdiAccountCheck
+                            "
+                            small
+                            @click="
+                                isModalBlockActive = true;
+                                userInfo = user;
+                            "
+                            :disabled="user.id == authStore.userId || (authStore.user.role == 'M' && user.role == 'A')"
                         />
                     </BaseButtons>
                 </td>

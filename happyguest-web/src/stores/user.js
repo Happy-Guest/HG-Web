@@ -40,6 +40,20 @@ export const useUserStore = defineStore("user", () => {
         return await loadUsers(page);
     }
 
+    async function blockUnblockUser(user) {
+        try {
+            if (user.blocked == 1) {
+                await axios.patch("users/" + user.id + "/unblock");
+            } else {
+                await axios.patch("users/" + user.id + "/block");
+            }
+            return true;
+        } catch (error) {
+            return error;
+        }
+    }
+
+
     return {
         users,
         lastPage,
@@ -47,5 +61,6 @@ export const useUserStore = defineStore("user", () => {
         loadUserById,
         loadUsers,
         getUsers,
+        blockUnblockUser,
     };
 });
