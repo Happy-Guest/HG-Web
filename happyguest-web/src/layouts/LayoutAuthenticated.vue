@@ -33,7 +33,9 @@ const menuClick = (event, item) => {
     }
 
     if (item.isLogout) {
-        if (authStore.logout()) router.push({ name: "home" });
+        if (authStore.logout()) {
+            router.push({ name: "login" });
+        }
     }
 };
 </script>

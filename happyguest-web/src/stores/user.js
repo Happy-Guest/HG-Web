@@ -53,6 +53,14 @@ export const useUserStore = defineStore("user", () => {
         }
     }
 
+    async function updateUser(userId, data) {
+        try {
+            let response = await axios.patch("users/" + userId, data);
+            return response;
+        } catch (error) {
+            return error.response;
+        }
+    }
 
     return {
         users,
@@ -62,5 +70,6 @@ export const useUserStore = defineStore("user", () => {
         loadUsers,
         getUsers,
         blockUnblockUser,
+        updateUser,
     };
 });

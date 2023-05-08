@@ -18,6 +18,7 @@ export const useAuthStore = defineStore("auth", () => {
         try {
             const response = await axios.get("me");
             user.value = response.data;
+            localStorage.setItem("user", JSON.stringify(response.data));
         } catch (error) {
             clearUser();
             return error;
@@ -28,6 +29,7 @@ export const useAuthStore = defineStore("auth", () => {
         delete axios.defaults.headers.common.Authorization;
         localStorage.removeItem("token");
         localStorage.removeItem("remember");
+        localStorage.removeItem("user");
         user.value = null;
         router.push({ name: "login" });
     }
@@ -51,6 +53,7 @@ export const useAuthStore = defineStore("auth", () => {
     async function restoreToken() {
         let storedToken = localStorage.getItem("token");
         let storedRemember = localStorage.getItem("remember");
+        let storedUser = localStorage.getItem("user");
 
         if (storedRemember == "false" && storedToken) {
             axios.defaults.headers.common.Authorization =
@@ -59,7 +62,11 @@ export const useAuthStore = defineStore("auth", () => {
         } else if (storedToken) {
             axios.defaults.headers.common.Authorization =
                 "Bearer " + storedToken;
-            await loadUser();
+            if (!storedUser) {
+                await loadUser();
+            } else {
+                user.value = JSON.parse(storedUser);
+            }
             return true;
         }
         clearUser();

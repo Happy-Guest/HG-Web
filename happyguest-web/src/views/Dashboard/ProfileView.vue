@@ -27,15 +27,24 @@ import LayoutAuthenticated from "@/layouts/LayoutAuthenticated.vue";
 import SectionTitleLine from "@/components/Sections/SectionTitleLine.vue";
 import NotificationBarInCard from "@/components/Others/NotificationBarInCard.vue";
 import CardBoxModal from "@/components/CardBoxs/CardBoxModal.vue";
+import FormValidationErrors from "@/components/Forms/FormValidationErrors.vue";
 import { useAuthStore } from "@/stores/auth";
+import { useUserStore } from "@/stores/user";
 
 const authStore = useAuthStore();
+const userStore = useUserStore();
 
-const user = ref(authStore.user ?? {});
+const user = ref(authStore.user);
 const account = ref(false);
 
 const statusPassword = ref(null);
 const statusProfile = ref(null);
+
+const resRequest = {
+    message: "",
+    errors: [],
+    status: null,
+};
 
 const isModalDeleteActive = ref(false);
 const isModalBlockActive = ref(false);
@@ -64,9 +73,25 @@ const clearProfileFields = () => {
 };
 
 const submitProfile = () => {
-    statusProfile.value = false;
     statusPassword.value = null;
-    //
+    userStore
+        .updateUser(user.value.id, profileForm.value)
+        .then((response) => {
+            resRequest.message = response.data.message;
+            if (response.status === 200) {
+                statusProfile.value = true;
+                setTimeout(function () {
+                    statusProfile.value = null;
+                }, 5000);
+            } else {
+                statusProfile.value = false;
+                resRequest.errors = response.data.errors;
+            }
+        })
+        .catch(() => {
+            statusProfile.value = false;
+            resRequest.message = "Ocorreu um erro ao atualizar o perfil.";
+        });
 };
 
 const submitPassword = () => {
@@ -82,6 +107,12 @@ const submitDelete = (password) => {
 const submitChangeState = (password) => {
     //
 };
+
+onMounted(async () => {
+    setTimeout(() => {
+        user.value = authStore.user;
+    }, 1000);
+});
 </script>
 
 <template>
@@ -176,12 +207,16 @@ const submitChangeState = (password) => {
                     class="my-auto"
                     @submit.prevent="submitProfile"
                 >
+                    <FormValidationErrors
+                        v-if="statusProfile === false"
+                        :errors="resRequest.errors"
+                    />
                     <Transition name="fade">
                         <NotificationBarInCard
                             v-if="statusProfile"
                             color="success"
                         >
-                            <b>{{ statusProfile }}</b>
+                            <b>{{ resRequest.message }}</b>
                         </NotificationBarInCard>
                     </Transition>
                     <FormField label="Nome" help="O seu nome. Obrigatório">
