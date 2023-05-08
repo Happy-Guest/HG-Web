@@ -1,5 +1,5 @@
 import {
-    mdiHomeOutline,
+    mdiHome,
     mdiSquareEditOutline,
     mdiTelevisionGuide,
     mdiBarcode,
@@ -9,13 +9,14 @@ import {
 export default [
     {
         to: "/painel",
-        icon: mdiHomeOutline,
+        icon: mdiHome,
         label: "Página Inicial",
     },
     {
         isDivider: true,
     },
     {
+        middleware: ["A"],
         to: "/utilizadores",
         label: "Utilizadores",
         icon: mdiAccountGroup,

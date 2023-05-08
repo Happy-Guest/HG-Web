@@ -1,8 +1,8 @@
 <script setup>
-import { mdiPlus, mdiAccountGroup } from "@mdi/js";
+import { mdiAccountPlus, mdiAccountGroup } from "@mdi/js";
 import LayoutAuthenticated from "@/layouts/LayoutAuthenticated.vue";
 import SectionMain from "@/components/Sections/SectionMain.vue";
-import SectionTitleLineWithButton from "@/components/Sections/SectionTitleLineWithButton.vue";
+import SectionTitleLine from "@/components/Sections/SectionTitleLine.vue";
 import BaseButtons from "@/components/Bases/BaseButtons.vue";
 import BaseButton from "@/components/Bases/BaseButton.vue";
 import CardBoxComponentEmpty from "@/components/CardBoxs/CardBoxComponentEmpty.vue";
@@ -23,21 +23,21 @@ onMounted(() => {
 <template>
     <LayoutAuthenticated>
         <SectionMain>
-            <SectionTitleLineWithButton
+            <SectionTitleLine
                 :icon="mdiAccountGroup"
                 :title="'Utilizadores'"
                 main
             >
                 <BaseButtons>
                     <BaseButton
-                        :icon="mdiPlus"
-                        label="Registar Utilizador"
+                        :icon="mdiAccountPlus"
+                        label="Registar"
                         color="success"
                         rounded-full
                         small
                     />
                 </BaseButtons>
-            </SectionTitleLineWithButton>
+            </SectionTitleLine>
             <CardBox class="mb-6" has-table>
                 <TableUsers v-if="hasUsers" />
                 <CardBoxComponentEmpty

@@ -50,7 +50,7 @@ const asideMenuItemActiveStyle = computed(() =>
     <li
         v-if="
             !item.middleware ||
-            item.middleware.includes(useAuthStore().user?.type)
+            item.middleware.includes(useAuthStore().user?.role)
         "
     >
         <component

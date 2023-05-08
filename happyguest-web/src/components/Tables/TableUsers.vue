@@ -12,6 +12,7 @@ import {
     mdiAccountCheck,
     mdiAlertCircle,
     mdiCheckCircle,
+    mdiTrashCan,
 } from "@mdi/js";
 import BaseLevel from "@/components/Bases/BaseLevel.vue";
 import BaseButtons from "@/components/Bases/BaseButtons.vue";
@@ -26,14 +27,16 @@ import { useAuthStore } from "@/stores/auth";
 const userStore = useUserStore();
 const authStore = useAuthStore();
 
-const currentPage = ref(0);
 const users = ref([]);
+
+const currentPage = ref(0);
 const numPages = computed(() => userStore.lastPage);
 const currentPageHuman = computed(() => currentPage.value + 1);
-const isModalActive = ref(false);
-const userIdSelect = ref(0);
-const userInfo = ref([]);
+
+const userId = ref(null);
+const userBlocked = ref(null);
 const notifText = ref();
+
 const isModalBlockActive = ref(false);
 const isSuccessNotifActive = ref(false);
 const isErrorNotifActive = ref(false);
@@ -74,40 +77,38 @@ const update = (arr, cb, blocked) => {
     return arr;
 };
 
-const blockUser = async (userInfo) => {
-    var response = await userStore.blockUnblockUser(userInfo);
-    if (response == true) {
+const blockUser = async () => {
+    var response = await userStore.blockUnblockUser(
+        userId.value,
+        userBlocked.value
+    );
+    if (response == 200) {
         users.value = update(
             users.value,
-            (row) => row.id === userInfo.id,
-            !userInfo.blocked
+            (row) => row.id === userId.value,
+            !userBlocked.value
         );
         return true;
-    } else {
-        return response;
-    }
+    } else return false;
 };
 
-const blockUnBlockUser = async (userInfo) => {
-    var response = await userStore.blockUnblockUser(userInfo);
-    if (response == true) {
-    }
-    if (blockUser(userInfo)) {
-        if (userInfo.blocked == 0)
+const blockUnblockUser = async () => {
+    if (await blockUser()) {
+        if (userBlocked.value == 0)
             notifText.value = "Utilizador Bloqueado com sucesso!";
         else notifText.value = "Utilizador Desbloqueado com sucesso!";
         isSuccessNotifActive.value = true;
         setTimeout(function () {
             isSuccessNotifActive.value = false;
-        }, 7000);
+        }, 5000);
     } else {
-        if (userInfo.blocked == 0)
-            notifText.value = "Erro ao Bloquear utilizador!";
-        else notifText.value = "Erro ao Desbloquear utilizador!";
+        if (userBlocked.value == 0)
+            notifText.value = "Erro ao Bloquear Utilizador!";
+        else notifText.value = "Erro ao Ativar Utilizador!";
         isErrorNotifActive.value = true;
         setTimeout(function () {
             isErrorNotifActive.value = false;
-        }, 7000);
+        }, 5000);
     }
 };
 </script>
@@ -117,7 +118,7 @@ const blockUnBlockUser = async (userInfo) => {
         v-if="isSuccessNotifActive"
         color="success"
         :icon="mdiCheckCircle"
-        class="motion-safe:animate-bounce-slow -mb-2"
+        class="-mb-2"
     >
         {{ notifText }}
     </NotificationBar>
@@ -131,22 +132,19 @@ const blockUnBlockUser = async (userInfo) => {
     </NotificationBar>
     <CardBoxModal
         v-model="isModalBlockActive"
-        :title="
-            userInfo.blocked == 0
-                ? 'Bloquear Utilizador'
-                : 'Desbloquear Utilizador'
-        "
-        :button-label="userInfo.blocked == 0 ? 'Bloquear ' : 'Desbloquear'"
+        :title="userBlocked == 0 ? 'Bloquear Utilizador' : 'Ativar Utilizador'"
+        :button-label="userBlocked == 0 ? 'Bloquear ' : 'Ativar'"
         :icon="mdiLock"
+        :icon-title="mdiLock"
         button="info"
         has-cancel
         has-close
-        @confirm="blockUnBlockUser(userInfo)"
+        @confirm="blockUnblockUser()"
     >
         <p>
             Tem a certeza que deseja
-            <b>{{ userInfo.blocked == 0 ? "bloquear " : "desbloquear" }}</b> o
-            utilizador selecionado?
+            <b>{{ userBlocked == 0 ? "bloquear " : "ativar" }}</b> o
+            selecionado?
         </p>
     </CardBoxModal>
     <table class="w-full">
@@ -182,89 +180,102 @@ const blockUnBlockUser = async (userInfo) => {
                 <td data-label="Tipo" class="text-center">
                     <PillTag
                         v-if="user.role === 'A'"
-                        label="Administrador"
-                        class="w-40 justify-center"
+                        label="Admin"
+                        class="justify-center"
                         color="warning"
                         :icon="mdiCrown"
                     />
                     <PillTag
                         v-else-if="user.role === 'M'"
                         label="Gestor"
-                        class="w-40 justify-center"
+                        class="justify-center"
                         color="info"
                         :icon="mdiAccountTie"
                     />
                     <PillTag
                         v-else-if="user.role === 'C'"
                         label="Cliente"
-                        class="w-40 justify-center"
+                        class="justify-center"
                         color="contrast"
                         :icon="mdiBriefcaseAccount"
                     />
                     <PillTag
                         v-else
                         label="Outro"
-                        class="w-40 justify-center"
+                        class="justify-center"
                         color="info"
                         :icon="mdiAccountHardHat"
                     />
                 </td>
-                <td
-                    data-label="Estado"
-                    class="lg:w-4 whitespace-nowrap text-center"
-                >
+                <td data-label="Estado" class="whitespace-nowrap text-center">
                     <PillTag
                         v-if="user.blocked == 1"
                         label="Bloqueado"
                         color="danger"
                         :icon="mdiLock"
-                        class="w-28 justify-center"
-                        small
+                        class="justify-center"
                     />
                     <PillTag
                         v-else
                         label="Ativo"
                         color="success"
-                        class="w-28 justify-center"
+                        class="justify-center"
                         :icon="mdiCheckAll"
-                        small
                     />
                 </td>
                 <td class="before:hidden lg:w-1 whitespace-nowrap">
                     <BaseButtons type="justify-start lg:justify-end" no-wrap>
                         <BaseButton
                             color="info"
+                            title="Ver Perfil"
                             :icon="mdiEye"
                             small
+                            @click=""
+                        />
+                        <BaseButton
+                            v-if="user.blocked == 0"
+                            color="warning"
+                            title="Bloquear"
+                            :icon="
+                                user.id == authStore.userId
+                                    ? mdiCancel
+                                    : mdiLock
+                            "
+                            small
+                            :disabled="user.id == authStore.userId"
                             @click="
-                                isModalActive = true;
-                                userIdSelect = user.id;
+                                isModalBlockActive = true;
+                                userId = user.id;
+                                userBlocked = user.blocked;
                             "
                         />
-                        <BaseButton v-if="user.blocked == 0" color="warning"
-                        :icon=" user.id == authStore.userId ||
-                        (authStore.user.role == 'M' && user.role == 'A') ?
-                        mdiCancel : mdiLock " small :disabled="user.id ==
-                        authStore.userId || (authStore.user.role == 'M' &&
-                        user.role == 'A')" " @click=" isModalBlockActive = true;
-                        userInfo = user; " />
                         <BaseButton
                             v-else-if="user.blocked == 1"
-                            color="info"
+                            color="success"
+                            title="Ativar"
                             :icon="
-                                user.id == authStore.userId ||
-                                (authStore.user.role == 'M' && user.role == 'A')
+                                user.id == authStore.userId
                                     ? mdiCancel
                                     : mdiAccountCheck
                             "
                             small
-                            :disabled="
-                                user.id == authStore.userId ||
-                                (authStore.user.role == 'M' && user.role == 'A')
-                            "
+                            :disabled="user.id == authStore.userId"
                             @click="
                                 isModalBlockActive = true;
-                                userInfo = user;
+                                userId = user.id;
+                                userBlocked = user.blocked;
+                            "
+                        />
+                        <BaseButton
+                            color="danger"
+                            title="Remover"
+                            :icon="user.role == 'A' ? mdiCancel : mdiTrashCan"
+                            small
+                            :disabled="user.role == 'A'"
+                            @click="
+                                isModalDeleteActive = true;
+                                userId = user.id;
+                                userBlocked = user.blocked;
                             "
                         />
                     </BaseButtons>

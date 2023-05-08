@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from "vue-router";
 import Home from "@/views/HomeView.vue";
 import auth from "@/middleware/auth";
 import guest from "@/middleware/guest";
+import admin from "@/middleware/admin";
 
 const routes = [
     // Home
@@ -50,7 +51,7 @@ const routes = [
     {
         meta: {
             title: "Utilizadores",
-            middleware: auth,
+            middleware: [auth, admin],
         },
         path: "/utilizadores",
         name: "users",

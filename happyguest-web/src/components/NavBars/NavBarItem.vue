@@ -98,7 +98,7 @@ onBeforeUnmount(() => {
     <component
         :is="is"
         v-else-if="
-            !item.middleware || item.middleware.includes(authStore.user?.type)
+            !item.middleware || item.middleware.includes(authStore.user?.role)
         "
         ref="root"
         class="block lg:flex items-center relative cursor-pointer"
