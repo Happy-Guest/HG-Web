@@ -12,6 +12,7 @@ gerir os dados de uma unidade hoteleira.
     
 3. Iniciar:
     * npm run dev
+    * npm run lint -> (fixs)
 
 ## 🧑 Participantes:
 * Diogo Mendes nº2191181 -> 2191181@ipleiria.pt
