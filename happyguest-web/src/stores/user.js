@@ -62,6 +62,19 @@ export const useUserStore = defineStore("user", () => {
         }
     }
 
+    async function deleteUser(userId, data) {
+        try {
+            let response = await axios.delete("users/" + userId, {
+                data: {
+                    password: data,
+                },
+            });
+            return response;
+        } catch (error) {
+            return error.response;
+        }
+    }
+
     return {
         users,
         lastPage,
@@ -71,5 +84,6 @@ export const useUserStore = defineStore("user", () => {
         getUsers,
         blockUnblockUser,
         updateUser,
+        deleteUser,
     };
 });

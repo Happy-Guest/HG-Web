@@ -11,6 +11,7 @@ import BaseButtons from "@/components/Bases/BaseButtons.vue";
 import CardBox from "@/components/CardBoxs/CardBox.vue";
 import OverlayLayer from "@/components/Others/OverlayLayer.vue";
 import CardBoxComponentTitle from "@/components/CardBoxs/CardBoxComponentTitle.vue";
+import FormValidationErrors from "@/components/Forms/FormValidationErrors.vue";
 import FormControl from "@/components/Forms/FormControl.vue";
 import FormField from "@/components/Forms/FormField.vue";
 
@@ -38,6 +39,10 @@ const props = defineProps({
     iconTitle: {
         type: String,
         default: null,
+    },
+    errors: {
+        type: Object,
+        default: () => ({}),
     },
     hasCancel: Boolean,
     hasClose: Boolean,
@@ -83,7 +88,6 @@ window.addEventListener("keydown", (e) => {
     }
 });
 </script>
-
 <template>
     <OverlayLayer v-show="value" @overlay-click="cancel">
         <CardBox
@@ -93,6 +97,10 @@ window.addEventListener("keydown", (e) => {
             :is-form="hasPassword || hasErrors"
             @submit.prevent="confirmForm"
         >
+            <FormValidationErrors
+                v-if="hasErrors || hasPassword"
+                :errors="errors"
+            />
             <CardBoxComponentTitle :title="title" :icon="iconTitle">
                 <BaseButton
                     v-if="hasClose"

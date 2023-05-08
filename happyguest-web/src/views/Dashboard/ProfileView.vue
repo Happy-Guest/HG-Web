@@ -1,5 +1,6 @@
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref } from "vue";
+import { useRouter } from "vue-router";
 import {
     mdiAccount,
     mdiClipboardAccount,
@@ -31,6 +32,8 @@ import FormValidationErrors from "@/components/Forms/FormValidationErrors.vue";
 import { useAuthStore } from "@/stores/auth";
 import { useUserStore } from "@/stores/user";
 
+const router = useRouter();
+
 const authStore = useAuthStore();
 const userStore = useUserStore();
 
@@ -40,10 +43,8 @@ const account = ref(false);
 const statusPassword = ref(null);
 const statusProfile = ref(null);
 
-const resRequest = {
-    message: "",
-    errors: [],
-};
+const resMessage = ref("");
+const resErrors = ref([]);
 
 const isModalDeleteActive = ref(false);
 const isModalBlockActive = ref(false);
@@ -61,15 +62,16 @@ const passwordForm = ref({
     new_password_confirmation: "",
 });
 
-const confirmPasswordForm = ref({
-    password: "",
-});
-
 const clearProfileFields = () => {
     profileForm.value.name = user.value.name;
     profileForm.value.email = user.value.email;
     profileForm.value.phone = user.value.phone ?? "";
 };
+
+async function loadUser() {
+    await authStore.loadUser();
+    user.value = authStore.user;
+}
 
 const submitProfile = () => {
     statusPassword.value = null;
@@ -77,20 +79,21 @@ const submitProfile = () => {
     userStore
         .updateUser(user.value.id, profileForm.value)
         .then((response) => {
-            resRequest.message = response.data.message;
+            resMessage.value = response.data.message;
             if (response.status === 200) {
                 statusProfile.value = true;
+                loadUser();
                 setTimeout(function () {
                     statusProfile.value = null;
                 }, 5000);
             } else {
                 statusProfile.value = false;
-                resRequest.errors = response.data.errors;
+                resErrors.value = response.data.errors;
             }
         })
         .catch(() => {
             statusProfile.value = false;
-            resRequest.message = "Ocorreu um erro ao atualizar o perfil.";
+            resMessage.value = "Ocorreu um erro ao atualizar o perfil.";
         });
 };
 
@@ -100,7 +103,7 @@ const submitPassword = () => {
     authStore
         .changePassword(passwordForm.value)
         .then((response) => {
-            resRequest.message = response.data.message;
+            resMessage.value = response.data.message;
             if (response.status === 200) {
                 statusPassword.value = true;
                 setTimeout(function () {
@@ -108,18 +111,39 @@ const submitPassword = () => {
                 }, 5000);
             } else {
                 statusPassword.value = false;
-                resRequest.errors = response.data.errors;
+                resErrors.value = response.data.errors;
             }
         })
         .catch(() => {
             statusPassword.value = false;
-            resRequest.message =
-                "Ocorreu um erro ao atualizar a palavra-passe.";
+            resMessage.value = "Ocorreu um erro ao atualizar a palavra-passe.";
         });
 };
 
+async function submitLogout() {
+    if (await authStore.logout()) {
+        router.push({ name: "login" });
+    }
+}
+
 const submitDelete = (password) => {
-    //
+    userStore
+        .deleteUser(user.value.id, password)
+        .then((response) => {
+            resMessage.value = response.data.message;
+            if (response.status === 200) {
+                if (account.value) {
+                    router.push({ name: "users" });
+                } else {
+                    submitLogout();
+                }
+            } else {
+                resErrors.value = response.data.errors;
+            }
+        })
+        .catch(() => {
+            resMessage.value = "Ocorreu um erro ao remover a conta.";
+        });
 };
 
 const submitChangeState = (password) => {
@@ -131,6 +155,7 @@ const submitChangeState = (password) => {
     <LayoutAuthenticated>
         <CardBoxModal
             v-model="isModalDeleteActive"
+            :errors="resErrors"
             title="Remover Utilizador"
             button="danger"
             :icon-title="mdiTrashCan"
@@ -153,7 +178,6 @@ const submitChangeState = (password) => {
             @confirm="submitChangeState"
         >
             <p>Tem a certeza que <b>deseja bloquear</b> a conta?</p>
-            <p v-if="!account">A sua sessão <b>será terminada</b>.</p>
         </CardBoxModal>
         <CardBoxModal
             v-model="isModalUnblockActive"
@@ -175,7 +199,7 @@ const submitChangeState = (password) => {
             >
                 <BaseButtons no-margin>
                     <BaseButton
-                        v-if="user?.blocked === 1"
+                        v-if="account && user?.blocked === 1"
                         :icon="mdiCheckAll"
                         label="Ativar"
                         color="success"
@@ -184,7 +208,7 @@ const submitChangeState = (password) => {
                         @click="isModalUnblockActive = true"
                     />
                     <BaseButton
-                        v-else
+                        v-else-if="account && user?.blocked === 0"
                         :icon="mdiLock"
                         label="Bloquear"
                         color="warning"
@@ -221,14 +245,14 @@ const submitChangeState = (password) => {
                 >
                     <FormValidationErrors
                         v-if="statusProfile === false"
-                        :errors="resRequest.errors"
+                        :errors="resErrors"
                     />
                     <Transition name="fade">
                         <NotificationBarInCard
                             v-if="statusProfile"
                             color="success"
                         >
-                            <b>{{ resRequest.message }}</b>
+                            <b>{{ resMessage }}</b>
                         </NotificationBarInCard>
                     </Transition>
                     <FormField label="Nome" help="O seu nome. Obrigatório">
@@ -299,14 +323,14 @@ const submitChangeState = (password) => {
                 >
                     <FormValidationErrors
                         v-if="statusPassword === false"
-                        :errors="resRequest.errors"
+                        :errors="resErrors"
                     />
                     <Transition name="fade">
                         <NotificationBarInCard
                             v-if="statusPassword"
                             color="success"
                         >
-                            <b>{{ resRequest.message }}</b>
+                            <b>{{ resMessage }}</b>
                         </NotificationBarInCard>
                     </Transition>
 

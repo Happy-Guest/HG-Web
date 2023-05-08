@@ -27,15 +27,19 @@ router.beforeEach(() => {
     isAsideLgActive.value = false;
 });
 
+async function submitLogout() {
+    if (await authStore.logout()) {
+        router.push({ name: "login" });
+    }
+}
+
 const menuClick = (event, item) => {
     if (item.isToggleLightDark) {
         styleStore.setDarkMode();
     }
 
     if (item.isLogout) {
-        if (authStore.logout()) {
-            router.push({ name: "login" });
-        }
+        submitLogout();
     }
 };
 </script>
