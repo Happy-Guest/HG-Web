@@ -18,9 +18,8 @@ const currentPageHuman = computed(() => currentPage.value + 1);
 const isModalActive = ref(false);
 const selected = ref(0);
 
-
 watch(currentPageHuman, async () => {
-    codes.value = await codeStore.getCodes(currentPage.value + 1);    
+    codes.value = await codeStore.getCodes(currentPage.value + 1);
 });
 
 onMounted(async () => {
@@ -79,12 +78,12 @@ const getDateString = (date) => {
             </tr>
         </thead>
         <tbody>
-            <tr v-for="code in codes" v-bind:key="code.id">
+            <tr v-for="code in codes" :key="code.id">
                 <td data-label="Id">
                     {{ code.id }}
                 </td>
                 <td data-label="Código">
-                   {{ code.code }}
+                    {{ code.code }}
                 </td>
                 <td data-label="Quarto(s)">
                     <PillTag
@@ -96,7 +95,7 @@ const getDateString = (date) => {
                     />
                 </td>
                 <td data-label="Código">
-                   {{ getDateString(code.entry_date) }}
+                    {{ getDateString(code.entry_date) }}
                 </td>
                 <td data-label="Estado" class="text-center">
                     <PillTag
@@ -123,7 +122,10 @@ const getDateString = (date) => {
                             title="Editar"
                             :icon="mdiRename"
                             small
-                            @click="isModalActive = true; selected = code.id;"
+                            @click="
+                                isModalActive = true;
+                                selected = code.id;
+                            "
                         />
                     </BaseButtons>
                 </td>
@@ -134,17 +136,17 @@ const getDateString = (date) => {
         <BaseLevel>
             <BaseButtons>
                 <BaseButton
+                    v-if="currentPage > 0"
                     :label="'➤'"
                     class="font-bold rotate-180"
                     small
-                    v-if="currentPage > 0"
                     @click="currentPage = 0"
                 />
                 <BaseButton
+                    v-if="currentPage > 0"
                     :label="'➜'"
                     class="font-bold rotate-180"
                     small
-                    v-if="currentPage > 0"
                     @click="currentPage--"
                 />
                 <BaseButton
@@ -158,17 +160,17 @@ const getDateString = (date) => {
                 />
 
                 <BaseButton
+                    v-if="currentPage < numPages - 1"
                     :label="'➜'"
                     class="font-bold"
                     small
-                    v-if="currentPage < numPages - 1"
                     @click="currentPage++"
                 />
                 <BaseButton
+                    v-if="currentPage < numPages - 1"
                     :label="'➤'"
                     class="font-bold"
                     small
-                    v-if="currentPage < numPages - 1"
                     @click="currentPage = numPages - 1"
                 />
             </BaseButtons>

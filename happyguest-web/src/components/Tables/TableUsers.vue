@@ -75,7 +75,6 @@ const update = (arr, cb, blocked) => {
 };
 
 const blockUser = async (userInfo) => {
-  
     var response = await userStore.blockUnblockUser(userInfo);
     if (response == true) {
         users.value = update(
@@ -92,17 +91,18 @@ const blockUser = async (userInfo) => {
 const blockUnBlockUser = async (userInfo) => {
     var response = await userStore.blockUnblockUser(userInfo);
     if (response == true) {
-
     }
     if (blockUser(userInfo)) {
-        if (userInfo.blocked == 0) notifText.value = "Utilizador Bloqueado com sucesso!";
+        if (userInfo.blocked == 0)
+            notifText.value = "Utilizador Bloqueado com sucesso!";
         else notifText.value = "Utilizador Desbloqueado com sucesso!";
         isSuccessNotifActive.value = true;
         setTimeout(function () {
             isSuccessNotifActive.value = false;
         }, 7000);
     } else {
-        if (userInfo.blocked == 0) notifText.value = "Erro ao Bloquear utilizador!";
+        if (userInfo.blocked == 0)
+            notifText.value = "Erro ao Bloquear utilizador!";
         else notifText.value = "Erro ao Desbloquear utilizador!";
         isErrorNotifActive.value = true;
         setTimeout(function () {
@@ -114,25 +114,29 @@ const blockUnBlockUser = async (userInfo) => {
 
 <template>
     <NotificationBar
+        v-if="isSuccessNotifActive"
         color="success"
         :icon="mdiCheckCircle"
-        v-if="isSuccessNotifActive"
         class="motion-safe:animate-bounce-slow -mb-2"
     >
         {{ notifText }}
     </NotificationBar>
     <NotificationBar
+        v-if="isErrorNotifActive"
         color="danger"
         :icon="mdiAlertCircle"
-        v-if="isErrorNotifActive"
         class="motion-safe:animate-bounce-slow -mb-2"
     >
         {{ notifText }}
     </NotificationBar>
     <CardBoxModal
         v-model="isModalBlockActive"
-        :title="userInfo.blocked==0 ? 'Bloquear Utilizador' : 'Desbloquear Utilizador'"
-        :buttonLabel="userInfo.blocked==0 ? 'Bloquear ' : 'Desbloquear'"
+        :title="
+            userInfo.blocked == 0
+                ? 'Bloquear Utilizador'
+                : 'Desbloquear Utilizador'
+        "
+        :button-label="userInfo.blocked == 0 ? 'Bloquear ' : 'Desbloquear'"
         :icon="mdiLock"
         button="info"
         has-cancel
@@ -140,7 +144,9 @@ const blockUnBlockUser = async (userInfo) => {
         @confirm="blockUnBlockUser(userInfo)"
     >
         <p>
-            Tem a certeza que deseja <b>{{userInfo.blocked==0 ? 'bloquear ' : 'desbloquear'}}</b> o utilizador selecionado?
+            Tem a certeza que deseja
+            <b>{{ userInfo.blocked == 0 ? "bloquear " : "desbloquear" }}</b> o
+            utilizador selecionado?
         </p>
     </CardBoxModal>
     <table class="w-full">
@@ -235,39 +241,31 @@ const blockUnBlockUser = async (userInfo) => {
                                 userIdSelect = user.id;
                             "
                         />
+                        <BaseButton v-if="user.blocked == 0" color="warning"
+                        :icon=" user.id == authStore.userId ||
+                        (authStore.user.role == 'M' && user.role == 'A') ?
+                        mdiCancel : mdiLock " small :disabled="user.id ==
+                        authStore.userId || (authStore.user.role == 'M' &&
+                        user.role == 'A')" " @click=" isModalBlockActive = true;
+                        userInfo = user; " />
                         <BaseButton
-                            v-if="
-                                user.blocked == 0 
-                            "
-                            color="warning"
-                            :icon="
-                                user.id == authStore.userId || (authStore.user.role == 'M' && user.role == 'A')
-                                    ? mdiCancel
-                                    : mdiLock
-                            "
-                            small
-                            @click="
-                                isModalBlockActive = true;
-                                userInfo = user;
-                            "
-                            :disabled="user.id == authStore.userId || (authStore.user.role == 'M' && user.role == 'A')"
-                        />
-                        <BaseButton
-                            v-else-if="
-                                user.blocked == 1
-                            "
+                            v-else-if="user.blocked == 1"
                             color="info"
                             :icon="
-                                user.id == authStore.userId || (authStore.user.role == 'M' && user.role == 'A')
+                                user.id == authStore.userId ||
+                                (authStore.user.role == 'M' && user.role == 'A')
                                     ? mdiCancel
                                     : mdiAccountCheck
                             "
                             small
+                            :disabled="
+                                user.id == authStore.userId ||
+                                (authStore.user.role == 'M' && user.role == 'A')
+                            "
                             @click="
                                 isModalBlockActive = true;
                                 userInfo = user;
                             "
-                            :disabled="user.id == authStore.userId || (authStore.user.role == 'M' && user.role == 'A')"
                         />
                     </BaseButtons>
                 </td>

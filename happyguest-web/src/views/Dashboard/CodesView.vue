@@ -21,12 +21,10 @@ const isModalActiveCreate = ref(false);
 onMounted(() => {
     hasCodes.value = codeStore.getCodes(0);
 });
-
-
 </script>
 
 <template>
-     <CardBoxCode
+    <CardBoxCode
         :active="isModalActiveCreate"
         @update:active="isModalActiveCreate = $event"
     />
@@ -35,8 +33,8 @@ onMounted(() => {
             <SectionTitleLineWithButton
                 :icon="mdiBarcode"
                 :title="'Códigos'"
-                @click="isModalActiveCreate = true;"
                 main
+                @click="isModalActiveCreate = true"
             >
                 <BaseButtons>
                     <BaseButton

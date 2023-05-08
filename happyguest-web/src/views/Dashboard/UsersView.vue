@@ -18,8 +18,6 @@ const hasUsers = ref(false);
 onMounted(() => {
     hasUsers.value = userStore.getUsers(0);
 });
-
-
 </script>
 
 <template>

@@ -70,11 +70,11 @@ const getDateString = (date) => {
     var dateString = new Date(date);
     return (
         dateString.getFullYear() +
-        '-' +
+        "-" +
         (dateString.getMonth() > 8
             ? dateString.getMonth() + 1
             : "0" + (dateString.getMonth() + 1)) +
-            '-' +
+        "-" +
         (dateString.getDate() > 9
             ? dateString.getDate()
             : "0" + dateString.getDate())
@@ -97,8 +97,6 @@ const createCode = async () => {
 const editCode = async () => {
     //
 };
-
-
 </script>
 
 <template>
@@ -109,11 +107,11 @@ const editCode = async () => {
         :icon="mdiContentSaveCheck"
         :icon-title="selected ? mdiRename : mdiPencil"
         button="success"
-        @cancel="emit('update:active', false)"
-        @confirm=" selected ? editCode : createCode"
         has-errors
         has-cancel
         has-close
+        @cancel="emit('update:active', false)"
+        @confirm="selected ? editCode : createCode"
     >
         <FormField label="Código" class="mt-6">
             <FormControl
@@ -145,7 +143,7 @@ const editCode = async () => {
                 help="A data de entrada. Obrigatório."
             >
                 <FormControl
-                    :modelValue="getDateString(Form.entry_date)"
+                    :model-value="getDateString(Form.entry_date)"
                     :icon="mdiCalendarRange"
                     name="entry_date"
                     type="date"
@@ -158,13 +156,13 @@ const editCode = async () => {
                 help="A data de saida. Obrigatório."
             >
                 <FormControl
-                    :modelValue="getDateString(Form.exit_date)"
+                    :model-value="getDateString(Form.exit_date)"
                     :icon="mdiCalendarRange"
                     name="exit_date"
                     type="date"
                     required
                 />
             </FormField>
-        </FormField> 
+        </FormField>
     </CardBoxModal>
 </template>

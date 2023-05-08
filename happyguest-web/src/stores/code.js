@@ -41,7 +41,6 @@ export const useCodeStore = defineStore("code", () => {
         }
     }
 
-
     return {
         codes,
         lastPage,
