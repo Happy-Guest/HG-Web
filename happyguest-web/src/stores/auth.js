@@ -88,6 +88,15 @@ export const useAuthStore = defineStore("auth", () => {
         }
     }
 
+    async function changePassword(data) {
+        try {
+            let response = await axios.post("change-password", data);
+            return response;
+        } catch (error) {
+            return error.response;
+        }
+    }
+
     return {
         user,
         userId,
@@ -95,5 +104,6 @@ export const useAuthStore = defineStore("auth", () => {
         login,
         restoreToken,
         logout,
+        changePassword,
     };
 });

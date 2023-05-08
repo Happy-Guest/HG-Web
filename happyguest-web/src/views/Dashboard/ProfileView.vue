@@ -43,7 +43,6 @@ const statusProfile = ref(null);
 const resRequest = {
     message: "",
     errors: [],
-    status: null,
 };
 
 const isModalDeleteActive = ref(false);
@@ -57,9 +56,9 @@ const profileForm = ref({
 });
 
 const passwordForm = ref({
-    current_password: "",
-    password: "",
-    password_confirmation: "",
+    old_password: "",
+    new_password: "",
+    new_password_confirmation: "",
 });
 
 const confirmPasswordForm = ref({
@@ -74,6 +73,7 @@ const clearProfileFields = () => {
 
 const submitProfile = () => {
     statusPassword.value = null;
+    statusProfile.value = null;
     userStore
         .updateUser(user.value.id, profileForm.value)
         .then((response) => {
@@ -96,8 +96,26 @@ const submitProfile = () => {
 
 const submitPassword = () => {
     statusProfile.value = null;
-    statusPassword.value = false;
-    //
+    statusPassword.value = null;
+    authStore
+        .changePassword(passwordForm.value)
+        .then((response) => {
+            resRequest.message = response.data.message;
+            if (response.status === 200) {
+                statusPassword.value = true;
+                setTimeout(function () {
+                    statusPassword.value = null;
+                }, 5000);
+            } else {
+                statusPassword.value = false;
+                resRequest.errors = response.data.errors;
+            }
+        })
+        .catch(() => {
+            statusPassword.value = false;
+            resRequest.message =
+                "Ocorreu um erro ao atualizar a palavra-passe.";
+        });
 };
 
 const submitDelete = (password) => {
@@ -107,12 +125,6 @@ const submitDelete = (password) => {
 const submitChangeState = (password) => {
     //
 };
-
-onMounted(async () => {
-    setTimeout(() => {
-        user.value = authStore.user;
-    }, 1000);
-});
 </script>
 
 <template>
@@ -201,7 +213,7 @@ onMounted(async () => {
                 :user-avatar="user.photo_url"
             />
 
-            <div v-if="!account" class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 <CardBox
                     is-form
                     class="my-auto"
@@ -285,12 +297,16 @@ onMounted(async () => {
                     class="my-auto"
                     @submit.prevent="submitPassword"
                 >
+                    <FormValidationErrors
+                        v-if="statusPassword === false"
+                        :errors="resRequest.errors"
+                    />
                     <Transition name="fade">
                         <NotificationBarInCard
                             v-if="statusPassword"
                             color="success"
                         >
-                            <b>{{ statusPassword }}</b>
+                            <b>{{ resRequest.message }}</b>
                         </NotificationBarInCard>
                     </Transition>
 
@@ -299,9 +315,9 @@ onMounted(async () => {
                         help="A sua palavra-passe atual. Obrigatório"
                     >
                         <FormControl
-                            v-model="passwordForm.current_password"
+                            v-model="passwordForm.old_password"
                             :icon="mdiAsterisk"
-                            name="current_password"
+                            name="old_password"
                             type="password"
                             required
                             autocomplete="current-password"
@@ -315,9 +331,9 @@ onMounted(async () => {
                         help="A sua nova palavra-passe. Deve conter pelo menos 8 caracteres. Obrigatório"
                     >
                         <FormControl
-                            v-model="passwordForm.password"
+                            v-model="passwordForm.new_password"
                             :icon="mdiFormTextboxPassword"
-                            name="password"
+                            name="new_password"
                             type="password"
                             required
                             autocomplete="new-password"
@@ -329,9 +345,9 @@ onMounted(async () => {
                         help="Confirme a sua nova palavra-passe. Obrigatório"
                     >
                         <FormControl
-                            v-model="passwordForm.password_confirmation"
+                            v-model="passwordForm.new_password_confirmation"
                             :icon="mdiFormTextboxPassword"
-                            name="password_confirmation"
+                            name="new_password_confirmation"
                             type="password"
                             required
                             autocomplete="new-password"
@@ -352,59 +368,13 @@ onMounted(async () => {
                                 outline
                                 :icon="mdiLockReset"
                                 @click="
-                                    passwordForm.reset(
-                                        'current_password',
-                                        'password',
-                                        'password_confirmation'
-                                    )
+                                    passwordForm.old_password = '';
+                                    passwordForm.new_password = '';
+                                    passwordForm.new_password_confirmation = '';
                                 "
                             />
                         </BaseButtons>
                     </template>
-                </CardBox>
-            </div>
-            <div v-else>
-                <CardBox is-form class="pb-2">
-                    <FormField
-                        label="Nome"
-                        help="O nome do utilizador. Obrigatório"
-                    >
-                        <FormControl
-                            v-model="profileForm.name"
-                            :icon="mdiAccount"
-                            name="username"
-                            disabled
-                        />
-                    </FormField>
-
-                    <FormField
-                        label="Email"
-                        help="O email do utilizador. Obrigatório"
-                    >
-                        <FormControl
-                            v-model="profileForm.email"
-                            :icon="mdiEmail"
-                            name="email"
-                            disabled
-                        />
-                    </FormField>
-
-                    <BaseDivider />
-
-                    <FormField
-                        label="Nº Telefone"
-                        help="O número de telefone do utilizador. Opcional"
-                    >
-                        <FormControl
-                            v-model="profileForm.phone"
-                            :icon="mdiCellphone"
-                            name="phone"
-                            :placeholder="
-                                user.phone === null ? 'Não definido' : ''
-                            "
-                            disabled
-                        />
-                    </FormField>
                 </CardBox>
             </div>
         </SectionMain>
