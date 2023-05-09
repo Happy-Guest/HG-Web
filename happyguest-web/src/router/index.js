@@ -27,6 +27,15 @@ const routes = [
         name: "login",
         component: () => import("@/views/Auth/LoginView.vue"),
     },
+    {
+        meta: {
+            title: "Registo",
+            middleware: [auth, manager],
+        },
+        path: "/registo",
+        name: "register",
+        component: () => import("@/views/Auth/RegisterView.vue"),
+    },
 
     // Dashboard
 

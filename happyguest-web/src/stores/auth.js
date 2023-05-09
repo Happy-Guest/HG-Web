@@ -50,6 +50,16 @@ export const useAuthStore = defineStore("auth", () => {
         }
     }
 
+    async function register(credentials) {
+        let response;
+        try {
+            response = await axios.post("register-team", credentials);
+            return response;
+        } catch (error) {
+            return error.response;
+        }
+    }
+
     async function restoreToken() {
         let storedToken = localStorage.getItem("token");
         let storedRemember = localStorage.getItem("remember");
@@ -103,6 +113,7 @@ export const useAuthStore = defineStore("auth", () => {
         isLogged,
         loadUser,
         login,
+        register,
         restoreToken,
         logout,
         changePassword,

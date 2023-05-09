@@ -31,6 +31,7 @@ onMounted(() => {
                 <BaseButtons>
                     <BaseButton
                         :icon="mdiAccountPlus"
+                        :to="{ name: 'register' }"
                         label="Registar"
                         color="success"
                         rounded-full
