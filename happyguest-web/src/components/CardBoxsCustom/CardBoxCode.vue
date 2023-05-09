@@ -23,7 +23,6 @@ const isModalActive = ref(false);
 
 const resMessage = ref("");
 const resErrors = ref([]);
-const statusCode = ref(null);
 
 const props = defineProps({
     selected: {
@@ -43,6 +42,7 @@ watchEffect(() => {
 watch(
     () => props.selected,
     async (value) => {
+        resErrors.value = [];
         await codeStore.getCode(value).then((response) => {
             code.value = response;
             form.value.code = code.value?.code;
@@ -96,24 +96,41 @@ function format(date, api) {
     }
 }
 
+function setRooms(rooms) {
+    if (rooms) {
+        return rooms.split(",").map((room) => room.trim());
+    }
+}
+
 const createCode = async () => {
-    /*var response = await codeStore.create(form.value);
-    if (response) {
-        //isSuccessNotifActive.value = true;
-        //clearFields();
-        //ocurrenceStore.clearStore();
-        emit('update:active', true)
-        setTimeout(function () {
-            //isSuccessNotifActive.value = false;
-            router.go(-1);
-        }, 3000);
-    }*/
+    codeStore
+        .createCode({
+            code: form.value.code,
+            rooms: setRooms(form.value.rooms),
+            entry_date: format(form.value.entry_date, true),
+            exit_date: format(form.value.exit_date, true),
+        })
+        .then((response) => {
+            resMessage.value = response.data.message;
+            if (response.status == 201) {
+                isModalActive.value = false;
+                emit("updated");
+            } else {
+                resErrors.value = response.data.errors;
+            }
+        })
+        .catch(() => {
+            resMessage.value = "Ocorreu um erro ao criar o código.";
+        });
 };
+
 const editCode = async () => {
     codeStore
         .updateCode(code.value.id, {
             code: form.value.code,
-            rooms: form.value.rooms,
+            rooms: Array.isArray(form.value.rooms)
+                ? form.value.rooms
+                : setRooms(form.value.rooms),
             entry_date: format(form.value.entry_date, true),
             exit_date: format(form.value.exit_date, true),
         })

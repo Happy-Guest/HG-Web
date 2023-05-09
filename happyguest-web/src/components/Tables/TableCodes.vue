@@ -15,6 +15,13 @@ import CardBoxCode from "@/components/CardBoxsCustom/CardBoxCode.vue";
 import NotificationBar from "@/components/Others/NotificationBar.vue";
 import { useCodeStore } from "@/stores/code";
 
+const props = defineProps({
+    updated: {
+        type: Boolean,
+        default: false,
+    },
+});
+
 const codeStore = useCodeStore();
 
 const currentPage = ref(0);
@@ -29,6 +36,15 @@ const selected = ref(0);
 watch(currentPageHuman, async () => {
     codes.value = await codeStore.getCodes(currentPage.value + 1);
 });
+
+watch(
+    () => props.updated,
+    (value) => {
+        if (value) {
+            updateModal();
+        }
+    }
+);
 
 onMounted(async () => {
     codes.value = await codeStore.getCodes(1);

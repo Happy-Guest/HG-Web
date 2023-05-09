@@ -15,6 +15,7 @@ import { useCodeStore } from "@/stores/code";
 const codeStore = useCodeStore();
 
 const hasCodes = ref(false);
+const updated = ref(false);
 
 const isModalActiveCreate = ref(false);
 
@@ -28,6 +29,7 @@ onMounted(() => {
         <CardBoxCode
             :active="isModalActiveCreate"
             @update:active="isModalActiveCreate = $event"
+            @updated="updated = true"
         />
         <SectionMain>
             <SectionTitleLineWithButton
@@ -47,7 +49,7 @@ onMounted(() => {
                 </BaseButtons>
             </SectionTitleLineWithButton>
             <CardBox class="mb-6" has-table>
-                <TableCodes v-if="hasCodes" />
+                <TableCodes v-if="hasCodes" :updated="updated" />
                 <CardBoxComponentEmpty
                     v-else
                     message="Sem códigos criados..."
