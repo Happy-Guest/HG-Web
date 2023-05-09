@@ -2,7 +2,8 @@ import { createRouter, createWebHistory } from "vue-router";
 import Home from "@/views/HomeView.vue";
 import auth from "@/middleware/auth";
 import guest from "@/middleware/guest";
-import admin from "@/middleware/admin";
+//import admin from "@/middleware/admin";
+import manager from "@/middleware/manager";
 
 const routes = [
     // Home
@@ -47,19 +48,13 @@ const routes = [
         name: "profile",
         component: () => import("@/views/Dashboard/ProfileView.vue"),
     },
-    {
-        meta: {
-            title: "Perfil",
-            middleware: [auth, admin],
-        },
-        path: "/perfil/:id",
-        name: "profileUser",
-        component: () => import("@/views/Dashboard/ProfileView.vue"),
-    },
+
+    // Manager & Admin
+
     {
         meta: {
             title: "Utilizadores",
-            middleware: [auth, admin],
+            middleware: [auth, manager],
         },
         path: "/utilizadores",
         name: "users",
@@ -67,31 +62,21 @@ const routes = [
     },
     {
         meta: {
+            title: "Perfil",
+            middleware: [auth, manager],
+        },
+        path: "/perfil/:id",
+        name: "profileUser",
+        component: () => import("@/views/Dashboard/ProfileView.vue"),
+    },
+    {
+        meta: {
             title: "Códigos",
-            middleware: auth,
+            middleware: [auth, manager],
         },
         path: "/codigos",
         name: "codes",
         component: () => import("@/views/Dashboard/CodesView.vue"),
-    },
-
-    // Template
-
-    {
-        meta: {
-            title: "Formulários",
-        },
-        path: "/formularios",
-        name: "forms",
-        component: () => import("@/views/Template/FormsView.vue"),
-    },
-    {
-        meta: {
-            title: "Interface",
-        },
-        path: "/interface",
-        name: "ui",
-        component: () => import("@/views/Template/UiView.vue"),
     },
 
     // Not Found

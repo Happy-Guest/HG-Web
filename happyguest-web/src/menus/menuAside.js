@@ -1,10 +1,4 @@
-import {
-    mdiHome,
-    mdiSquareEditOutline,
-    mdiTelevisionGuide,
-    mdiBarcode,
-    mdiAccountGroup,
-} from "@mdi/js";
+import { mdiHome, mdiBarcode, mdiAccountGroup } from "@mdi/js";
 
 export default [
     {
@@ -16,28 +10,18 @@ export default [
         isDivider: true,
     },
     {
-        middleware: ["A"],
+        middleware: ["A", "M"],
         to: "/utilizadores",
         label: "Utilizadores",
         icon: mdiAccountGroup,
     },
     {
+        middleware: ["A", "M"],
         to: "/codigos",
         label: "Códigos",
         icon: mdiBarcode,
     },
-
     {
         isDivider: true,
-    },
-    {
-        to: "/formularios",
-        label: "Formulários",
-        icon: mdiSquareEditOutline,
-    },
-    {
-        to: "/interface",
-        label: "Interface",
-        icon: mdiTelevisionGuide,
     },
 ];

@@ -247,7 +247,12 @@ watch(
             >
                 <BaseButtons no-margin>
                     <BaseButton
-                        v-if="account && user?.blocked == 1"
+                        v-if="
+                            account &&
+                            user?.blocked == 1 &&
+                            user.role != 'A' &&
+                            (user.role != 'M' || authStore.user.role == 'A')
+                        "
                         :icon="mdiAccountCheck"
                         label="Ativar"
                         color="success"
@@ -256,7 +261,12 @@ watch(
                         @click="isModalUnblockActive = true"
                     />
                     <BaseButton
-                        v-else-if="account && user?.blocked == 0"
+                        v-else-if="
+                            account &&
+                            user?.blocked == 0 &&
+                            user.role != 'A' &&
+                            (user.role != 'M' || authStore.user.role == 'A')
+                        "
                         :icon="mdiLock"
                         label="Bloquear"
                         color="warning"
@@ -265,7 +275,11 @@ watch(
                         @click="isModalBlockActive = true"
                     />
                     <BaseButton
-                        v-if="!account || account.type != 'A'"
+                        v-if="
+                            (user.role != authStore.user.role &&
+                                user.role != 'A') ||
+                            !account
+                        "
                         :icon="mdiTrashCan"
                         label="Remover"
                         color="danger"
@@ -311,6 +325,10 @@ watch(
                             :icon="mdiAccount"
                             name="username"
                             required
+                            :disabled="
+                                user.role == 'A' ||
+                                (user.role == 'M' && authStore.user.role != 'A')
+                            "
                         />
                     </FormField>
 
@@ -322,6 +340,10 @@ watch(
                             name="email"
                             required
                             autocomplete="email"
+                            :disabled="
+                                user.role == 'A' ||
+                                (user.role == 'M' && authStore.user.role != 'A')
+                            "
                         />
                     </FormField>
 
@@ -343,11 +365,20 @@ watch(
                                     ? 'Não definido'
                                     : ''
                             "
+                            :disabled="
+                                user.role == 'A' ||
+                                (user.role == 'M' && authStore.user.role != 'A')
+                            "
                         />
                     </FormField>
 
                     <template #footer>
-                        <BaseButtons>
+                        <BaseButtons
+                            v-if="
+                                user.role != 'A' &&
+                                (user.role != 'M' || authStore.user.role == 'A')
+                            "
+                        >
                             <BaseButton
                                 type="submit"
                                 color="success"

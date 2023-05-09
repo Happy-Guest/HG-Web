@@ -121,7 +121,7 @@ const blockUnblockUser = async () => {
         v-if="isSuccessNotifActive"
         color="success"
         :icon="mdiCheckCircle"
-        class="animate-bounce-slow -mb-2 mb-1 mt-2 mx-8"
+        class="animate-bounce-slow -mb-2 mb-1 mt-2 mx-4"
     >
         {{ notifText }}
     </NotificationBar>
@@ -129,7 +129,7 @@ const blockUnblockUser = async () => {
         v-if="isErrorNotifActive"
         color="danger"
         :icon="mdiAlertCircle"
-        class="animate-bounce-slow -mb-2 mb-1 mt-2 mx-8"
+        class="animate-bounce-slow -mb-2 mb-1 mt-2 mx-4"
     >
         {{ notifText }}
     </NotificationBar>
@@ -246,12 +246,18 @@ const blockUnblockUser = async () => {
                             color="warning"
                             title="Bloquear"
                             :icon="
-                                user.id == authStore.userId
+                                user.id == authStore.userId ||
+                                user.role == 'A' ||
+                                (user.role == 'M' && authStore.user.role == 'M')
                                     ? mdiCancel
                                     : mdiLock
                             "
                             small
-                            :disabled="user.id == authStore.userId"
+                            :disabled="
+                                user.id == authStore.userId ||
+                                user.role == 'A' ||
+                                (user.role == 'M' && authStore.user.role == 'M')
+                            "
                             @click="
                                 isModalBlockActive = true;
                                 userId = user.id;
@@ -259,16 +265,22 @@ const blockUnblockUser = async () => {
                             "
                         />
                         <BaseButton
-                            v-else-if="user.blocked == 1"
+                            v-else-if="user.blocked == 1 && user.role != 'A'"
                             color="success"
                             title="Ativar"
                             :icon="
-                                user.id == authStore.userId
+                                user.id == authStore.userId ||
+                                user.role == 'A' ||
+                                (user.role == 'M' && authStore.user.role == 'M')
                                     ? mdiCancel
                                     : mdiAccountCheck
                             "
                             small
-                            :disabled="user.id == authStore.userId"
+                            :disabled="
+                                user.id == authStore.userId ||
+                                user.role == 'A' ||
+                                (user.role == 'M' && authStore.user.role == 'M')
+                            "
                             @click="
                                 isModalBlockActive = true;
                                 userId = user.id;
@@ -278,9 +290,19 @@ const blockUnblockUser = async () => {
                         <BaseButton
                             color="danger"
                             title="Remover"
-                            :icon="user.role == 'A' ? mdiCancel : mdiTrashCan"
+                            :icon="
+                                user.role == 'A' ||
+                                user.id == authStore.userId ||
+                                (user.role == 'M' && authStore.user.role == 'M')
+                                    ? mdiCancel
+                                    : mdiTrashCan
+                            "
                             small
-                            :disabled="user.role == 'A'"
+                            :disabled="
+                                user.role == 'A' ||
+                                user.id == authStore.userId ||
+                                (user.role == 'M' && authStore.user.role == 'M')
+                            "
                             @click="
                                 isModalDeleteActive = true;
                                 userId = user.id;
