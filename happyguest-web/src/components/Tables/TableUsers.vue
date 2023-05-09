@@ -23,6 +23,9 @@ import CardBoxModal from "@/components/CardBoxs/CardBoxModal.vue";
 import NotificationBar from "@/components/Others/NotificationBar.vue";
 import { useUserStore } from "@/stores/user";
 import { useAuthStore } from "@/stores/auth";
+import { useRouter } from "vue-router";
+
+const router = useRouter();
 
 const userStore = useUserStore();
 const authStore = useAuthStore();
@@ -118,7 +121,7 @@ const blockUnblockUser = async () => {
         v-if="isSuccessNotifActive"
         color="success"
         :icon="mdiCheckCircle"
-        class="-mb-2"
+        class="animate-bounce-slow -mb-2 mb-1 mt-2 mx-8"
     >
         {{ notifText }}
     </NotificationBar>
@@ -126,25 +129,24 @@ const blockUnblockUser = async () => {
         v-if="isErrorNotifActive"
         color="danger"
         :icon="mdiAlertCircle"
-        class="motion-safe:animate-bounce-slow -mb-2"
+        class="animate-bounce-slow -mb-2 mb-1 mt-2 mx-8"
     >
         {{ notifText }}
     </NotificationBar>
     <CardBoxModal
         v-model="isModalBlockActive"
         :title="userBlocked == 0 ? 'Bloquear Utilizador' : 'Ativar Utilizador'"
-        :button-label="userBlocked == 0 ? 'Bloquear ' : 'Ativar'"
-        :icon="mdiLock"
-        :icon-title="mdiLock"
-        button="info"
+        button-label="Confirmar"
+        :icon-title="userBlocked == 0 ? mdiLock : mdiAccountCheck"
+        :button="userBlocked == 0 ? 'warning' : 'success'"
         has-cancel
         has-close
         @confirm="blockUnblockUser()"
     >
         <p>
-            Tem a certeza que deseja
-            <b>{{ userBlocked == 0 ? "bloquear " : "ativar" }}</b> o
-            selecionado?
+            Tem a certeza que
+            <b>deseja {{ userBlocked == 0 ? "bloquear " : "ativar" }}</b> o
+            utilizador selecionado?
         </p>
     </CardBoxModal>
     <table class="w-full">
@@ -230,7 +232,14 @@ const blockUnblockUser = async () => {
                             title="Ver Perfil"
                             :icon="mdiEye"
                             small
-                            @click=""
+                            @click="
+                                user.id == authStore.userId
+                                    ? router.push({ name: 'profile' })
+                                    : router.push({
+                                          name: 'profileUser',
+                                          params: { id: user.id },
+                                      })
+                            "
                         />
                         <BaseButton
                             v-if="user.blocked == 0"

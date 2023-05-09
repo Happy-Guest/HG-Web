@@ -76,6 +76,22 @@ export const useUserStore = defineStore("user", () => {
         }
     }
 
+    async function changeStateUser(userId, blocked) {
+        try {
+            if (blocked == 1) {
+                let response = await axios.patch(
+                    "users/" + userId + "/unblock"
+                );
+                return response;
+            } else {
+                let response = await axios.patch("users/" + userId + "/block");
+                return response;
+            }
+        } catch (error) {
+            return error.response;
+        }
+    }
+
     return {
         users,
         lastPage,
@@ -86,5 +102,6 @@ export const useUserStore = defineStore("user", () => {
         blockUnblockUser,
         updateUser,
         deleteUser,
+        changeStateUser,
     };
 });

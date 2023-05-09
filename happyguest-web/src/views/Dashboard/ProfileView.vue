@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from "vue";
+import { ref, watch } from "vue";
 import { useRouter } from "vue-router";
 import {
     mdiAccount,
@@ -10,11 +10,11 @@ import {
     mdiLockCheck,
     mdiLockReset,
     mdiCellphone,
-    mdiCheckAll,
     mdiLock,
     mdiTrashCan,
     mdiContentSaveCheck,
     mdiAccountGroup,
+    mdiAccountCheck,
 } from "@mdi/js";
 import SectionMain from "@/components/Sections/SectionMain.vue";
 import CardBox from "@/components/CardBoxs/CardBox.vue";
@@ -37,18 +37,8 @@ const router = useRouter();
 const authStore = useAuthStore();
 const userStore = useUserStore();
 
-const user = ref(authStore.user);
+const user = ref({});
 const account = ref(false);
-
-const statusPassword = ref(null);
-const statusProfile = ref(null);
-
-const resMessage = ref("");
-const resErrors = ref([]);
-
-const isModalDeleteActive = ref(false);
-const isModalBlockActive = ref(false);
-const isModalUnblockActive = ref(false);
 
 const profileForm = ref({
     name: user.value.name,
@@ -68,9 +58,29 @@ const clearProfileFields = () => {
     profileForm.value.phone = user.value.phone ?? "";
 };
 
+defineUser();
+
+async function getUser() {
+    return await userStore.loadUserById(router.currentRoute.value.params.id);
+}
+
+const statusPassword = ref(null);
+const statusProfile = ref(null);
+
+const resMessage = ref("");
+const resErrors = ref([]);
+
+const isModalDeleteActive = ref(false);
+const isModalBlockActive = ref(false);
+const isModalUnblockActive = ref(false);
+
 async function loadUser() {
-    await authStore.loadUser();
-    user.value = authStore.user;
+    if (account.value) {
+        user.value = await userStore.loadUserById(user.value.id);
+    } else {
+        await authStore.loadUser();
+        user.value = authStore.user;
+    }
 }
 
 const submitProfile = () => {
@@ -142,13 +152,51 @@ const submitDelete = (password) => {
             }
         })
         .catch(() => {
-            resMessage.value = "Ocorreu um erro ao remover a conta.";
+            resMessage.value = "Ocorreu um erro ao remover o utilizador.";
         });
 };
 
-const submitChangeState = (password) => {
-    //
+const submitChangeState = () => {
+    statusProfile.value = null;
+    userStore
+        .changeStateUser(user.value.id, user.value.blocked)
+        .then((response) => {
+            resMessage.value = response.data.message;
+            if (response.status === 200) {
+                if (user.value.blocked === 1) {
+                    user.value.blocked = 0;
+                } else {
+                    user.value.blocked = 1;
+                }
+            }
+        })
+        .catch(() => {
+            statusProfile.value = false;
+            resMessage.value =
+                "Ocorreu um erro ao alterar o estado do utilizador.";
+        });
 };
+
+function defineUser() {
+    if (router.currentRoute.value.params.id) {
+        account.value = true;
+        getUser().then((response) => {
+            user.value = response;
+            clearProfileFields();
+        });
+    } else {
+        account.value = false;
+        user.value = authStore.user;
+        clearProfileFields();
+    }
+}
+
+watch(
+    () => router.currentRoute.value.params.id,
+    () => {
+        defineUser();
+    }
+);
 </script>
 
 <template>
@@ -164,7 +212,7 @@ const submitChangeState = (password) => {
             has-password
             @confirm="submitDelete"
         >
-            <p>Tem a certeza que <b>deseja remover</b> a conta?</p>
+            <p>Tem a certeza que <b>deseja remover</b> o utilizador?</p>
             <p v-if="!account">A sua sessão <b>será terminada</b>.</p>
         </CardBoxModal>
         <CardBoxModal
@@ -174,33 +222,33 @@ const submitChangeState = (password) => {
             :icon-title="mdiLock"
             has-cancel
             has-close
-            has-password
             @confirm="submitChangeState"
         >
-            <p>Tem a certeza que <b>deseja bloquear</b> a conta?</p>
+            <p>Tem a certeza que <b>deseja bloquear</b> o utilizador?</p>
         </CardBoxModal>
         <CardBoxModal
             v-model="isModalUnblockActive"
             title="Ativar Utilizador"
             button="success"
-            :icon-title="mdiCheckAll"
+            :icon-title="mdiAccountCheck"
             has-cancel
             has-close
-            has-password
             @confirm="submitChangeState"
         >
-            <p>Tem a certeza que <b>deseja ativar</b> a conta?</p>
+            <p>Tem a certeza que <b>deseja ativar</b> o utilizador?</p>
         </CardBoxModal>
         <SectionMain>
             <SectionTitleLine
                 :icon="account ? mdiAccountGroup : mdiClipboardAccount"
-                :title="account ? 'Perfil ➯ ' + user.id : 'O Meu Perfil'"
+                :title="
+                    account ? 'Perfil ➯ ' + (user.id ?? 'Id') : 'O Meu Perfil'
+                "
                 main
             >
                 <BaseButtons no-margin>
                     <BaseButton
-                        v-if="account && user?.blocked === 1"
-                        :icon="mdiCheckAll"
+                        v-if="account && user?.blocked == 1"
+                        :icon="mdiAccountCheck"
                         label="Ativar"
                         color="success"
                         rounded-full
@@ -208,7 +256,7 @@ const submitChangeState = (password) => {
                         @click="isModalUnblockActive = true"
                     />
                     <BaseButton
-                        v-else-if="account && user?.blocked === 0"
+                        v-else-if="account && user?.blocked == 0"
                         :icon="mdiLock"
                         label="Bloquear"
                         color="warning"
@@ -237,7 +285,9 @@ const submitChangeState = (password) => {
                 :user-avatar="user.photo_url"
             />
 
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div
+                :class="!account ? 'grid grid-cols-1 lg:grid-cols-2 gap-6' : ''"
+            >
                 <CardBox
                     is-form
                     class="my-auto"
@@ -261,7 +311,6 @@ const submitChangeState = (password) => {
                             :icon="mdiAccount"
                             name="username"
                             required
-                            autocomplete="username"
                         />
                     </FormField>
 
@@ -317,6 +366,7 @@ const submitChangeState = (password) => {
                 </CardBox>
 
                 <CardBox
+                    v-if="!account"
                     is-form
                     class="my-auto"
                     @submit.prevent="submitPassword"

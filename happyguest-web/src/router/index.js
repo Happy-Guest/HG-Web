@@ -47,7 +47,15 @@ const routes = [
         name: "profile",
         component: () => import("@/views/Dashboard/ProfileView.vue"),
     },
-
+    {
+        meta: {
+            title: "Perfil",
+            middleware: [auth, admin],
+        },
+        path: "/perfil/:id",
+        name: "profileUser",
+        component: () => import("@/views/Dashboard/ProfileView.vue"),
+    },
     {
         meta: {
             title: "Utilizadores",
@@ -57,7 +65,6 @@ const routes = [
         name: "users",
         component: () => import("@/views/Dashboard/UsersView.vue"),
     },
-
     {
         meta: {
             title: "Códigos",
