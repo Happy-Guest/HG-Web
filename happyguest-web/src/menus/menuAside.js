@@ -1,4 +1,9 @@
-import { mdiHome, mdiBarcode, mdiAccountGroup } from "@mdi/js";
+import {
+    mdiHome,
+    mdiBarcode,
+    mdiAccountGroup,
+    mdiBullhornVariant,
+} from "@mdi/js";
 
 export default [
     {
@@ -18,6 +23,11 @@ export default [
         to: "/codigos",
         label: "Códigos",
         icon: mdiBarcode,
+    },
+    {
+        to: "/reclamacoes",
+        label: "Reclamações",
+        icon: mdiBullhornVariant,
     },
     {
         isDivider: true,

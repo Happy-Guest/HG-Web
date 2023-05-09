@@ -87,6 +87,15 @@ const routes = [
         name: "codes",
         component: () => import("@/views/Dashboard/CodesView.vue"),
     },
+    {
+        meta: {
+            title: "Reclamações",
+            middleware: [auth, manager],
+        },
+        path: "/reclamacoes",
+        name: "complaints",
+        component: () => import("@/views/Dashboard/ComplaintsView.vue"),
+    },
 
     // Not Found
 

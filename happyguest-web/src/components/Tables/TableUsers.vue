@@ -43,6 +43,7 @@ const notifText = ref();
 const isModalBlockActive = ref(false);
 const isSuccessNotifActive = ref(false);
 const isErrorNotifActive = ref(false);
+const isModalDeleteActive = ref(false);
 
 watch(currentPageHuman, async () => {
     users.value = await userStore.getUsers(currentPage.value + 1);
@@ -114,6 +115,34 @@ const blockUnblockUser = async () => {
         }, 5000);
     }
 };
+const resErrors = ref([]);
+
+const submitDelete = (password) => {
+    userStore
+        .deleteUser(userId.value, password)
+        .then((response) => {
+            notifText.value = response.data.message;
+            if (response.status === 200) {
+                isModalDeleteActive.value = false;
+                users.value = users.value.filter(
+                    (user) => user.id != userId.value
+                );
+                isSuccessNotifActive.value = true;
+                setTimeout(function () {
+                    isSuccessNotifActive.value = false;
+                }, 5000);
+            } else {
+                resErrors.value = response.data.errors;
+            }
+        })
+        .catch(() => {
+            notifText.value = "Ocorreu um erro ao remover o utilizador.";
+            isErrorNotifActive.value = true;
+            setTimeout(function () {
+                isErrorNotifActive.value = false;
+            }, 5000);
+        });
+};
 </script>
 
 <template>
@@ -148,6 +177,19 @@ const blockUnblockUser = async () => {
             <b>deseja {{ userBlocked == 0 ? "bloquear " : "ativar" }}</b> o
             utilizador selecionado?
         </p>
+    </CardBoxModal>
+    <CardBoxModal
+        v-model="isModalDeleteActive"
+        :errors="resErrors"
+        title="Remover Utilizador"
+        button="danger"
+        :icon-title="mdiTrashCan"
+        has-cancel
+        has-close
+        has-password
+        @confirm="submitDelete"
+    >
+        <p>Tem a certeza que <b>deseja remover</b> o utilizador?</p>
     </CardBoxModal>
     <table class="w-full">
         <thead>
@@ -306,7 +348,6 @@ const blockUnblockUser = async () => {
                             @click="
                                 isModalDeleteActive = true;
                                 userId = user.id;
-                                userBlocked = user.blocked;
                             "
                         />
                     </BaseButtons>

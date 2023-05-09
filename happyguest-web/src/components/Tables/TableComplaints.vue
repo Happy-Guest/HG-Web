@@ -1,29 +1,30 @@
 <script setup>
 import { computed, ref, watch, onMounted } from "vue";
-import { mdiRename, mdiClose, mdiCheck } from "@mdi/js";
+import { mdiRename, mdiClose, mdiCheck, mdiFileCheck, mdiEye } from "@mdi/js";
 import BaseLevel from "@/components/Bases/BaseLevel.vue";
 import BaseButtons from "@/components/Bases/BaseButtons.vue";
 import BaseButton from "@/components/Bases/BaseButton.vue";
 import PillTag from "@/components/PillTags/PillTag.vue";
-import CardBoxCode from "@/components/CardBoxsCustom/CardBoxCode.vue";
-import { useCodeStore } from "@/stores/code";
+import { useComplaintStore } from "@/stores/complaint";
 
-const codeStore = useCodeStore();
+const complaintStore = useComplaintStore();
 
 const currentPage = ref(0);
-const codes = ref([]);
-const numPages = computed(() => codeStore.lastPage);
+const complaints = ref([]);
+const numPages = computed(() => complaintStore.lastPage);
 const currentPageHuman = computed(() => currentPage.value + 1);
 
 const isModalActive = ref(false);
 const selected = ref(0);
 
 watch(currentPageHuman, async () => {
-    codes.value = await codeStore.getCodes(currentPage.value + 1);
+    complaints.value = await complaintStore.getComplaints(
+        currentPage.value + 1
+    );
 });
 
 onMounted(async () => {
-    codes.value = await codeStore.getCodes(1);
+    complaints.value = await complaintStore.getComplaints(1);
 });
 
 const pagesList = computed(() => {
@@ -43,72 +44,49 @@ const pagesList = computed(() => {
     }
     return pagesList[parseInt(currentPage.value / 10)];
 });
-
-const getDateString = (date) => {
-    var dateString = new Date(date);
-    return (
-        (dateString.getDate() > 9
-            ? dateString.getDate()
-            : "0" + dateString.getDate()) +
-        "/" +
-        (dateString.getMonth() > 8
-            ? dateString.getMonth() + 1
-            : "0" + (dateString.getMonth() + 1)) +
-        "/" +
-        dateString.getFullYear()
-    );
-};
 </script>
 
 <template>
-    <CardBoxCode
-        :selected="selected"
-        :active="isModalActive"
-        @update:active="isModalActive = $event"
-    />
     <table class="w-full">
         <thead>
             <tr>
                 <th>ID:</th>
-                <th>Código:</th>
-                <th>Quarto(s):</th>
-                <th>Entrada:</th>
+                <th>Titulo:</th>
+                <th>Quarto:</th>
                 <th>Estado:</th>
                 <th />
             </tr>
         </thead>
         <tbody>
-            <tr v-for="code in codes" :key="code.id">
+            <tr v-for="complaint in complaints" :key="complaint.id">
                 <td data-label="Id">
-                    {{ code.id }}
+                    {{ complaint.id }}
                 </td>
-                <td data-label="Código">
-                    {{ code.code }}
+                <td data-label="Titulo">
+                    {{ complaint.title }}
                 </td>
-                <td data-label="Quarto(s)">
-                    <PillTag
-                        v-for="room in JSON.parse(code.rooms)"
-                        class="justify-center ml-4"
-                        :label="room"
-                        color="contrast"
-                        small
-                    />
-                </td>
-                <td data-label="Entrada">
-                    {{ getDateString(code.entry_date) }}
+                <td data-label="Quarto" class="text-center">
+                    {{ complaint.room }}
                 </td>
                 <td data-label="Estado" class="text-center">
                     <PillTag
-                        v-if="code.used == '1'"
+                        v-if="complaint.status == 'P'"
                         class="w-36 justify-center"
-                        label="Utilizado"
+                        label="P"
+                        color="info"
+                        :icon="mdiFileCheck"
+                    />
+                    <PillTag
+                        v-else-if="complaint.status == 'R'"
+                        class="w-36 justify-center"
+                        label="R"
                         color="success"
                         :icon="mdiCheck"
                     />
                     <PillTag
                         v-else
                         class="w-36 justify-center"
-                        label="Não Utilizado"
+                        label="C"
                         color="danger"
                         :icon="mdiClose"
                     />
@@ -118,13 +96,23 @@ const getDateString = (date) => {
                 >
                     <BaseButtons type="justify-start lg:justify-end" no-wrap>
                         <BaseButton
+                            color="info"
+                            title="Ver Reclamação"
+                            :icon="mdiEye"
+                            small
+                            @click="
+                                isModalActive = true;
+                                selected = complaint.id;
+                            "
+                        />
+                        <BaseButton
                             color="warning"
-                            title="Editar"
+                            title="Responder"
                             :icon="mdiRename"
                             small
                             @click="
                                 isModalActive = true;
-                                selected = code.id;
+                                selected = complaint.id;
                             "
                         />
                     </BaseButtons>

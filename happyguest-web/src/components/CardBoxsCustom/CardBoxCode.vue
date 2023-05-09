@@ -113,7 +113,7 @@ const editCode = async () => {
         @cancel="emit('update:active', false)"
         @confirm="selected ? editCode : createCode"
     >
-        <FormField label="Código" class="mt-6">
+        <FormField label="Código">
             <FormControl
                 v-model="Form.code"
                 :icon="mdiBarcode"
