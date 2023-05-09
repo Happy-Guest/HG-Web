@@ -15,16 +15,19 @@ export default [
         isDivider: true,
     },
     {
+        middleware: ["A", "M"],
         to: "/utilizadores",
         label: "Utilizadores",
         icon: mdiAccountGroup,
     },
     {
+        middleware: ["A", "M"],
         to: "/codigos",
         label: "Códigos",
         icon: mdiBarcode,
     },
     {
+        middleware: ["A", "M"],
         to: "/reclamacoes",
         label: "Reclamações",
         icon: mdiBullhornVariant,

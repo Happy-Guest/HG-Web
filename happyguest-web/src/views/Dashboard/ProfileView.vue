@@ -297,6 +297,8 @@ watch(
                 :user-blocked="user.blocked === 1"
                 :current-user="account ? false : true"
                 :user-avatar="user.photo_url"
+                :created="user.created_at"
+                :updated="user.updated_at"
             />
 
             <div
@@ -375,8 +377,10 @@ watch(
                     <template #footer>
                         <BaseButtons
                             v-if="
-                                user.role != 'A' &&
-                                (user.role != 'M' || authStore.user.role == 'A')
+                                !account ||
+                                (user.role != 'A' &&
+                                    (user.role != 'M' ||
+                                        authStore.user.role == 'A'))
                             "
                         >
                             <BaseButton

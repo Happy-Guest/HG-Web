@@ -33,12 +33,20 @@ defineProps({
         type: String,
         default: null,
     },
+    created: {
+        type: String,
+        default: "00/00/0000",
+    },
+    updated: {
+        type: String,
+        default: "00/00/0000",
+    },
 });
 </script>
 
 <template>
     <CardBox>
-        <BaseLevel type="justify-around lg:justify-center">
+        <BaseLevel type="justify-around lg:justify-center" class="relative">
             <UserAvatarCurrentUser
                 :user-name="userName"
                 :user-avatar="userAvatar"
@@ -95,6 +103,11 @@ defineProps({
                     />
                 </div>
             </div>
+            <span
+                class="static text-zinc-500 right-0 bottom-0 mb-1 text-center sm:text-right sm:absolute"
+                >Criado Em: {{ created }}<br />Última Atualização:
+                {{ updated }}</span
+            >
         </BaseLevel>
     </CardBox>
 </template>
