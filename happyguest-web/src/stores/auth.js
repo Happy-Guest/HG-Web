@@ -51,9 +51,8 @@ export const useAuthStore = defineStore("auth", () => {
     }
 
     async function register(credentials) {
-        let response;
         try {
-            response = await axios.post("register-team", credentials);
+            const response = await axios.post("register-team", credentials);
             return response;
         } catch (error) {
             return error.response;

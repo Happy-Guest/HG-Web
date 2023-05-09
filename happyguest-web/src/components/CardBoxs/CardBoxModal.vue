@@ -101,6 +101,7 @@ window.addEventListener("keydown", (e) => {
                 v-if="hasErrors || hasPassword"
                 :errors="errors"
             />
+
             <CardBoxComponentTitle :title="title" :icon="iconTitle">
                 <BaseButton
                     v-if="hasClose"

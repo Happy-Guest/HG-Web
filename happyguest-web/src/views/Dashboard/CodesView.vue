@@ -24,17 +24,16 @@ onMounted(() => {
 </script>
 
 <template>
-    <CardBoxCode
-        :active="isModalActiveCreate"
-        @update:active="isModalActiveCreate = $event"
-    />
     <LayoutAuthenticated>
+        <CardBoxCode
+            :active="isModalActiveCreate"
+            @update:active="isModalActiveCreate = $event"
+        />
         <SectionMain>
             <SectionTitleLineWithButton
                 :icon="mdiBarcode"
                 :title="'Códigos'"
                 main
-                @click="isModalActiveCreate = true"
             >
                 <BaseButtons>
                     <BaseButton
@@ -43,6 +42,7 @@ onMounted(() => {
                         color="success"
                         rounded-full
                         small
+                        @click="isModalActiveCreate = true"
                     />
                 </BaseButtons>
             </SectionTitleLineWithButton>
@@ -50,7 +50,7 @@ onMounted(() => {
                 <TableCodes v-if="hasCodes" />
                 <CardBoxComponentEmpty
                     v-else
-                    message="Sem códigos registados..."
+                    message="Sem códigos criados..."
                 />
             </CardBox>
         </SectionMain>

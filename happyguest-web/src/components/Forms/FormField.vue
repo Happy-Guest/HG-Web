@@ -35,7 +35,7 @@ const wrapperClass = computed(() => {
     }
 
     if (props.flex) {
-        base.push("flex flex-wrap sm:flex-nowrap gap-1 md:gap-3");
+        base.push("flex flex-wrap sm:flex-nowrap md:gap-3 justify-between");
     }
 
     if (slotsLength === 2) {

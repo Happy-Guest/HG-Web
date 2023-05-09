@@ -1,11 +1,18 @@
 <script setup>
 import { computed, ref, watch, onMounted } from "vue";
-import { mdiRename, mdiClose, mdiCheck } from "@mdi/js";
+import {
+    mdiRename,
+    mdiClose,
+    mdiCheck,
+    mdiTrashCan,
+    mdiCheckCircle,
+} from "@mdi/js";
 import BaseLevel from "@/components/Bases/BaseLevel.vue";
 import BaseButtons from "@/components/Bases/BaseButtons.vue";
 import BaseButton from "@/components/Bases/BaseButton.vue";
 import PillTag from "@/components/PillTags/PillTag.vue";
 import CardBoxCode from "@/components/CardBoxsCustom/CardBoxCode.vue";
+import NotificationBar from "@/components/Others/NotificationBar.vue";
 import { useCodeStore } from "@/stores/code";
 
 const codeStore = useCodeStore();
@@ -16,6 +23,7 @@ const numPages = computed(() => codeStore.lastPage);
 const currentPageHuman = computed(() => currentPage.value + 1);
 
 const isModalActive = ref(false);
+const isSuccessNotifActive = ref(false);
 const selected = ref(0);
 
 watch(currentPageHuman, async () => {
@@ -44,27 +52,43 @@ const pagesList = computed(() => {
     return pagesList[parseInt(currentPage.value / 10)];
 });
 
-const getDateString = (date) => {
-    var dateString = new Date(date);
-    return (
-        (dateString.getDate() > 9
-            ? dateString.getDate()
-            : "0" + dateString.getDate()) +
-        "/" +
-        (dateString.getMonth() > 8
-            ? dateString.getMonth() + 1
-            : "0" + (dateString.getMonth() + 1)) +
-        "/" +
-        dateString.getFullYear()
-    );
+const dateSurpassed = (date) => {
+    const dateParts = date.split("/");
+    const dateString = new Date(+dateParts[2], dateParts[1] - 1, +dateParts[0]);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    if (today.getTime() == dateString.getTime()) {
+        return "text-yellow-500";
+    } else if (dateString < today) {
+        return "text-red-600";
+    } else {
+        return "text-green-500";
+    }
 };
+
+function updateModal() {
+    isModalActive.value = false;
+    isSuccessNotifActive.value = true;
+    setTimeout(() => {
+        isSuccessNotifActive.value = false;
+    }, 5000);
+}
 </script>
 
 <template>
+    <NotificationBar
+        v-if="isSuccessNotifActive"
+        color="success"
+        :icon="mdiCheckCircle"
+        class="animate-bounce-slow -mb-2 mb-1 mt-2 mx-4"
+    >
+        <b>Código atualizado com sucesso!</b>
+    </NotificationBar>
     <CardBoxCode
         :selected="selected"
         :active="isModalActive"
         @update:active="isModalActive = $event"
+        @updated="updateModal()"
     />
     <table class="w-full">
         <thead>
@@ -73,42 +97,51 @@ const getDateString = (date) => {
                 <th>Código:</th>
                 <th>Quarto(s):</th>
                 <th>Entrada:</th>
+                <th>Saída:</th>
                 <th>Estado:</th>
                 <th />
             </tr>
         </thead>
         <tbody>
             <tr v-for="code in codes" :key="code.id">
-                <td data-label="Id">
+                <td data-label="Id" class="text-center">
                     {{ code.id }}
                 </td>
-                <td data-label="Código">
+                <td data-label="Código" class="font-semibold">
                     {{ code.code }}
                 </td>
                 <td data-label="Quarto(s)">
                     <PillTag
-                        v-for="room in JSON.parse(code.rooms)"
-                        class="justify-center ml-4"
+                        v-for="room in code.rooms"
+                        :key="room"
+                        class="justify-center ml-2"
                         :label="room"
-                        color="contrast"
+                        color="info"
                         small
                     />
                 </td>
-                <td data-label="Entrada">
-                    {{ getDateString(code.entry_date) }}
+                <td data-label="Entrada" class="text-center">
+                    {{ code.entry_date }}
+                </td>
+                <td
+                    data-label="Saída"
+                    :class="dateSurpassed(code.exit_date)"
+                    class="text-center"
+                >
+                    {{ code.exit_date }}
                 </td>
                 <td data-label="Estado" class="text-center">
                     <PillTag
                         v-if="code.used == '1'"
-                        class="w-36 justify-center"
+                        class="justify-center"
                         label="Utilizado"
                         color="success"
                         :icon="mdiCheck"
                     />
                     <PillTag
                         v-else
-                        class="w-36 justify-center"
-                        label="Não Utilizado"
+                        class="justify-center"
+                        label="Inutilizado"
                         color="danger"
                         :icon="mdiClose"
                     />
@@ -124,6 +157,16 @@ const getDateString = (date) => {
                             small
                             @click="
                                 isModalActive = true;
+                                selected = code.id;
+                            "
+                        />
+                        <BaseButton
+                            color="danger"
+                            title="Remover"
+                            :icon="mdiTrashCan"
+                            small
+                            @click="
+                                isModalDeleteActive = true;
                                 selected = code.id;
                             "
                         />

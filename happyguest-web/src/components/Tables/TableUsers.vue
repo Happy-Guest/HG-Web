@@ -152,7 +152,7 @@ const submitDelete = (password) => {
         :icon="mdiCheckCircle"
         class="animate-bounce-slow -mb-2 mb-1 mt-2 mx-4"
     >
-        {{ notifText }}
+        <b>{{ notifText }}</b>
     </NotificationBar>
     <NotificationBar
         v-if="isErrorNotifActive"
@@ -160,7 +160,7 @@ const submitDelete = (password) => {
         :icon="mdiAlertCircle"
         class="animate-bounce-slow -mb-2 mb-1 mt-2 mx-4"
     >
-        {{ notifText }}
+        <b>{{ notifText }}</b>
     </NotificationBar>
     <CardBoxModal
         v-model="isModalBlockActive"

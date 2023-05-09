@@ -34,10 +34,28 @@ export const useCodeStore = defineStore("code", () => {
 
     async function getCode(id) {
         try {
-            const response = await axios.get("codes/" + id);
+            let response = await axios.get("codes/" + id);
             return response.data.data;
         } catch (error) {
             return error;
+        }
+    }
+
+    async function createCode(code) {
+        try {
+            let response = await axios.post("codes", code);
+            return response;
+        } catch (error) {
+            return error.response;
+        }
+    }
+
+    async function updateCode(id, data) {
+        try {
+            let response = await axios.patch("codes/" + id, data);
+            return response;
+        } catch (error) {
+            return error.response;
         }
     }
 
@@ -47,5 +65,7 @@ export const useCodeStore = defineStore("code", () => {
         pagesCodes,
         getCodes,
         getCode,
+        createCode,
+        updateCode,
     };
 });
