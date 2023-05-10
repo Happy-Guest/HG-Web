@@ -13,7 +13,7 @@ import {
     mdiCog,
     mdiCheck,
     mdiClose,
-    mdiFileCheck,
+    mdiClockTimeTwoOutline,
 } from "@mdi/js";
 import CardBoxModal from "@/components/CardBoxs/CardBoxModal.vue";
 import FormControl from "@/components/Forms/FormControl.vue";
@@ -74,10 +74,10 @@ const form = ref({
 });
 
 const selectOptions = [
-    { id: 0, label: "Pendente", value: "P", icon: mdiFileCheck },
+    { id: 0, label: "Pendente", value: "P", icon: mdiClockTimeTwoOutline },
     { id: 1, label: "Resolução", value: "S", icon: mdiCog },
-    { id: 2, label: "Resolvida", value: "R", icon: mdiCheck },
-    { id: 3, label: "Cancelada", value: "C", icon: mdiClose },
+    { id: 2, label: "Terminada", value: "R", icon: mdiCheck },
+    { id: 3, label: "Anulada", value: "C", icon: mdiClose },
 ];
 
 const responseComplaint = () => {
@@ -212,9 +212,9 @@ const responseComplaint = () => {
                 complaint.status == 'S'
                     ? 'Resolução'
                     : complaint.status == 'R'
-                    ? 'Resolvida'
+                    ? 'Terminada'
                     : complaint.status == 'C'
-                    ? 'Cancelada'
+                    ? 'Anulada'
                     : 'Pendente'
             "
             :icon="
@@ -224,7 +224,7 @@ const responseComplaint = () => {
                     ? mdiCheck
                     : complaint.status == 'C'
                     ? mdiClose
-                    : mdiFileCheck
+                    : mdiClockTimeTwoOutline
             "
             :color="
                 complaint.status == 'S'
@@ -249,7 +249,7 @@ const responseComplaint = () => {
             <FormControl
                 v-model="form.status"
                 :options="selectOptions"
-                :icon="mdiFileCheck"
+                :icon="form.status.icon"
             />
         </FormField>
         <FormField

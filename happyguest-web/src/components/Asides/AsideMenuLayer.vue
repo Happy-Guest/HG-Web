@@ -46,9 +46,7 @@ const asideLgCloseClick = (event) => {
                 :class="styleStore.asideBrandStyle"
                 class="flex flex-row h-16 lg:h-14 items-center justify-between shadow-md"
             >
-                <div
-                    class="text-center flex-1 lg:text-left lg:pl-6 xl:text-center xl:pl-0"
-                >
+                <div class="text-center flex-1 lg:pl-6 xl:pl-0">
                     <b class="font-black">HappyGuest</b>
                 </div>
                 <button

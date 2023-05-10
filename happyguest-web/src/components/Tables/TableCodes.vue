@@ -93,7 +93,7 @@ const dateSurpassed = (date) => {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
     if (today.getTime() == dateString.getTime()) {
-        return "text-yellow-500";
+        return "text-yellow-600";
     } else if (dateString < today) {
         return "text-red-600";
     } else {
@@ -214,7 +214,7 @@ const submitDelete = (password) => {
                     <PillTag
                         v-for="room in code.rooms"
                         :key="room"
-                        class="justify-center ml-2"
+                        class="justify-center ml-2 font-semibold"
                         :label="room"
                         color="info"
                         small

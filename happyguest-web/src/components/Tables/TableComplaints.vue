@@ -4,7 +4,7 @@ import {
     mdiEmailFastOutline,
     mdiClose,
     mdiCheck,
-    mdiFileCheck,
+    mdiClockTimeTwoOutline,
     mdiEye,
     mdiCog,
     mdiCheckCircle,
@@ -117,7 +117,7 @@ function updateModal(resComplaint) {
                 </td>
                 <td data-label="Quarto" class="text-center">
                     <PillTag
-                        class="justify-center"
+                        class="justify-center font-semibold"
                         :label="complaint.room"
                         color="info"
                         small
@@ -129,7 +129,7 @@ function updateModal(resComplaint) {
                         class="justify-center"
                         label="Pendente"
                         color="info"
-                        :icon="mdiFileCheck"
+                        :icon="mdiClockTimeTwoOutline"
                     />
                     <PillTag
                         v-else-if="complaint.status == 'S'"
@@ -141,14 +141,14 @@ function updateModal(resComplaint) {
                     <PillTag
                         v-else-if="complaint.status == 'R'"
                         class="justify-center"
-                        label="Resolvida"
+                        label="Terminada"
                         color="success"
                         :icon="mdiCheck"
                     />
                     <PillTag
                         v-else
                         class="justify-center"
-                        label="Cancelada"
+                        label="Anulada"
                         color="danger"
                         :icon="mdiClose"
                     />
