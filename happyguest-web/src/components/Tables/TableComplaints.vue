@@ -1,17 +1,19 @@
 <script setup>
 import { computed, ref, watch, onMounted } from "vue";
 import {
-    mdiRename,
+    mdiEmailFastOutline,
     mdiClose,
     mdiCheck,
     mdiFileCheck,
     mdiEye,
     mdiCog,
+    mdiCheckCircle,
 } from "@mdi/js";
 import BaseLevel from "@/components/Bases/BaseLevel.vue";
 import BaseButtons from "@/components/Bases/BaseButtons.vue";
 import BaseButton from "@/components/Bases/BaseButton.vue";
 import PillTag from "@/components/PillTags/PillTag.vue";
+import NotificationBar from "@/components/Others/NotificationBar.vue";
 import { useComplaintStore } from "@/stores/complaint";
 import CardBoxComplaint from "../CardBoxsCustom/CardBoxComplaint.vue";
 
@@ -23,7 +25,8 @@ const numPages = computed(() => complaintStore.lastPage);
 const currentPageHuman = computed(() => currentPage.value + 1);
 
 const isModalActive = ref(false);
-const selected = ref(0);
+const isModalResponseActive = ref(false);
+const selected = ref(null);
 
 watch(currentPageHuman, async () => {
     complaints.value = await complaintStore.getComplaints(
@@ -52,13 +55,42 @@ const pagesList = computed(() => {
     }
     return pagesList[parseInt(currentPage.value / 10)];
 });
+
+const isSuccessNotifUpdateActive = ref(false);
+
+function updateModal(resComplaint) {
+    isModalActive.value = false;
+    isModalResponseActive.value = false;
+    isSuccessNotifUpdateActive.value = true;
+    complaints.value = complaints.value.map((complaint) => {
+        if (complaint.id == resComplaint.id) {
+            return resComplaint;
+        }
+        return complaint;
+    });
+    setTimeout(() => {
+        isSuccessNotifUpdateActive.value = false;
+    }, 5000);
+}
 </script>
 
 <template>
+    <NotificationBar
+        v-if="isSuccessNotifUpdateActive"
+        color="success"
+        :icon="mdiCheckCircle"
+        class="animate-bounce-slow -mb-1 mx-8"
+    >
+        <b>Resposta enviada com sucesso!</b>
+    </NotificationBar>
     <CardBoxComplaint
         :selected="selected"
         :active="isModalActive"
-        @update:active="isModalActive = $event"
+        :has-response="isModalResponseActive"
+        @update:active="
+            (isModalActive = $event), (isModalResponseActive = $event)
+        "
+        @updated="updateModal($event)"
     />
     <table class="w-full">
         <thead>
@@ -132,10 +164,11 @@ const pagesList = computed(() => {
                         <BaseButton
                             color="warning"
                             title="Responder"
-                            :icon="mdiRename"
+                            :icon="mdiEmailFastOutline"
                             small
                             @click="
                                 isModalActive = true;
+                                isModalResponseActive = true;
                                 selected = complaint.id;
                             "
                         />

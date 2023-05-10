@@ -290,7 +290,8 @@ const submitDelete = (password) => {
                             :icon="
                                 user.id == authStore.userId ||
                                 user.role == 'A' ||
-                                (user.role == 'M' && authStore.user?.role == 'M')
+                                (user.role == 'M' &&
+                                    authStore.user?.role == 'M')
                                     ? mdiCancel
                                     : mdiLock
                             "
@@ -298,7 +299,8 @@ const submitDelete = (password) => {
                             :disabled="
                                 user.id == authStore.userId ||
                                 user.role == 'A' ||
-                                (user.role == 'M' && authStore.user?.role == 'M')
+                                (user.role == 'M' &&
+                                    authStore.user?.role == 'M')
                             "
                             @click="
                                 isModalBlockActive = true;
@@ -313,7 +315,8 @@ const submitDelete = (password) => {
                             :icon="
                                 user.id == authStore.userId ||
                                 user.role == 'A' ||
-                                (user.role == 'M' && authStore.user?.role == 'M')
+                                (user.role == 'M' &&
+                                    authStore.user?.role == 'M')
                                     ? mdiCancel
                                     : mdiAccountCheck
                             "
@@ -321,7 +324,8 @@ const submitDelete = (password) => {
                             :disabled="
                                 user.id == authStore.userId ||
                                 user.role == 'A' ||
-                                (user.role == 'M' && authStore.user?.role == 'M')
+                                (user.role == 'M' &&
+                                    authStore.user?.role == 'M')
                             "
                             @click="
                                 isModalBlockActive = true;
@@ -335,7 +339,8 @@ const submitDelete = (password) => {
                             :icon="
                                 user.role == 'A' ||
                                 user.id == authStore.userId ||
-                                (user.role == 'M' && authStore.user?.role == 'M')
+                                (user.role == 'M' &&
+                                    authStore.user?.role == 'M')
                                     ? mdiCancel
                                     : mdiTrashCan
                             "
@@ -343,7 +348,8 @@ const submitDelete = (password) => {
                             :disabled="
                                 user.role == 'A' ||
                                 user.id == authStore.userId ||
-                                (user.role == 'M' && authStore.user?.role == 'M')
+                                (user.role == 'M' &&
+                                    authStore.user?.role == 'M')
                             "
                             @click="
                                 isModalDeleteActive = true;

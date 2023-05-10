@@ -41,11 +41,20 @@ export const useComplaintStore = defineStore("complaint", () => {
         }
     }
 
+    async function responseComplaint(id, data) {
+        try {
+            const response = await axios.patch("complaints/" + id, data);
+            return response;
+        } catch (error) {
+            return error;
+        }
+    }
     return {
         complaints,
         lastPage,
         pagesComplaints,
         getComplaints,
         getComplaint,
+        responseComplaint,
     };
 });
