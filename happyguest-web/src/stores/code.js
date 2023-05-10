@@ -59,6 +59,14 @@ export const useCodeStore = defineStore("code", () => {
         }
     }
 
+    async function deleteCode(codeId) {
+        try {
+            let response = await axios.delete("codes/" + codeId);
+            return response;
+        } catch (error) {
+            return error.response;
+        }
+    }
     return {
         codes,
         lastPage,
@@ -67,5 +75,6 @@ export const useCodeStore = defineStore("code", () => {
         getCode,
         createCode,
         updateCode,
+        deleteCode,
     };
 });

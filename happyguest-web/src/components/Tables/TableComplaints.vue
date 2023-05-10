@@ -1,11 +1,19 @@
 <script setup>
 import { computed, ref, watch, onMounted } from "vue";
-import { mdiRename, mdiClose, mdiCheck, mdiFileCheck, mdiEye } from "@mdi/js";
+import {
+    mdiRename,
+    mdiClose,
+    mdiCheck,
+    mdiFileCheck,
+    mdiEye,
+    mdiCog,
+} from "@mdi/js";
 import BaseLevel from "@/components/Bases/BaseLevel.vue";
 import BaseButtons from "@/components/Bases/BaseButtons.vue";
 import BaseButton from "@/components/Bases/BaseButton.vue";
 import PillTag from "@/components/PillTags/PillTag.vue";
 import { useComplaintStore } from "@/stores/complaint";
+import CardBoxComplaint from "../CardBoxsCustom/CardBoxComplaint.vue";
 
 const complaintStore = useComplaintStore();
 
@@ -47,22 +55,28 @@ const pagesList = computed(() => {
 </script>
 
 <template>
+    <CardBoxComplaint
+        :selected="selected"
+        :active="isModalActive"
+        @update:active="isModalActive = $event"
+    />
     <table class="w-full">
         <thead>
             <tr>
                 <th>ID:</th>
-                <th>Titulo:</th>
+                <th>Título:</th>
                 <th>Quarto:</th>
                 <th>Estado:</th>
+                <th>Data:</th>
                 <th />
             </tr>
         </thead>
         <tbody>
             <tr v-for="complaint in complaints" :key="complaint.id">
-                <td data-label="Id">
+                <td data-label="Id" class="text-center">
                     {{ complaint.id }}
                 </td>
-                <td data-label="Titulo">
+                <td data-label="Título">
                     {{ complaint.title }}
                 </td>
                 <td data-label="Quarto" class="text-center">
@@ -71,25 +85,35 @@ const pagesList = computed(() => {
                 <td data-label="Estado" class="text-center">
                     <PillTag
                         v-if="complaint.status == 'P'"
-                        class="w-36 justify-center"
-                        label="P"
+                        class="justify-center"
+                        label="Pendente"
                         color="info"
                         :icon="mdiFileCheck"
                     />
                     <PillTag
+                        v-else-if="complaint.status == 'S'"
+                        class="justify-center"
+                        label="Resolução"
+                        color="warning"
+                        :icon="mdiCog"
+                    />
+                    <PillTag
                         v-else-if="complaint.status == 'R'"
-                        class="w-36 justify-center"
-                        label="R"
+                        class="justify-center"
+                        label="Resolvida"
                         color="success"
                         :icon="mdiCheck"
                     />
                     <PillTag
                         v-else
-                        class="w-36 justify-center"
-                        label="C"
+                        class="justify-center"
+                        label="Cancelada"
                         color="danger"
                         :icon="mdiClose"
                     />
+                </td>
+                <td data-label="Data" class="text-center">
+                    {{ complaint.created_at }}
                 </td>
                 <td
                     class="before:hidden lg:w-1 whitespace-nowrap place-content-center"

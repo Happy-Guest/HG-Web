@@ -13,6 +13,7 @@ import BaseButton from "@/components/Bases/BaseButton.vue";
 import PillTag from "@/components/PillTags/PillTag.vue";
 import CardBoxCode from "@/components/CardBoxsCustom/CardBoxCode.vue";
 import NotificationBar from "@/components/Others/NotificationBar.vue";
+import CardBoxModal from "@/components/CardBoxs/CardBoxModal.vue";
 import { useCodeStore } from "@/stores/code";
 
 const props = defineProps({
@@ -30,7 +31,12 @@ const numPages = computed(() => codeStore.lastPage);
 const currentPageHuman = computed(() => currentPage.value + 1);
 
 const isModalActive = ref(false);
+const isSuccessNotifUpdateActive = ref(false);
+const isModalDeleteActive = ref(false);
 const isSuccessNotifActive = ref(false);
+const isErrorNotifActive = ref(false);
+const notifText = ref("");
+const resErrors = ref([]);
 const selected = ref(0);
 
 watch(currentPageHuman, async () => {
@@ -84,22 +90,77 @@ const dateSurpassed = (date) => {
 
 function updateModal() {
     isModalActive.value = false;
-    isSuccessNotifActive.value = true;
+    isSuccessNotifUpdateActive.value = true;
     setTimeout(() => {
-        isSuccessNotifActive.value = false;
+        isSuccessNotifUpdateActive.value = false;
     }, 5000);
 }
+
+const submitDelete = () => {
+    codeStore
+        .deleteCode(selected.value)
+        .then((response) => {
+            notifText.value = response.data.message;
+            if (response.status === 200) {
+                isModalDeleteActive.value = false;
+                codes.value = codes.value.filter(
+                    (code) => code.id != selected.value
+                );
+                isSuccessNotifActive.value = true;
+                setTimeout(function () {
+                    isSuccessNotifActive.value = false;
+                }, 5000);
+            } else {
+                resErrors.value = response.data.errors;
+            }
+        })
+        .catch(() => {
+            notifText.value = "Ocorreu um erro ao remover o utilizador.";
+            isErrorNotifActive.value = true;
+            setTimeout(function () {
+                isErrorNotifActive.value = false;
+            }, 5000);
+        });
+};
 </script>
 
 <template>
     <NotificationBar
-        v-if="isSuccessNotifActive"
+        v-if="isSuccessNotifUpdateActive"
         color="success"
         :icon="mdiCheckCircle"
         class="animate-bounce-slow -mb-2 mb-1 mt-2 mx-4"
     >
         <b>Código atualizado com sucesso!</b>
     </NotificationBar>
+    <NotificationBar
+        v-if="isSuccessNotifActive"
+        color="success"
+        :icon="mdiCheckCircle"
+        class="animate-bounce-slow -mb-2 mb-1 mt-2 mx-4"
+    >
+        <b>{{ notifText }}</b>
+    </NotificationBar>
+    <NotificationBar
+        v-if="isErrorNotifActive"
+        color="danger"
+        :icon="mdiAlertCircle"
+        class="animate-bounce-slow -mb-2 mb-1 mt-2 mx-4"
+    >
+        <b>{{ notifText }}</b>
+    </NotificationBar>
+    <CardBoxModal
+        v-model="isModalDeleteActive"
+        :errors="resErrors"
+        title="Remover Código"
+        button="danger"
+        :icon-title="mdiTrashCan"
+        has-cancel
+        has-close
+        @confirm="submitDelete"
+    >
+        <p>Tem a certeza que <b>deseja remover</b> o código?</p>
+    </CardBoxModal>
     <CardBoxCode
         :selected="selected"
         :active="isModalActive"
