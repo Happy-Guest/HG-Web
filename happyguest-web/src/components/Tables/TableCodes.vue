@@ -56,6 +56,15 @@ watch(
     }
 );
 
+watch(
+    () => isModalDeleteActive.value,
+    (value) => {
+        if (value) {
+            resErrors.value = [];
+        }
+    }
+);
+
 onMounted(async () => {
     codes.value = await codeStore.getCodes(1);
 });

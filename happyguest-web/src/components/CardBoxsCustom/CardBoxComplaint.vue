@@ -20,6 +20,7 @@ import FormControl from "@/components/Forms/FormControl.vue";
 import FormField from "@/components/Forms/FormField.vue";
 import { useComplaintStore } from "@/stores/complaint";
 import PillTag from "../PillTags/PillTag.vue";
+import BaseDivider from "../Bases/BaseDivider.vue";
 
 const complaintStore = useComplaintStore();
 const complaint = ref([]);
@@ -106,14 +107,21 @@ const responseComplaint = () => {
         "
         :icon-title="selected ? mdiEye : mdiPencil"
         :button-label="'Criar'"
+        :button-cancel-label="selected ? 'Fechar' : 'Cancelar'"
+        :button-cancel="selected ? 'info' : 'danger'"
         :icon="mdiContentSaveCheck"
+        button="success"
         has-close
         has-cancel
         :only-view="selected ? true : false"
         @cancel="emit('update:active', false)"
         @confirm="createComplaint()"
     >
-        <FormField label="Título" no-margin>
+        <FormField
+            label="Título"
+            no-margin
+            help="O título da reclamação. Obrigatório."
+        >
             <FormControl
                 v-model="form.title"
                 :icon="mdiCursorText"
@@ -121,7 +129,10 @@ const responseComplaint = () => {
                 :disabled="selected ? true : false"
             />
         </FormField>
-        <FormField label="Comentário">
+        <FormField
+            label="Comentário"
+            help="O comentário da reclamação. Obrigatório."
+        >
             <FormControl
                 v-model="form.comment"
                 :icon="mdiCommentTextOutline"
@@ -130,8 +141,15 @@ const responseComplaint = () => {
                 :disabled="selected ? true : false"
             />
         </FormField>
+
+        <BaseDivider />
+
         <FormField>
-            <FormField label="Quarto" no-margin>
+            <FormField
+                label="Quarto"
+                help="O quarto da reclamação. Opcional."
+                no-margin
+            >
                 <FormControl
                     v-model="complaint.room"
                     :icon="mdiBed"
@@ -139,7 +157,11 @@ const responseComplaint = () => {
                     :disabled="selected ? true : false"
                 />
             </FormField>
-            <FormField label="Cliente" no-margin>
+            <FormField
+                label="Cliente"
+                no-margin
+                help="O cliente da reclamação. Opcional"
+            >
                 <FormControl
                     :model-value="complaint.user?.name"
                     :icon="mdiAccountCircle"
@@ -148,7 +170,14 @@ const responseComplaint = () => {
                 />
             </FormField>
         </FormField>
-        <FormField label="Resposta" no-margin>
+
+        <BaseDivider />
+
+        <FormField
+            label="Resposta"
+            no-margin
+            help="A resposta da reclamação. Dada pelos gestores."
+        >
             <FormControl
                 :model-value="
                     form.response
@@ -170,6 +199,7 @@ const responseComplaint = () => {
         :title="'Responder Reclamação ➯ ' + complaint?.id"
         :icon-title="mdiEmailFastOutline"
         :button-label="'Responder'"
+        button="warning"
         :icon="mdiMail"
         has-close
         has-cancel
@@ -205,14 +235,27 @@ const responseComplaint = () => {
                     ? 'danger'
                     : 'info'
             "
+            class="my-1"
         />
         <p><b>Título: </b>{{ complaint.title }}</p>
         <p><b>Comentário: </b>{{ complaint.comment }}</p>
 
-        <FormField label="Estado" help="Selecione o estado da reclamação.">
-            <FormControl v-model="form.status" :options="selectOptions" />
+        <BaseDivider />
+
+        <FormField
+            label="Estado"
+            help="Selecione o estado da reclamação. Obrigatório."
+        >
+            <FormControl
+                v-model="form.status"
+                :options="selectOptions"
+                :icon="mdiFileCheck"
+            />
         </FormField>
-        <FormField label="Resposta" help="Registe a resposta.">
+        <FormField
+            label="Resposta"
+            help="Registe a resposta da reclamação. Obrigatório."
+        >
             <FormControl
                 v-model="form.response"
                 :icon="mdiEmailFastOutline"

@@ -58,6 +58,15 @@ onUpdated(async () => {
     users.value = await userStore.getUsers(1);
 });
 
+watch(
+    () => isModalDeleteActive.value,
+    (value) => {
+        if (value) {
+            resErrors.value = [];
+        }
+    }
+);
+
 const pagesList = computed(() => {
     const pagesList = [];
     let num = [];

@@ -109,10 +109,19 @@ function updateModal(resComplaint) {
                     {{ complaint.id }}
                 </td>
                 <td data-label="Título">
-                    {{ complaint.title }}
+                    {{
+                        complaint.title.length > 30
+                            ? complaint.title.substring(0, 30) + "..."
+                            : complaint.title
+                    }}
                 </td>
                 <td data-label="Quarto" class="text-center">
-                    {{ complaint.room }}
+                    <PillTag
+                        class="justify-center"
+                        :label="complaint.room"
+                        color="info"
+                        small
+                    />
                 </td>
                 <td data-label="Estado" class="text-center">
                     <PillTag

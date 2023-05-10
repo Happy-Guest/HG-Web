@@ -175,6 +175,7 @@ const editCode = async () => {
                     :icon="mdiBarcode"
                     name="code"
                     :class="!selected ? 'w-10/12 flex flex-initial' : 'w-full'"
+                    :disabled="selected ? true : false"
                     required
                 />
                 <BaseButtons v-if="!selected">
