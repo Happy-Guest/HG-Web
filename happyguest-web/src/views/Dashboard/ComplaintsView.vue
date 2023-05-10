@@ -2,8 +2,7 @@
 import { mdiBullhornVariant } from "@mdi/js";
 import LayoutAuthenticated from "@/layouts/LayoutAuthenticated.vue";
 import SectionMain from "@/components/Sections/SectionMain.vue";
-import SectionTitleLineWithButton from "@/components/Sections/SectionTitleLineWithButton.vue";
-
+import SectionTitleLine from "@/components/Sections/SectionTitleLine.vue";
 import CardBoxComponentEmpty from "@/components/CardBoxs/CardBoxComponentEmpty.vue";
 import TableComplaints from "@/components/Tables/TableComplaints.vue";
 import CardBox from "@/components/CardBoxs/CardBox.vue";
@@ -22,12 +21,12 @@ onMounted(() => {
 <template>
     <LayoutAuthenticated>
         <SectionMain>
-            <SectionTitleLineWithButton
+            <SectionTitleLine
                 :icon="mdiBullhornVariant"
                 :title="'Reclamações'"
                 main
             >
-            </SectionTitleLineWithButton>
+            </SectionTitleLine>
             <CardBox class="mb-6" has-table>
                 <TableComplaints v-if="hasComplaints" />
                 <CardBoxComponentEmpty

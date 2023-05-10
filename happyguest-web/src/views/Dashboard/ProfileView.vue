@@ -321,7 +321,14 @@ watch(
                             <b>{{ resMessage }}</b>
                         </NotificationBarInCard>
                     </Transition>
-                    <FormField label="Nome" help="O seu nome. Obrigatório">
+                    <FormField
+                        label="Nome"
+                        :help="
+                            account
+                                ? 'O nome do utilizador. Obrigatório'
+                                : 'O seu nome. Obrigatório'
+                        "
+                    >
                         <FormControl
                             v-model="profileForm.name"
                             :icon="mdiAccount"
@@ -334,7 +341,14 @@ watch(
                         />
                     </FormField>
 
-                    <FormField label="Email" help="O seu e-mail. Obrigatório">
+                    <FormField
+                        label="Email"
+                        :help="
+                            account
+                                ? 'O email do utilizador. Obrigatório'
+                                : 'O seu email. Obrigatório'
+                        "
+                    >
                         <FormControl
                             v-model="profileForm.email"
                             :icon="mdiEmail"
@@ -353,7 +367,12 @@ watch(
 
                     <FormField
                         label="Nº Telefone"
-                        help="O seu número de telefone. Opcional"
+                        :help="
+                            account
+                                ? 'O nº de telefone do utilizador. Opcional'
+                                : 'O seu nº de telefone. Opcional'
+                        "
+                        class="mb-0"
                     >
                         <FormControl
                             v-model="profileForm.phone"
@@ -375,25 +394,28 @@ watch(
                     </FormField>
 
                     <template #footer>
-                        <BaseButtons
-                            v-if="
-                                !account ||
-                                (user.role != 'A' &&
-                                    (user.role != 'M' ||
-                                        authStore.user.role == 'A'))
-                            "
-                        >
+                        <BaseButtons>
                             <BaseButton
                                 type="submit"
                                 color="success"
                                 label="Atualizar"
                                 :icon="mdiContentSaveCheck"
+                                :disabled="
+                                    user.role == 'A' ||
+                                    (user.role == 'M' &&
+                                        authStore.user.role != 'A')
+                                "
                             />
                             <BaseButton
                                 color="info"
                                 label="Repor"
                                 outline
                                 :icon="mdiLockReset"
+                                :disabled="
+                                    user.role == 'A' ||
+                                    (user.role == 'M' &&
+                                        authStore.user.role != 'A')
+                                "
                                 @click="clearProfileFields"
                             />
                         </BaseButtons>

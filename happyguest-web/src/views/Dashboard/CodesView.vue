@@ -2,7 +2,7 @@
 import { mdiPlus, mdiBarcode } from "@mdi/js";
 import LayoutAuthenticated from "@/layouts/LayoutAuthenticated.vue";
 import SectionMain from "@/components/Sections/SectionMain.vue";
-import SectionTitleLineWithButton from "@/components/Sections/SectionTitleLineWithButton.vue";
+import SectionTitleLine from "@/components/Sections/SectionTitleLine.vue";
 import BaseButtons from "@/components/Bases/BaseButtons.vue";
 import BaseButton from "@/components/Bases/BaseButton.vue";
 import CardBoxComponentEmpty from "@/components/CardBoxs/CardBoxComponentEmpty.vue";
@@ -32,11 +32,7 @@ onMounted(() => {
             @updated="updated = true"
         />
         <SectionMain>
-            <SectionTitleLineWithButton
-                :icon="mdiBarcode"
-                :title="'Códigos'"
-                main
-            >
+            <SectionTitleLine :icon="mdiBarcode" :title="'Códigos'" main>
                 <BaseButtons>
                     <BaseButton
                         :icon="mdiPlus"
@@ -47,7 +43,7 @@ onMounted(() => {
                         @click="isModalActiveCreate = true"
                     />
                 </BaseButtons>
-            </SectionTitleLineWithButton>
+            </SectionTitleLine>
             <CardBox class="mb-6" has-table>
                 <TableCodes v-if="hasCodes" :updated="updated" />
                 <CardBoxComponentEmpty
