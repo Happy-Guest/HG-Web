@@ -48,6 +48,7 @@ const props = defineProps({
     hasClose: Boolean,
     hasPassword: Boolean,
     hasErrors: Boolean,
+    onlyView: Boolean,
     modelValue: {
         type: [String, Number, Boolean],
         default: null,
@@ -141,12 +142,13 @@ window.addEventListener("keydown", (e) => {
                         type="submit"
                     />
                     <BaseButton
-                        v-else
+                        v-else-if="!onlyView"
                         :label="buttonLabel"
                         :color="button"
                         :icon="icon"
                         @click="confirm"
                     />
+
                     <BaseButton
                         v-if="hasCancel"
                         label="Cancelar"

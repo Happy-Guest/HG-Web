@@ -96,9 +96,9 @@ function updateModal() {
     }, 5000);
 }
 
-const submitDelete = () => {
+const submitDelete = (password) => {
     codeStore
-        .deleteCode(selected.value)
+        .deleteCode(selected.value, password)
         .then((response) => {
             notifText.value = response.data.message;
             if (response.status === 200) {
@@ -157,6 +157,7 @@ const submitDelete = () => {
         :icon-title="mdiTrashCan"
         has-cancel
         has-close
+        has-password
         @confirm="submitDelete"
     >
         <p>Tem a certeza que <b>deseja remover</b> o código?</p>

@@ -59,9 +59,13 @@ export const useCodeStore = defineStore("code", () => {
         }
     }
 
-    async function deleteCode(codeId) {
+    async function deleteCode(codeId, data) {
         try {
-            let response = await axios.delete("codes/" + codeId);
+            let response = await axios.delete("codes/" + codeId, {
+                data: {
+                    password: data,
+                },
+            });
             return response;
         } catch (error) {
             return error.response;
