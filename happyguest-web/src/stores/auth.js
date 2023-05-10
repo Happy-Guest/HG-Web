@@ -71,11 +71,11 @@ export const useAuthStore = defineStore("auth", () => {
         } else if (storedToken) {
             axios.defaults.headers.common.Authorization =
                 "Bearer " + storedToken;
-            if (!storedUser) {
-                await loadUser();
-            } else {
+            if (storedUser) {
                 user.value = JSON.parse(storedUser);
             }
+            user.value = JSON.parse(storedUser);
+            await loadUser();
             return true;
         }
         clearUser();
