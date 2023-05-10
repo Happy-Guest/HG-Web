@@ -1,5 +1,5 @@
 <script setup>
-import { mdiPlus, mdiBarcode } from "@mdi/js";
+import { mdiPlusBoxMultiple, mdiBarcode } from "@mdi/js";
 import LayoutAuthenticated from "@/layouts/LayoutAuthenticated.vue";
 import SectionMain from "@/components/Sections/SectionMain.vue";
 import SectionTitleLine from "@/components/Sections/SectionTitleLine.vue";
@@ -15,7 +15,7 @@ import { useCodeStore } from "@/stores/code";
 const codeStore = useCodeStore();
 
 const hasCodes = ref(false);
-const updated = ref(false);
+const newCode = ref(null);
 
 const isModalActiveCreate = ref(false);
 
@@ -29,13 +29,13 @@ onMounted(() => {
         <CardBoxCode
             :active="isModalActiveCreate"
             @update:active="isModalActiveCreate = $event"
-            @updated="updated = true"
+            @updated="newCode = $event"
         />
         <SectionMain>
             <SectionTitleLine :icon="mdiBarcode" :title="'Códigos'" main>
                 <BaseButtons>
                     <BaseButton
-                        :icon="mdiPlus"
+                        :icon="mdiPlusBoxMultiple"
                         label="Criar Código"
                         color="success"
                         rounded-full
@@ -45,7 +45,7 @@ onMounted(() => {
                 </BaseButtons>
             </SectionTitleLine>
             <CardBox class="mb-6" has-table>
-                <TableCodes v-if="hasCodes" :updated="updated" />
+                <TableCodes v-if="hasCodes" :new-code="newCode" />
                 <CardBoxComponentEmpty
                     v-else
                     message="Sem códigos criados..."

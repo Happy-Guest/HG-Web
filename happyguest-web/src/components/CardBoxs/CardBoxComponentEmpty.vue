@@ -6,12 +6,17 @@ defineProps({
         type: String,
         default: "Sem dados para mostrar...",
     },
+    padding: {
+        type: String,
+        default: "py-24",
+    },
 });
 </script>
 
 <template>
     <div
-        class="text-center py-24 text-gray-500 dark:text-slate-400 hover:font-semibold flex flex-row items-center justify-center"
+        class="text-center text-gray-500 dark:text-slate-400 hover:font-semibold flex flex-row items-center justify-center"
+        :class="padding"
     >
         <BaseIcon
             :path="mdiProgressClose"

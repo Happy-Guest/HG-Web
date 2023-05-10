@@ -1,5 +1,5 @@
 <script setup>
-import { computed, ref, watch, onMounted } from "vue";
+import { computed, ref, watch, onMounted, onUpdated } from "vue";
 import {
     mdiEye,
     mdiCrown,
@@ -36,9 +36,10 @@ const currentPage = ref(0);
 const numPages = computed(() => userStore.lastPage);
 const currentPageHuman = computed(() => currentPage.value + 1);
 
-const userId = ref(null);
+const selected = ref(null);
 const userBlocked = ref(null);
 const notifText = ref();
+const resErrors = ref([]);
 
 const isModalBlockActive = ref(false);
 const isSuccessNotifActive = ref(false);
@@ -50,6 +51,10 @@ watch(currentPageHuman, async () => {
 });
 
 onMounted(async () => {
+    users.value = await userStore.getUsers(1);
+});
+
+onUpdated(async () => {
     users.value = await userStore.getUsers(1);
 });
 
@@ -83,13 +88,13 @@ const update = (arr, cb, blocked) => {
 
 const blockUser = async () => {
     var response = await userStore.changeStateUser(
-        userId.value,
+        selected.value,
         userBlocked.value
     );
     if (response.status == 200) {
         users.value = update(
             users.value,
-            (row) => row.id === userId.value,
+            (row) => row.id === selected.value,
             !userBlocked.value
         );
         return true;
@@ -115,18 +120,18 @@ const blockUnblockUser = async () => {
         }, 5000);
     }
 };
-const resErrors = ref([]);
 
 const submitDelete = (password) => {
     userStore
-        .deleteUser(userId.value, password)
+        .deleteUser(selected.value, password)
         .then((response) => {
             notifText.value = response.data.message;
             if (response.status === 200) {
                 isModalDeleteActive.value = false;
-                users.value = users.value.filter(
-                    (user) => user.id != userId.value
+                const index = users.value.findIndex(
+                    (user) => user.id == selected.value
                 );
+                users.value.splice(index, 1);
                 isSuccessNotifActive.value = true;
                 setTimeout(function () {
                     isSuccessNotifActive.value = false;
@@ -304,7 +309,7 @@ const submitDelete = (password) => {
                             "
                             @click="
                                 isModalBlockActive = true;
-                                userId = user.id;
+                                selected = user.id;
                                 userBlocked = user.blocked;
                             "
                         />
@@ -329,7 +334,7 @@ const submitDelete = (password) => {
                             "
                             @click="
                                 isModalBlockActive = true;
-                                userId = user.id;
+                                selected = user.id;
                                 userBlocked = user.blocked;
                             "
                         />
@@ -353,7 +358,7 @@ const submitDelete = (password) => {
                             "
                             @click="
                                 isModalDeleteActive = true;
-                                userId = user.id;
+                                selected = user.id;
                             "
                         />
                     </BaseButtons>

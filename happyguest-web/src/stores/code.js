@@ -41,6 +41,15 @@ export const useCodeStore = defineStore("code", () => {
         }
     }
 
+    async function getUsersByCode(id) {
+        try {
+            let response = await axios.get("codes/" + id + "/users");
+            return response.data.data;
+        } catch (error) {
+            return error;
+        }
+    }
+
     async function createCode(code) {
         try {
             let response = await axios.post("codes", code);
@@ -71,12 +80,14 @@ export const useCodeStore = defineStore("code", () => {
             return error.response;
         }
     }
+
     return {
         codes,
         lastPage,
         pagesCodes,
         getCodes,
         getCode,
+        getUsersByCode,
         createCode,
         updateCode,
         deleteCode,

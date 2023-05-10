@@ -6,8 +6,8 @@ import {
     mdiBarcode,
     mdiBed,
     mdiCalendarRange,
-    mdiPencil,
     mdiRefresh,
+    mdiPlusBoxMultiple,
 } from "@mdi/js";
 import CardBoxModal from "@/components/CardBoxs/CardBoxModal.vue";
 import FormControl from "@/components/Forms/FormControl.vue";
@@ -114,7 +114,7 @@ const createCode = async () => {
             resMessage.value = response.data.message;
             if (response.status == 201) {
                 isModalActive.value = false;
-                emit("updated");
+                emit("updated", response.data.code);
             } else {
                 resErrors.value = response.data.errors;
             }
@@ -137,7 +137,7 @@ const editCode = async () => {
         .then((response) => {
             resMessage.value = response.data.message;
             if (response.status == 200) {
-                emit("updated");
+                emit("updated", response.data.code);
             } else {
                 resErrors.value = response.data.errors;
             }
@@ -154,7 +154,7 @@ const editCode = async () => {
         :title="selected ? 'Editar Código ➯ ' + code?.code : 'Criar Código'"
         :button-label="selected ? 'Atualizar' : 'Criar'"
         :icon="mdiContentSaveCheck"
-        :icon-title="selected ? mdiRename : mdiPencil"
+        :icon-title="selected ? mdiRename : mdiPlusBoxMultiple"
         button="success"
         has-errors
         has-cancel

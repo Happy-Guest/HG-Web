@@ -28,6 +28,10 @@ const props = defineProps({
         type: String,
         default: "danger",
     },
+    buttonCancelLabel: {
+        type: String,
+        default: "Cancelar",
+    },
     buttonLabel: {
         type: String,
         default: "Confirmar",
@@ -151,7 +155,7 @@ window.addEventListener("keydown", (e) => {
 
                     <BaseButton
                         v-if="hasCancel"
-                        label="Cancelar"
+                        :label="buttonCancelLabel"
                         :color="buttonCancel"
                         :icon="mdiCloseCircleOutline"
                         outline

@@ -6,48 +6,52 @@ import {
     mdiCheck,
     mdiTrashCan,
     mdiCheckCircle,
+    mdiAccountSupervisor,
 } from "@mdi/js";
 import BaseLevel from "@/components/Bases/BaseLevel.vue";
 import BaseButtons from "@/components/Bases/BaseButtons.vue";
 import BaseButton from "@/components/Bases/BaseButton.vue";
 import PillTag from "@/components/PillTags/PillTag.vue";
 import CardBoxCode from "@/components/CardBoxsCustom/CardBoxCode.vue";
+import CardBoxCodeUsers from "../CardBoxsCustom/CardBoxCodeUsers.vue";
 import NotificationBar from "@/components/Others/NotificationBar.vue";
 import CardBoxModal from "@/components/CardBoxs/CardBoxModal.vue";
 import { useCodeStore } from "@/stores/code";
 
 const props = defineProps({
-    updated: {
-        type: Boolean,
-        default: false,
+    newCode: {
+        type: Object,
+        default: null,
     },
 });
 
 const codeStore = useCodeStore();
 
-const currentPage = ref(0);
 const codes = ref([]);
+
+const currentPage = ref(0);
 const numPages = computed(() => codeStore.lastPage);
 const currentPageHuman = computed(() => currentPage.value + 1);
 
 const isModalActive = ref(false);
-const isSuccessNotifUpdateActive = ref(false);
 const isModalDeleteActive = ref(false);
 const isSuccessNotifActive = ref(false);
 const isErrorNotifActive = ref(false);
+const isModalUsersActive = ref(false);
+
 const notifText = ref("");
 const resErrors = ref([]);
-const selected = ref(0);
+const selected = ref(null);
 
 watch(currentPageHuman, async () => {
     codes.value = await codeStore.getCodes(currentPage.value + 1);
 });
 
 watch(
-    () => props.updated,
+    () => props.newCode,
     (value) => {
         if (value) {
-            updateModal();
+            updateModal(value, true);
         }
     }
 );
@@ -88,11 +92,23 @@ const dateSurpassed = (date) => {
     }
 };
 
-function updateModal() {
+function updateModal(resCode, newCode) {
+    isSuccessNotifActive.value = true;
     isModalActive.value = false;
-    isSuccessNotifUpdateActive.value = true;
+    if (newCode) {
+        codes.value.unshift(resCode);
+        notifText.value = "Código criado com sucesso!";
+    } else {
+        codes.value = codes.value.map((code) => {
+            if (code.id == resCode.id) {
+                code = resCode;
+            }
+            return code;
+        });
+        notifText.value = "Código atualizado com sucesso!";
+    }
     setTimeout(() => {
-        isSuccessNotifUpdateActive.value = false;
+        isSuccessNotifActive.value = false;
     }, 5000);
 }
 
@@ -126,14 +142,6 @@ const submitDelete = (password) => {
 
 <template>
     <NotificationBar
-        v-if="isSuccessNotifUpdateActive"
-        color="success"
-        :icon="mdiCheckCircle"
-        class="animate-bounce-slow -mb-1 mx-8"
-    >
-        <b>Código atualizado com sucesso!</b>
-    </NotificationBar>
-    <NotificationBar
         v-if="isSuccessNotifActive"
         color="success"
         :icon="mdiCheckCircle"
@@ -166,7 +174,12 @@ const submitDelete = (password) => {
         :selected="selected"
         :active="isModalActive"
         @update:active="isModalActive = $event"
-        @updated="updateModal()"
+        @updated="updateModal($event)"
+    />
+    <CardBoxCodeUsers
+        :selected="selected"
+        :active="isModalUsersActive"
+        @update:active="isModalUsersActive = $event"
     />
     <table class="w-full">
         <thead>
@@ -228,6 +241,16 @@ const submitDelete = (password) => {
                     class="before:hidden lg:w-1 whitespace-nowrap place-content-center"
                 >
                     <BaseButtons type="justify-start lg:justify-end" no-wrap>
+                        <BaseButton
+                            color="info"
+                            title="Clientes Associados"
+                            :icon="mdiAccountSupervisor"
+                            small
+                            @click="
+                                isModalUsersActive = true;
+                                selected = code.id;
+                            "
+                        />
                         <BaseButton
                             color="warning"
                             title="Editar"
