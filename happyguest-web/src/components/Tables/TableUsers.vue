@@ -82,11 +82,11 @@ const update = (arr, cb, blocked) => {
 };
 
 const blockUser = async () => {
-    var response = await userStore.blockUnblockUser(
+    var response = await userStore.changeStateUser(
         userId.value,
         userBlocked.value
     );
-    if (response == 200) {
+    if (response.status == 200) {
         users.value = update(
             users.value,
             (row) => row.id === userId.value,
@@ -150,7 +150,7 @@ const submitDelete = (password) => {
         v-if="isSuccessNotifActive"
         color="success"
         :icon="mdiCheckCircle"
-        class="animate-bounce-slow -mb-2 mb-1 mt-2 mx-4"
+        class="animate-bounce-slow -mb-1 mx-8"
     >
         <b>{{ notifText }}</b>
     </NotificationBar>
@@ -158,7 +158,7 @@ const submitDelete = (password) => {
         v-if="isErrorNotifActive"
         color="danger"
         :icon="mdiAlertCircle"
-        class="animate-bounce-slow -mb-2 mb-1 mt-2 mx-4"
+        class="animate-bounce-slow -mb-1 mx-8"
     >
         <b>{{ notifText }}</b>
     </NotificationBar>
@@ -290,7 +290,7 @@ const submitDelete = (password) => {
                             :icon="
                                 user.id == authStore.userId ||
                                 user.role == 'A' ||
-                                (user.role == 'M' && authStore.user.role == 'M')
+                                (user.role == 'M' && authStore.user?.role == 'M')
                                     ? mdiCancel
                                     : mdiLock
                             "
@@ -298,7 +298,7 @@ const submitDelete = (password) => {
                             :disabled="
                                 user.id == authStore.userId ||
                                 user.role == 'A' ||
-                                (user.role == 'M' && authStore.user.role == 'M')
+                                (user.role == 'M' && authStore.user?.role == 'M')
                             "
                             @click="
                                 isModalBlockActive = true;
@@ -313,7 +313,7 @@ const submitDelete = (password) => {
                             :icon="
                                 user.id == authStore.userId ||
                                 user.role == 'A' ||
-                                (user.role == 'M' && authStore.user.role == 'M')
+                                (user.role == 'M' && authStore.user?.role == 'M')
                                     ? mdiCancel
                                     : mdiAccountCheck
                             "
@@ -321,7 +321,7 @@ const submitDelete = (password) => {
                             :disabled="
                                 user.id == authStore.userId ||
                                 user.role == 'A' ||
-                                (user.role == 'M' && authStore.user.role == 'M')
+                                (user.role == 'M' && authStore.user?.role == 'M')
                             "
                             @click="
                                 isModalBlockActive = true;
@@ -335,7 +335,7 @@ const submitDelete = (password) => {
                             :icon="
                                 user.role == 'A' ||
                                 user.id == authStore.userId ||
-                                (user.role == 'M' && authStore.user.role == 'M')
+                                (user.role == 'M' && authStore.user?.role == 'M')
                                     ? mdiCancel
                                     : mdiTrashCan
                             "
@@ -343,7 +343,7 @@ const submitDelete = (password) => {
                             :disabled="
                                 user.role == 'A' ||
                                 user.id == authStore.userId ||
-                                (user.role == 'M' && authStore.user.role == 'M')
+                                (user.role == 'M' && authStore.user?.role == 'M')
                             "
                             @click="
                                 isModalDeleteActive = true;

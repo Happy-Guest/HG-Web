@@ -129,7 +129,7 @@ const submitDelete = () => {
         v-if="isSuccessNotifUpdateActive"
         color="success"
         :icon="mdiCheckCircle"
-        class="animate-bounce-slow -mb-2 mb-1 mt-2 mx-4"
+        class="animate-bounce-slow -mb-1 mx-8"
     >
         <b>Código atualizado com sucesso!</b>
     </NotificationBar>
@@ -137,7 +137,7 @@ const submitDelete = () => {
         v-if="isSuccessNotifActive"
         color="success"
         :icon="mdiCheckCircle"
-        class="animate-bounce-slow -mb-2 mb-1 mt-2 mx-4"
+        class="animate-bounce-slow -mb-1 mx-8"
     >
         <b>{{ notifText }}</b>
     </NotificationBar>
@@ -145,7 +145,7 @@ const submitDelete = () => {
         v-if="isErrorNotifActive"
         color="danger"
         :icon="mdiAlertCircle"
-        class="animate-bounce-slow -mb-2 mb-1 mt-2 mx-4"
+        class="animate-bounce-slow -mb-1 mx-8"
     >
         <b>{{ notifText }}</b>
     </NotificationBar>

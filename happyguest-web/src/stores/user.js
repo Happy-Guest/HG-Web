@@ -40,20 +40,6 @@ export const useUserStore = defineStore("user", () => {
         return await loadUsers(page);
     }
 
-    async function blockUnblockUser(userId, userBlocked) {
-        try {
-            let response;
-            if (userBlocked == 1) {
-                response = await axios.patch("users/" + userId + "/unblock");
-            } else {
-                response = await axios.patch("users/" + userId + "/block");
-            }
-            return response.status;
-        } catch (error) {
-            return error;
-        }
-    }
-
     async function updateUser(userId, data) {
         try {
             let response = await axios.patch("users/" + userId, data);
@@ -99,7 +85,6 @@ export const useUserStore = defineStore("user", () => {
         loadUserById,
         loadUsers,
         getUsers,
-        blockUnblockUser,
         updateUser,
         deleteUser,
         changeStateUser,

@@ -39,7 +39,7 @@ const selectOptions = [
     { id: 0, label: "Cliente", value: "C", icon: mdiBriefcaseAccount },
 ];
 
-if (authStore.user.role == "A") {
+if (authStore.user?.role == "A") {
     selectOptions.push({
         id: 1,
         label: "Administrador",

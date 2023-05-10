@@ -74,15 +74,6 @@ const isModalDeleteActive = ref(false);
 const isModalBlockActive = ref(false);
 const isModalUnblockActive = ref(false);
 
-async function loadUser() {
-    if (account.value) {
-        user.value = await userStore.loadUserById(user.value.id);
-    } else {
-        await authStore.loadUser();
-        user.value = authStore.user;
-    }
-}
-
 const submitProfile = () => {
     statusPassword.value = null;
     statusProfile.value = null;
@@ -92,7 +83,13 @@ const submitProfile = () => {
             resMessage.value = response.data.message;
             if (response.status === 200) {
                 statusProfile.value = true;
-                loadUser();
+                user.value = response.data.user;
+                if (!account.value) {
+                    localStorage.setItem(
+                        "user",
+                        JSON.stringify(response.data.user)
+                    );
+                }
                 setTimeout(function () {
                     statusProfile.value = null;
                 }, 5000);
@@ -251,7 +248,7 @@ watch(
                             account &&
                             user?.blocked == 1 &&
                             user.role != 'A' &&
-                            (user.role != 'M' || authStore.user.role == 'A')
+                            (user.role != 'M' || authStore.user?.role == 'A')
                         "
                         :icon="mdiAccountCheck"
                         label="Ativar"
@@ -265,7 +262,7 @@ watch(
                             account &&
                             user?.blocked == 0 &&
                             user.role != 'A' &&
-                            (user.role != 'M' || authStore.user.role == 'A')
+                            (user.role != 'M' || authStore.user?.role == 'A')
                         "
                         :icon="mdiLock"
                         label="Bloquear"
@@ -276,7 +273,7 @@ watch(
                     />
                     <BaseButton
                         v-if="
-                            (user.role != authStore.user.role &&
+                            (user.role != authStore.user?.role &&
                                 user.role != 'A') ||
                             !account
                         "
@@ -336,7 +333,9 @@ watch(
                             required
                             :disabled="
                                 user.role == 'A' ||
-                                (user.role == 'M' && authStore.user.role != 'A')
+                                (user.role == 'M' &&
+                                    authStore.user?.role != 'A' &&
+                                    user.id != authStore.user?.id)
                             "
                         />
                     </FormField>
@@ -358,7 +357,9 @@ watch(
                             autocomplete="email"
                             :disabled="
                                 user.role == 'A' ||
-                                (user.role == 'M' && authStore.user.role != 'A')
+                                (user.role == 'M' &&
+                                    authStore.user?.role != 'A' &&
+                                    user.id != authStore.user?.id)
                             "
                         />
                     </FormField>
@@ -388,7 +389,9 @@ watch(
                             "
                             :disabled="
                                 user.role == 'A' ||
-                                (user.role == 'M' && authStore.user.role != 'A')
+                                (user.role == 'M' &&
+                                    authStore.user?.role != 'A' &&
+                                    user.id != authStore.user?.id)
                             "
                         />
                     </FormField>
@@ -403,7 +406,8 @@ watch(
                                 :disabled="
                                     user.role == 'A' ||
                                     (user.role == 'M' &&
-                                        authStore.user.role != 'A')
+                                        authStore.user?.role != 'A' &&
+                                        user.id != authStore.user?.id)
                                 "
                             />
                             <BaseButton
@@ -414,7 +418,8 @@ watch(
                                 :disabled="
                                     user.role == 'A' ||
                                     (user.role == 'M' &&
-                                        authStore.user.role != 'A')
+                                        authStore.user?.role != 'A' &&
+                                        user.id != authStore.user?.id)
                                 "
                                 @click="clearProfileFields"
                             />
