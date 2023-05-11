@@ -6,7 +6,7 @@ import {
     mdiCommentTextOutline,
     mdiEmailFastOutline,
     mdiAccountCircle,
-    mdiBed,
+    mdiMapMarker,
     mdiPencil,
     mdiContentSaveCheck,
     mdiMail,
@@ -56,7 +56,7 @@ watch(
             complaint.value = response;
             form.value.title = complaint.value?.title;
             form.value.comment = complaint.value?.comment;
-            form.value.room = complaint.value?.room;
+            form.value.local = complaint.value?.local;
             form.value.user = complaint.value?.user;
             form.value.response = complaint.value?.response;
             form.value.status = selectOptions[0];
@@ -67,7 +67,7 @@ watch(
 const form = ref({
     title: "",
     comment: "",
-    room: "",
+    local: "",
     user: "",
     response: "",
     status: "",
@@ -146,14 +146,14 @@ const responseComplaint = () => {
 
         <FormField>
             <FormField
-                label="Quarto"
-                help="O quarto da reclamação. Opcional."
+                label="Local"
+                help="O local da reclamação. Opcional."
                 no-margin
             >
                 <FormControl
-                    v-model="complaint.room"
-                    :icon="mdiBed"
-                    name="room"
+                    v-model="complaint.local"
+                    :icon="mdiMapMarker"
+                    name="local"
                     :disabled="selected ? true : false"
                 />
             </FormField>
@@ -207,38 +207,49 @@ const responseComplaint = () => {
         @cancel="emit('update:active', false)"
         @confirm="responseComplaint()"
     >
-        <PillTag
-            :label="
-                complaint.status == 'S'
-                    ? 'Resolução'
-                    : complaint.status == 'R'
-                    ? 'Terminada'
-                    : complaint.status == 'C'
-                    ? 'Anulada'
-                    : 'Pendente'
-            "
-            :icon="
-                complaint.status == 'S'
-                    ? mdiCog
-                    : complaint.status == 'R'
-                    ? mdiCheck
-                    : complaint.status == 'C'
-                    ? mdiClose
-                    : mdiClockTimeTwoOutline
-            "
-            :color="
-                complaint.status == 'S'
-                    ? 'warning'
-                    : complaint.status == 'R'
-                    ? 'success'
-                    : complaint.status == 'C'
-                    ? 'danger'
-                    : 'info'
-            "
-            class="my-1"
-        />
-        <p><b>Título: </b>{{ complaint.title }}</p>
-        <p><b>Comentário: </b>{{ complaint.comment }}</p>
+        <div class="mb-5">
+            <div class="flex justify-between">
+                <div>
+                    <p><b>Título: </b>{{ complaint.title }}</p>
+                    <p><b>Local: </b>{{ complaint.local }}</p>
+                </div>
+                <div class="my-auto mr-4">
+                    <PillTag
+                        :label="
+                            complaint.status == 'S'
+                                ? 'Resolução'
+                                : complaint.status == 'R'
+                                ? 'Terminada'
+                                : complaint.status == 'C'
+                                ? 'Anulada'
+                                : 'Pendente'
+                        "
+                        :icon="
+                            complaint.status == 'S'
+                                ? mdiCog
+                                : complaint.status == 'R'
+                                ? mdiCheck
+                                : complaint.status == 'C'
+                                ? mdiClose
+                                : mdiClockTimeTwoOutline
+                        "
+                        :color="
+                            complaint.status == 'S'
+                                ? 'warning'
+                                : complaint.status == 'R'
+                                ? 'success'
+                                : complaint.status == 'C'
+                                ? 'danger'
+                                : 'info'
+                        "
+                        class="my-1"
+                    />
+                </div>
+            </div>
+            <p class="text-justify">
+                <b>Comentário: </b>{{ complaint.comment }}
+            </p>
+        </div>
 
         <BaseDivider />
 

@@ -15,7 +15,7 @@ import BaseButton from "@/components/Bases/BaseButton.vue";
 import PillTag from "@/components/PillTags/PillTag.vue";
 import NotificationBar from "@/components/Others/NotificationBar.vue";
 import { useComplaintStore } from "@/stores/complaint";
-import CardBoxComplaint from "../CardBoxsCustom/CardBoxComplaint.vue";
+import CardBoxAnswerComplaint from "../CardBoxsCustom/CardBoxAnswerComplaint.vue";
 
 const complaintStore = useComplaintStore();
 
@@ -83,7 +83,7 @@ function updateModal(resComplaint) {
     >
         <b>Resposta enviada com sucesso!</b>
     </NotificationBar>
-    <CardBoxComplaint
+    <CardBoxAnswerComplaint
         :selected="selected"
         :active="isModalActive"
         :has-response="isModalResponseActive"
@@ -97,7 +97,7 @@ function updateModal(resComplaint) {
             <tr>
                 <th>ID:</th>
                 <th>Título:</th>
-                <th>Quarto:</th>
+                <th>Local:</th>
                 <th>Estado:</th>
                 <th>Data:</th>
                 <th />
@@ -115,13 +115,8 @@ function updateModal(resComplaint) {
                             : complaint.title
                     }}
                 </td>
-                <td data-label="Quarto" class="text-center">
-                    <PillTag
-                        class="justify-center font-semibold"
-                        :label="complaint.room"
-                        color="info"
-                        small
-                    />
+                <td data-label="Local" class="text-center font-semibold">
+                    {{ complaint.local }}
                 </td>
                 <td data-label="Estado" class="text-center">
                     <PillTag

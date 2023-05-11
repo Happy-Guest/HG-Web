@@ -8,7 +8,7 @@ import TableComplaints from "@/components/Tables/TableComplaints.vue";
 import BaseButtons from "@/components/Bases/BaseButtons.vue";
 import BaseButton from "@/components/Bases/BaseButton.vue";
 import CardBox from "@/components/CardBoxs/CardBox.vue";
-import CardBoxComplaint from "@/components/CardBoxsCustom/CardBoxComplaint.vue";
+import CardBoxAnswerComplaint from "@/components/CardBoxsCustom/CardBoxAnswerComplaint.vue";
 import { onMounted, ref } from "vue";
 import { useComplaintStore } from "@/stores/complaint";
 
@@ -25,7 +25,7 @@ onMounted(() => {
 
 <template>
     <LayoutAuthenticated>
-        <CardBoxComplaint
+        <CardBoxAnswerComplaint
             :active="isModalActiveCreate"
             @update:active="isModalActiveCreate = $event"
         />

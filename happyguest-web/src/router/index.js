@@ -94,7 +94,8 @@ const routes = [
         },
         path: "/reclamacoes",
         name: "complaints",
-        component: () => import("@/views/Dashboard/ComplaintsView.vue"),
+        component: () =>
+            import("@/views/Dashboard/Complaints/ComplaintsView.vue"),
     },
 
     // Not Found
