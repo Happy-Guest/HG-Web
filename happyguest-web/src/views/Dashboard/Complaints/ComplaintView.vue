@@ -202,8 +202,9 @@ watch(
                     <FormField
                         label="ID Cliente"
                         help="O id do cliente da reclamação. Opcional"
-                        class="w-full md:w-1/3"
+                        class="w-full md:w-1/3 mb-4 sm:mb-0"
                         flex
+                        no-margin
                     >
                         <FormControl
                             v-model="form.user.id"
