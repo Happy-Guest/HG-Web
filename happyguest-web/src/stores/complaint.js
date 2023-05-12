@@ -49,6 +49,16 @@ export const useComplaintStore = defineStore("complaint", () => {
             return error;
         }
     }
+
+    async function createComplaint(data) {
+        try {
+            const response = await axios.post("complaints/", data);
+            return response;
+        } catch (error) {
+            return error;
+        }
+    }
+
     return {
         complaints,
         lastPage,
@@ -56,5 +66,6 @@ export const useComplaintStore = defineStore("complaint", () => {
         getComplaints,
         getComplaint,
         responseComplaint,
+        createComplaint,
     };
 });

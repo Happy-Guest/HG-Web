@@ -93,7 +93,24 @@ const form = ref({
 });
 
 const createComplaint = () => {
-    console.log(form.value);
+    complaintStore
+        .createComplaint({
+            title: form.value.title,
+            comment: form.value.comment,
+            local: form.value.local,
+            user_id: anonymous.value ? null : form.value.user.id,
+            response: form.value.response,
+            status: form.value.status.value,
+        })
+        .then((response) => {
+            if (response.status == 201) {
+                router.push({
+                    name: "complaints",
+                });
+            } else {
+                resErrors.value = response;
+            }
+        });
 };
 
 const clearComplaintFields = () => {
@@ -102,7 +119,7 @@ const clearComplaintFields = () => {
     form.value.local = "";
     form.value.user = "";
     form.value.response = "";
-    form.value.status = "P";
+    form.value.status = selectOptions[0];
 };
 
 watch(
