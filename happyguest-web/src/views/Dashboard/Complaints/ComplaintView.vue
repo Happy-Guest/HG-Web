@@ -153,12 +153,14 @@ watch(
                         :icon="mdiCursorText"
                         name="title"
                         :disabled="selected ? true : false"
+                        required
                     />
                 </FormField>
                 <FormField>
                     <FormField
                         label="Estado"
                         help="O estado da reclamação. Obrigatório."
+                        required
                     >
                         <FormControl
                             v-model="form.status"
@@ -170,6 +172,7 @@ watch(
                     <FormField
                         label="Local"
                         help="O local da reclamação. Obrigatório."
+                        required
                     >
                         <FormControl
                             v-model="form.local"
@@ -182,6 +185,7 @@ watch(
                 <FormField
                     label="Comentário"
                     help="O comentário da reclamação. Obrigatório."
+                    required
                 >
                     <FormControl
                         v-model="form.comment"
