@@ -302,19 +302,17 @@ const submitDelete = (password) => {
                             color="warning"
                             title="Bloquear"
                             :icon="
-                                user.id == authStore.userId ||
-                                user.role == 'A' ||
-                                (user.role == 'M' &&
-                                    authStore.user?.role == 'M')
+                                user.id == authStore.user?.id ||
+                                (authStore.user?.role == 'M' &&
+                                    (user.role == 'A' || user.role == 'M'))
                                     ? mdiCancel
                                     : mdiLock
                             "
                             small
                             :disabled="
-                                user.id == authStore.userId ||
-                                user.role == 'A' ||
-                                (user.role == 'M' &&
-                                    authStore.user?.role == 'M')
+                                user.id == authStore.user?.id ||
+                                (authStore.user?.role == 'M' &&
+                                    (user.role == 'A' || user.role == 'M'))
                             "
                             @click="
                                 isModalBlockActive = true;
@@ -323,23 +321,21 @@ const submitDelete = (password) => {
                             "
                         />
                         <BaseButton
-                            v-else-if="user.blocked == 1 && user.role != 'A'"
+                            v-else-if="user.blocked == 1"
                             color="success"
                             title="Ativar"
                             :icon="
-                                user.id == authStore.userId ||
-                                user.role == 'A' ||
-                                (user.role == 'M' &&
-                                    authStore.user?.role == 'M')
+                                user.id == authStore.user?.id ||
+                                (authStore.user?.role == 'M' &&
+                                    (user.role == 'A' || user.role == 'M'))
                                     ? mdiCancel
                                     : mdiAccountCheck
                             "
                             small
                             :disabled="
-                                user.id == authStore.userId ||
-                                user.role == 'A' ||
-                                (user.role == 'M' &&
-                                    authStore.user?.role == 'M')
+                                user.id == authStore.user?.id ||
+                                (authStore.user?.role == 'M' &&
+                                    (user.role == 'A' || user.role == 'M'))
                             "
                             @click="
                                 isModalBlockActive = true;

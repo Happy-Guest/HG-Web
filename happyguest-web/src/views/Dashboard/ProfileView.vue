@@ -177,6 +177,9 @@ const submitChangeState = () => {
 function defineUser() {
     if (router.currentRoute.value.params.id) {
         account.value = true;
+        if (authStore.user?.id == router.currentRoute.value.params.id) {
+            router.push({ name: "profile" });
+        }
         getUser().then((response) => {
             user.value = response;
             clearProfileFields();
@@ -246,9 +249,10 @@ watch(
                     <BaseButton
                         v-if="
                             account &&
-                            user?.blocked == 1 &&
-                            user.role != 'A' &&
-                            (user.role != 'M' || authStore.user?.role == 'A')
+                            user.blocked == 1 &&
+                            ((authStore.user?.role == 'M' &&
+                                user.role == 'C') ||
+                                authStore.user?.role == 'A')
                         "
                         :icon="mdiAccountCheck"
                         label="Ativar"
@@ -260,9 +264,10 @@ watch(
                     <BaseButton
                         v-else-if="
                             account &&
-                            user?.blocked == 0 &&
-                            user.role != 'A' &&
-                            (user.role != 'M' || authStore.user?.role == 'A')
+                            user.blocked == 0 &&
+                            ((authStore.user?.role == 'M' &&
+                                user.role == 'C') ||
+                                authStore.user?.role == 'A')
                         "
                         :icon="mdiLock"
                         label="Bloquear"
@@ -273,9 +278,9 @@ watch(
                     />
                     <BaseButton
                         v-if="
-                            (user.role != authStore.user?.role &&
-                                user.role != 'A') ||
-                            !account
+                            user.id == authStore.user?.id ||
+                            authStore.user?.role == 'A' ||
+                            (authStore.user?.role == 'M' && user.role == 'C')
                         "
                         :icon="mdiTrashCan"
                         label="Remover"
@@ -332,10 +337,9 @@ watch(
                             name="username"
                             required
                             :disabled="
-                                user.role == 'A' ||
-                                (user.role == 'M' &&
-                                    authStore.user?.role != 'A' &&
-                                    user.id != authStore.user?.id)
+                                user.id != authStore.user?.id &&
+                                authStore.user?.role == 'M' &&
+                                (user.role == 'A' || user.role == 'M')
                             "
                         />
                     </FormField>
@@ -356,10 +360,9 @@ watch(
                             required
                             autocomplete="email"
                             :disabled="
-                                user.role == 'A' ||
-                                (user.role == 'M' &&
-                                    authStore.user?.role != 'A' &&
-                                    user.id != authStore.user?.id)
+                                user.id != authStore.user?.id &&
+                                authStore.user?.role == 'M' &&
+                                (user.role == 'A' || user.role == 'M')
                             "
                         />
                     </FormField>
@@ -388,10 +391,9 @@ watch(
                                     : ''
                             "
                             :disabled="
-                                user.role == 'A' ||
-                                (user.role == 'M' &&
-                                    authStore.user?.role != 'A' &&
-                                    user.id != authStore.user?.id)
+                                user.id != authStore.user?.id &&
+                                authStore.user?.role == 'M' &&
+                                (user.role == 'A' || user.role == 'M')
                             "
                         />
                     </FormField>
@@ -404,10 +406,9 @@ watch(
                                 label="Atualizar"
                                 :icon="mdiContentSaveCheck"
                                 :disabled="
-                                    user.role == 'A' ||
-                                    (user.role == 'M' &&
-                                        authStore.user?.role != 'A' &&
-                                        user.id != authStore.user?.id)
+                                    user.id != authStore.user?.id &&
+                                    authStore.user?.role == 'M' &&
+                                    (user.role == 'A' || user.role == 'M')
                                 "
                             />
                             <BaseButton
@@ -416,10 +417,9 @@ watch(
                                 outline
                                 :icon="mdiLockReset"
                                 :disabled="
-                                    user.role == 'A' ||
-                                    (user.role == 'M' &&
-                                        authStore.user?.role != 'A' &&
-                                        user.id != authStore.user?.id)
+                                    user.id != authStore.user?.id &&
+                                    authStore.user?.role == 'M' &&
+                                    (user.role == 'A' || user.role == 'M')
                                 "
                                 @click="clearProfileFields"
                             />
