@@ -1,5 +1,5 @@
 <script setup>
-import { mdiBullhornVariant, mdiPlus } from "@mdi/js";
+import { mdiBullhornVariant, mdiFilePlus } from "@mdi/js";
 import LayoutAuthenticated from "@/layouts/LayoutAuthenticated.vue";
 import SectionMain from "@/components/Sections/SectionMain.vue";
 import SectionTitleLine from "@/components/Sections/SectionTitleLine.vue";
@@ -30,9 +30,9 @@ onMounted(() => {
             >
                 <BaseButtons>
                     <BaseButton
-                        :icon="mdiPlus"
+                        :icon="mdiFilePlus"
                         :to="{ name: 'complaintCreate' }"
-                        label="Registar Reclamação"
+                        label="Registar"
                         color="success"
                         rounded-full
                         small

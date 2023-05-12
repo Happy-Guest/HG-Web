@@ -2,14 +2,15 @@
 import { ref, onMounted } from "vue";
 import {
     mdiCursorText,
-    mdiEye,
+    mdiFileEye,
     mdiCommentTextOutline,
     mdiEmailFastOutline,
     mdiAccountCircle,
     mdiMapMarker,
-    mdiPencil,
+    mdiFilePlus,
     mdiContentSaveCheck,
     mdiLockReset,
+    mdiAccount,
 } from "@mdi/js";
 import LayoutAuthenticated from "@/layouts/LayoutAuthenticated.vue";
 import SectionMain from "@/components/Sections/SectionMain.vue";
@@ -21,6 +22,7 @@ import BaseButton from "@/components/Bases/BaseButton.vue";
 import BaseButtons from "@/components/Bases/BaseButtons.vue";
 import BaseDivider from "@/components/Bases/BaseDivider.vue";
 import SectionTitleLine from "@/components/Sections/SectionTitleLine.vue";
+import FormCheckRadio from "@/components/Forms/FormCheckRadio.vue";
 import { useRouter } from "vue-router";
 
 const router = useRouter();
@@ -28,8 +30,9 @@ const selected = ref(null);
 
 const complaintStore = useComplaintStore();
 const complaint = ref([]);
-
+const anonymous = ref(false);
 const resErrors = ref([]);
+
 onMounted(() => {
     if (router.currentRoute.value.params?.id) {
         resErrors.value = [];
@@ -88,10 +91,22 @@ const clearComplaintFields = () => {
                 :title="
                     selected
                         ? 'Reclamação ➯ ' + complaint?.id
-                        : 'Registar reclamação'
+                        : 'Registar Reclamação'
                 "
-                :icon="selected ? mdiEye : mdiPencil"
-            />
+                :icon="selected ? mdiFileEye : mdiFilePlus"
+                main
+            >
+                <FormCheckRadio
+                    v-model="anonymous"
+                    class="font-semibold mr-12 mt-2"
+                    name="anon-switch"
+                    type="switch"
+                    label="Anónimo"
+                    input-value="anonymous"
+                    :disabled="selected ? true : false"
+                    :class="selected ? 'cursor-not-allowed opacity-80' : ''"
+                />
+            </SectionTitleLine>
             <CardBox is-form class="my-auto" @submit.prevent="createComplaint">
                 <FormField
                     label="Título"
@@ -101,6 +116,17 @@ const clearComplaintFields = () => {
                         v-model="form.title"
                         :icon="mdiCursorText"
                         name="title"
+                        :disabled="selected ? true : false"
+                    />
+                </FormField>
+                <FormField
+                    label="Local"
+                    help="O local da reclamação. Opcional."
+                >
+                    <FormControl
+                        v-model="form.local"
+                        :icon="mdiMapMarker"
+                        name="local"
                         :disabled="selected ? true : false"
                     />
                 </FormField>
@@ -116,6 +142,39 @@ const clearComplaintFields = () => {
                         :disabled="selected ? true : false"
                     />
                 </FormField>
+
+                <BaseDivider />
+
+                <FormField flex>
+                    <FormField
+                        label="ID Cliente"
+                        help="O id do cliente da reclamação. Opcional"
+                        class="w-full md:w-1/3"
+                    >
+                        <FormControl
+                            v-model="form.user.id"
+                            :icon="mdiAccount"
+                            name="Client"
+                            :disabled="selected ? true : false || anonymous"
+                            :required="anonymous ? false : true"
+                        />
+                    </FormField>
+                    <FormField
+                        label="Nome Cliente"
+                        help="O nome do cliente selecionado. Opcional"
+                        class="w-full md:w-2/3"
+                    >
+                        <FormControl
+                            v-model="form.user.name"
+                            :icon="mdiAccountCircle"
+                            name="Client"
+                            disabled
+                        />
+                    </FormField>
+                </FormField>
+
+                <BaseDivider />
+
                 <FormField
                     label="Ficheiros"
                     help="A resposta da reclamação. Dada pelos gestores."
@@ -127,45 +186,6 @@ const clearComplaintFields = () => {
                         type="file"
                         :disabled="selected ? true : false"
                     />
-                </FormField>
-                <BaseDivider />
-
-                <FormField>
-                    <FormField
-                        label="Local"
-                        help="O local da reclamação. Opcional."
-                        no-margin
-                    >
-                        <FormControl
-                            v-model="form.local"
-                            :icon="mdiMapMarker"
-                            name="local"
-                            :disabled="selected ? true : false"
-                        />
-                    </FormField>
-                    <FormField>
-                        <FormField
-                            label="Id Cliente"
-                            no-margin
-                            help="O cliente da reclamação. Opcional"
-                            flex
-                        >
-                            <FormControl
-                                v-model="form.user.id"
-                                :icon="mdiAccountCircle"
-                                name="Client"
-                                :disabled="selected ? true : false"
-                            />
-                        </FormField>
-                        <FormField label="Nome Cliente" no-margin flex>
-                            <FormControl
-                                v-model="form.user.name"
-                                :icon="mdiAccountCircle"
-                                name="Client"
-                                disabled
-                            />
-                        </FormField>
-                    </FormField>
                 </FormField>
 
                 <BaseDivider />

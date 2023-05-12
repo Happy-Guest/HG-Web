@@ -36,7 +36,7 @@ onMounted(() => {
                 <BaseButtons>
                     <BaseButton
                         :icon="mdiPlusBoxMultiple"
-                        label="Criar Código"
+                        label="Criar"
                         color="success"
                         rounded-full
                         small
