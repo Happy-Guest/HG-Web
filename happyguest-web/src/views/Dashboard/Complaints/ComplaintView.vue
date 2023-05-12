@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, onMounted, watch } from "vue";
 import {
     mdiCursorText,
     mdiFileEye,
@@ -11,6 +11,11 @@ import {
     mdiContentSaveCheck,
     mdiLockReset,
     mdiAccount,
+    mdiCheck,
+    mdiCog,
+    mdiClockTimeTwoOutline,
+    mdiClose,
+    mdiAccountMultiple,
 } from "@mdi/js";
 import LayoutAuthenticated from "@/layouts/LayoutAuthenticated.vue";
 import SectionMain from "@/components/Sections/SectionMain.vue";
@@ -24,11 +29,14 @@ import BaseDivider from "@/components/Bases/BaseDivider.vue";
 import SectionTitleLine from "@/components/Sections/SectionTitleLine.vue";
 import FormCheckRadio from "@/components/Forms/FormCheckRadio.vue";
 import { useRouter } from "vue-router";
+import { useUserStore } from "@/stores/user";
 
 const router = useRouter();
 const selected = ref(null);
 
 const complaintStore = useComplaintStore();
+const userStore = useUserStore();
+
 const complaint = ref([]);
 const anonymous = ref(false);
 const resErrors = ref([]);
@@ -43,18 +51,32 @@ onMounted(() => {
                 form.value.title = complaint.value?.title;
                 form.value.comment = complaint.value?.comment;
                 form.value.local = complaint.value?.local;
-                form.value.user = complaint.value?.user
-                    ? complaint.value?.user
-                    : "Anónimo";
                 form.value.response =
                     complaint.value?.response ?? "Sem resposta";
-                form.value.status = complaint.value?.status;
+                form.value.status = selectOptions.find(
+                    (option) => option.value === complaint.value?.status
+                );
                 selected.value = router.currentRoute.value.params.id;
+                if (complaint.value?.user) {
+                    anonymous.value = false;
+                    form.value.user = complaint.value?.user;
+                } else {
+                    anonymous.value = true;
+                    form.value.user.id = "Sem ID";
+                    form.value.user.name = "Anónimo";
+                }
             });
     } else {
         selected.value = null;
     }
 });
+
+const selectOptions = [
+    { id: 0, label: "Pendente", value: "P", icon: mdiClockTimeTwoOutline },
+    { id: 1, label: "Resolução", value: "S", icon: mdiCog },
+    { id: 2, label: "Terminada", value: "R", icon: mdiCheck },
+    { id: 3, label: "Anulada", value: "C", icon: mdiClose },
+];
 
 const form = ref({
     title: "",
@@ -67,7 +89,7 @@ const form = ref({
         },
     ],
     response: "",
-    status: "P",
+    status: selectOptions[0],
 });
 
 const createComplaint = () => {
@@ -82,6 +104,20 @@ const clearComplaintFields = () => {
     form.value.response = "";
     form.value.status = "P";
 };
+
+watch(
+    () => form.value.user.id,
+    (value) => {
+        if (value && !anonymous.value) {
+            userStore.loadUserById(value).then((response) => {
+                if (response.role && response.role != "C")
+                    form.value.user.name = "Utilizador não é cliente!";
+                else if (response.id) form.value.user.name = response.name;
+                else form.value.user.name = "Utilizador não encontrado!";
+            });
+        }
+    }
+);
 </script>
 
 <template>
@@ -119,16 +155,29 @@ const clearComplaintFields = () => {
                         :disabled="selected ? true : false"
                     />
                 </FormField>
-                <FormField
-                    label="Local"
-                    help="O local da reclamação. Opcional."
-                >
-                    <FormControl
-                        v-model="form.local"
-                        :icon="mdiMapMarker"
-                        name="local"
-                        :disabled="selected ? true : false"
-                    />
+                <FormField>
+                    <FormField
+                        label="Estado"
+                        help="O estado da reclamação. Obrigatório."
+                    >
+                        <FormControl
+                            v-model="form.status"
+                            :options="selectOptions"
+                            :icon="form.status.icon"
+                            :disabled="selected ? true : false"
+                        />
+                    </FormField>
+                    <FormField
+                        label="Local"
+                        help="O local da reclamação. Obrigatório."
+                    >
+                        <FormControl
+                            v-model="form.local"
+                            :icon="mdiMapMarker"
+                            name="local"
+                            :disabled="selected ? true : false"
+                        />
+                    </FormField>
                 </FormField>
                 <FormField
                     label="Comentário"
@@ -150,6 +199,7 @@ const clearComplaintFields = () => {
                         label="ID Cliente"
                         help="O id do cliente da reclamação. Opcional"
                         class="w-full md:w-1/3"
+                        flex
                     >
                         <FormControl
                             v-model="form.user.id"
@@ -157,7 +207,24 @@ const clearComplaintFields = () => {
                             name="Client"
                             :disabled="selected ? true : false || anonymous"
                             :required="anonymous ? false : true"
+                            :class="
+                                selected
+                                    ? 'w-full'
+                                    : 'w-10/12 flex flex-initial'
+                            "
                         />
+                        <BaseButtons v-if="!selected">
+                            <BaseButton
+                                color="info"
+                                class="w-12 h-12 sm:w-12 sm:h-12 my-auto flex-initial"
+                                :icon="mdiAccountMultiple"
+                                small
+                                outline
+                                rounded-full
+                                title="Ver Clientes"
+                                @click="router.push({ name: 'users' })"
+                            />
+                        </BaseButtons>
                     </FormField>
                     <FormField
                         label="Nome Cliente"
@@ -176,13 +243,13 @@ const clearComplaintFields = () => {
                 <BaseDivider />
 
                 <FormField
-                    label="Ficheiros"
-                    help="A resposta da reclamação. Dada pelos gestores."
+                    label="Ficheiro(s)"
+                    help="O(s) ficheiro(s) da reclamação. Opcional."
                 >
                     <FormControl
                         v-model="form.file"
                         :icon="mdiEmailFastOutline"
-                        name="response"
+                        name="files"
                         type="file"
                         :disabled="selected ? true : false"
                     />
