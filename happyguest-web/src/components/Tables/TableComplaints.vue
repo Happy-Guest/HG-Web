@@ -8,6 +8,7 @@ import {
     mdiEye,
     mdiCog,
     mdiCheckCircle,
+    mdiCancel,
 } from "@mdi/js";
 import BaseLevel from "@/components/Bases/BaseLevel.vue";
 import BaseButtons from "@/components/Bases/BaseButtons.vue";
@@ -16,6 +17,7 @@ import PillTag from "@/components/PillTags/PillTag.vue";
 import NotificationBar from "@/components/Others/NotificationBar.vue";
 import { useComplaintStore } from "@/stores/complaint";
 import CardBoxAnswerComplaint from "../CardBoxsCustom/CardBoxAnswerComplaint.vue";
+import CardBoxModal from "../CardBoxs/CardBoxModal.vue";
 import { useRouter } from "vue-router";
 
 const router = useRouter();
@@ -28,7 +30,10 @@ const numPages = computed(() => complaintStore.lastPage);
 const currentPageHuman = computed(() => currentPage.value + 1);
 
 const isModalActive = ref(false);
+const isModalDeleteActive = ref(false);
 const selected = ref(null);
+
+const resErrors = ref([]);
 
 watch(currentPageHuman, async () => {
     complaints.value = await complaintStore.getComplaints(
@@ -73,6 +78,26 @@ function updateModal(resComplaint) {
         isSuccessNotifUpdateActive.value = false;
     }, 5000);
 }
+
+const submitDelete = () => {
+    complaintStore
+        .responseComplaint(selected.value, {
+            status: "C",
+        })
+        .then((response) => {
+            if (response.status == 200) {
+                complaints.value = complaints.value.map((complaint) => {
+                    if (complaint.id == selected.value) {
+                        complaint.status = "C";
+                    }
+                    return complaint;
+                });
+                isModalDeleteActive.value = false;
+            } else {
+                resErrors.value = response.data.errors;
+            }
+        });
+};
 </script>
 
 <template>
@@ -84,6 +109,18 @@ function updateModal(resComplaint) {
     >
         <b>Resposta enviada com sucesso!</b>
     </NotificationBar>
+    <CardBoxModal
+        v-model="isModalDeleteActive"
+        :errors="resErrors"
+        title="Anular Reclamação"
+        button="danger"
+        :icon-title="mdiClose"
+        has-cancel
+        has-close
+        @confirm="submitDelete"
+    >
+        <p>Tem a certeza que <b>deseja anular</b> a reclamação?</p>
+    </CardBoxModal>
     <CardBoxAnswerComplaint
         :selected="selected"
         :active="isModalActive"
@@ -172,6 +209,19 @@ function updateModal(resComplaint) {
                             small
                             @click="
                                 isModalActive = true;
+                                selected = complaint.id;
+                            "
+                        />
+                        <BaseButton
+                            color="danger"
+                            title="Cancelar"
+                            :icon="
+                                complaint.status == 'C' ? mdiCancel : mdiClose
+                            "
+                            small
+                            :disabled="complaint.status == 'C'"
+                            @click="
+                                isModalDeleteActive = true;
                                 selected = complaint.id;
                             "
                         />

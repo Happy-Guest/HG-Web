@@ -42,6 +42,8 @@ const isModalUsersActive = ref(false);
 const notifText = ref("");
 const resErrors = ref([]);
 const selected = ref(null);
+const selectedUsed = ref(null);
+const selectedCode = ref(null);
 
 watch(currentPageHuman, async () => {
     codes.value = await codeStore.getCodes(currentPage.value + 1);
@@ -178,6 +180,9 @@ const submitDelete = (password) => {
         @confirm="submitDelete"
     >
         <p>Tem a certeza que <b>deseja remover</b> o código?</p>
+        <span v-if="selectedUsed == '1'">
+            O código foi utilizado e vai <b>ser desassociado</b> dos clientes.
+        </span>
     </CardBoxModal>
     <CardBoxCode
         :selected="selected"
@@ -187,6 +192,7 @@ const submitDelete = (password) => {
     />
     <CardBoxCodeUsers
         :selected="selected"
+        :selected-code="selectedCode"
         :active="isModalUsersActive"
         @update:active="isModalUsersActive = $event"
     />
@@ -258,6 +264,7 @@ const submitDelete = (password) => {
                             @click="
                                 isModalUsersActive = true;
                                 selected = code.id;
+                                selectedCode = code.code;
                             "
                         />
                         <BaseButton
@@ -278,6 +285,7 @@ const submitDelete = (password) => {
                             @click="
                                 isModalDeleteActive = true;
                                 selected = code.id;
+                                selectedUsed = code.used;
                             "
                         />
                     </BaseButtons>

@@ -15,6 +15,10 @@ const props = defineProps({
         type: Number,
         default: null,
     },
+    selectedCode: {
+        type: String,
+        default: null,
+    },
     active: {
         type: Boolean,
         default: false,
@@ -39,7 +43,7 @@ watch(
 <template>
     <CardBoxModal
         v-model="isModalActive"
-        :title="'Clientes ➯ Código ' + selected"
+        :title="'Clientes Código ➯ ' + selectedCode"
         :icon-title="mdiAccountSupervisor"
         button-cancel-label="Fechar"
         button-cancel="info"
