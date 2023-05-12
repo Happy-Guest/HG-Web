@@ -16,6 +16,9 @@ import PillTag from "@/components/PillTags/PillTag.vue";
 import NotificationBar from "@/components/Others/NotificationBar.vue";
 import { useComplaintStore } from "@/stores/complaint";
 import CardBoxAnswerComplaint from "../CardBoxsCustom/CardBoxAnswerComplaint.vue";
+import { useRouter } from "vue-router";
+
+const router = useRouter();
 
 const complaintStore = useComplaintStore();
 
@@ -25,7 +28,6 @@ const numPages = computed(() => complaintStore.lastPage);
 const currentPageHuman = computed(() => currentPage.value + 1);
 
 const isModalActive = ref(false);
-const isModalResponseActive = ref(false);
 const selected = ref(null);
 
 watch(currentPageHuman, async () => {
@@ -60,7 +62,6 @@ const isSuccessNotifUpdateActive = ref(false);
 
 function updateModal(resComplaint) {
     isModalActive.value = false;
-    isModalResponseActive.value = false;
     isSuccessNotifUpdateActive.value = true;
     complaints.value = complaints.value.map((complaint) => {
         if (complaint.id == resComplaint.id) {
@@ -86,10 +87,7 @@ function updateModal(resComplaint) {
     <CardBoxAnswerComplaint
         :selected="selected"
         :active="isModalActive"
-        :has-response="isModalResponseActive"
-        @update:active="
-            (isModalActive = $event), (isModalResponseActive = $event)
-        "
+        @update:active="isModalActive = $event"
         @updated="updateModal($event)"
     />
     <table class="w-full">
@@ -157,12 +155,14 @@ function updateModal(resComplaint) {
                     <BaseButtons type="justify-start lg:justify-end" no-wrap>
                         <BaseButton
                             color="info"
-                            title="Ver Reclamação"
+                            title="Reclmação"
                             :icon="mdiEye"
                             small
                             @click="
-                                isModalActive = true;
-                                selected = complaint.id;
+                                router.push({
+                                    name: 'complaintView',
+                                    params: { id: complaint.id },
+                                })
                             "
                         />
                         <BaseButton
@@ -172,7 +172,6 @@ function updateModal(resComplaint) {
                             small
                             @click="
                                 isModalActive = true;
-                                isModalResponseActive = true;
                                 selected = complaint.id;
                             "
                         />

@@ -1,19 +1,12 @@
 <script setup>
 import { watch, ref, watchEffect } from "vue";
 import {
-    mdiCursorText,
-    mdiEye,
-    mdiCommentTextOutline,
-    mdiEmailFastOutline,
-    mdiAccountCircle,
-    mdiMapMarker,
-    mdiPencil,
-    mdiContentSaveCheck,
     mdiMail,
     mdiCog,
     mdiCheck,
     mdiClose,
     mdiClockTimeTwoOutline,
+    mdiEmailFastOutline,
 } from "@mdi/js";
 import CardBoxModal from "@/components/CardBoxs/CardBoxModal.vue";
 import FormControl from "@/components/Forms/FormControl.vue";
@@ -36,10 +29,6 @@ const props = defineProps({
         type: Boolean,
         default: false,
     },
-    hasResponse: {
-        type: Boolean,
-        default: false,
-    },
 });
 const emit = defineEmits(["update:active", "updated"]);
 const resErrors = ref([]);
@@ -54,10 +43,6 @@ watch(
         resErrors.value = [];
         complaintStore.getComplaint(value).then((response) => {
             complaint.value = response;
-            form.value.title = complaint.value?.title;
-            form.value.comment = complaint.value?.comment;
-            form.value.local = complaint.value?.local;
-            form.value.user = complaint.value?.user;
             form.value.response = complaint.value?.response;
             form.value.status = selectOptions[0];
         });
@@ -65,10 +50,6 @@ watch(
 );
 
 const form = ref({
-    title: "",
-    comment: "",
-    local: "",
-    user: "",
     response: "",
     status: "",
 });
@@ -100,101 +81,6 @@ const responseComplaint = () => {
 
 <template>
     <CardBoxModal
-        v-if="!hasResponse"
-        v-model="isModalActive"
-        :title="
-            selected ? 'Reclamação ➯ ' + complaint?.id : 'Registar reclamação'
-        "
-        :icon-title="selected ? mdiEye : mdiPencil"
-        :button-label="'Criar'"
-        :button-cancel-label="selected ? 'Fechar' : 'Cancelar'"
-        :button-cancel="selected ? 'info' : 'danger'"
-        :icon="mdiContentSaveCheck"
-        button="success"
-        has-close
-        has-cancel
-        :only-view="selected ? true : false"
-        @cancel="emit('update:active', false)"
-        @confirm="createComplaint()"
-    >
-        <FormField
-            label="Título"
-            no-margin
-            help="O título da reclamação. Obrigatório."
-        >
-            <FormControl
-                v-model="form.title"
-                :icon="mdiCursorText"
-                name="title"
-                :disabled="selected ? true : false"
-            />
-        </FormField>
-        <FormField
-            label="Comentário"
-            help="O comentário da reclamação. Obrigatório."
-        >
-            <FormControl
-                v-model="form.comment"
-                :icon="mdiCommentTextOutline"
-                name="comment"
-                type="textarea"
-                :disabled="selected ? true : false"
-            />
-        </FormField>
-
-        <BaseDivider />
-
-        <FormField>
-            <FormField
-                label="Local"
-                help="O local da reclamação. Opcional."
-                no-margin
-            >
-                <FormControl
-                    v-model="complaint.local"
-                    :icon="mdiMapMarker"
-                    name="local"
-                    :disabled="selected ? true : false"
-                />
-            </FormField>
-            <FormField
-                label="Cliente"
-                no-margin
-                help="O cliente da reclamação. Opcional"
-            >
-                <FormControl
-                    :model-value="complaint.user?.name"
-                    :icon="mdiAccountCircle"
-                    name="Client"
-                    :disabled="selected ? true : false"
-                />
-            </FormField>
-        </FormField>
-
-        <BaseDivider />
-
-        <FormField
-            label="Resposta"
-            no-margin
-            help="A resposta da reclamação. Dada pelos gestores."
-        >
-            <FormControl
-                :model-value="
-                    form.response
-                        ? form.response
-                        : !selected
-                        ? form.response
-                        : 'Sem resposta'
-                "
-                :icon="mdiEmailFastOutline"
-                name="response"
-                :type="form.response ? 'textarea' : 'text'"
-                :disabled="selected ? true : false"
-            />
-        </FormField>
-    </CardBoxModal>
-    <CardBoxModal
-        v-else
         v-model="isModalActive"
         :title="'Responder Reclamação ➯ ' + complaint?.id"
         :icon-title="mdiEmailFastOutline"

@@ -8,15 +8,12 @@ import TableComplaints from "@/components/Tables/TableComplaints.vue";
 import BaseButtons from "@/components/Bases/BaseButtons.vue";
 import BaseButton from "@/components/Bases/BaseButton.vue";
 import CardBox from "@/components/CardBoxs/CardBox.vue";
-import CardBoxAnswerComplaint from "@/components/CardBoxsCustom/CardBoxAnswerComplaint.vue";
 import { onMounted, ref } from "vue";
 import { useComplaintStore } from "@/stores/complaint";
 
 const complaintStore = useComplaintStore();
 
 const hasComplaints = ref(false);
-
-const isModalActiveCreate = ref(false);
 
 onMounted(() => {
     hasComplaints.value = complaintStore.getComplaints(0);
@@ -25,10 +22,6 @@ onMounted(() => {
 
 <template>
     <LayoutAuthenticated>
-        <CardBoxAnswerComplaint
-            :active="isModalActiveCreate"
-            @update:active="isModalActiveCreate = $event"
-        />
         <SectionMain>
             <SectionTitleLine
                 :icon="mdiBullhornVariant"
@@ -38,11 +31,11 @@ onMounted(() => {
                 <BaseButtons>
                     <BaseButton
                         :icon="mdiPlus"
-                        label="Registar reclamação"
+                        :to="{ name: 'complaintCreate' }"
+                        label="Registar Reclamação"
                         color="success"
                         rounded-full
                         small
-                        @click="isModalActiveCreate = true"
                     />
                 </BaseButtons>
             </SectionTitleLine>

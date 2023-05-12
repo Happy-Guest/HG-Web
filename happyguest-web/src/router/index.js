@@ -97,6 +97,26 @@ const routes = [
         component: () =>
             import("@/views/Dashboard/Complaints/ComplaintsView.vue"),
     },
+    {
+        meta: {
+            title: "Reclamação",
+            middleware: [auth, manager],
+        },
+        path: "/reclamacao",
+        name: "complaintCreate",
+        component: () =>
+            import("@/views/Dashboard/Complaints/ComplaintView.vue"),
+    },
+    {
+        meta: {
+            title: "Reclamação",
+            middleware: [auth, manager],
+        },
+        path: "/reclamacao/:id",
+        name: "complaintView",
+        component: () =>
+            import("@/views/Dashboard/Complaints/ComplaintView.vue"),
+    },
 
     // Not Found
 
