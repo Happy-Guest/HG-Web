@@ -28,6 +28,8 @@ import BaseButtons from "@/components/Bases/BaseButtons.vue";
 import BaseDivider from "@/components/Bases/BaseDivider.vue";
 import SectionTitleLine from "@/components/Sections/SectionTitleLine.vue";
 import FormCheckRadio from "@/components/Forms/FormCheckRadio.vue";
+import NotificationBarInCard from "@/components/Others/NotificationBarInCard.vue";
+import FormValidationErrors from "@/components/Forms/FormValidationErrors.vue";
 import { useRouter } from "vue-router";
 import { useUserStore } from "@/stores/user";
 
@@ -39,7 +41,9 @@ const userStore = useUserStore();
 
 const complaint = ref([]);
 const anonymous = ref(false);
+const resMessage = ref("");
 const resErrors = ref([]);
+const statusComplaint = ref(false);
 
 onMounted(() => {
     if (router.currentRoute.value.params?.id) {
@@ -70,6 +74,19 @@ onMounted(() => {
         selected.value = null;
     }
 });
+
+watch(
+    () => anonymous.value,
+    (value) => {
+        if (value) {
+            form.value.user.id = "Sem ID";
+            form.value.user.name = "Anónimo";
+        } else {
+            form.value.user.id = "";
+            form.value.user.name = "";
+        }
+    }
+);
 
 const selectOptions = [
     { id: 0, label: "Pendente", value: "P", icon: mdiClockTimeTwoOutline },
@@ -103,13 +120,22 @@ const createComplaint = () => {
             status: form.value.status.value,
         })
         .then((response) => {
+            console.log(response);
             if (response.status == 201) {
-                router.push({
-                    name: "complaints",
-                });
+                resMessage.value = response.data.message;
+                statusComplaint.value = true;
+                setTimeout(() => {
+                    router.push({ name: "complaints" });
+                }, 5000);
             } else {
-                resErrors.value = response;
+                statusComplaint.value = false;
+                resErrors.value = response.response.data.errors;
+                form.value.password_confirmation = "";
             }
+        })
+        .catch(() => {
+            statusComplaint.value = false;
+            resMessage.value = "Ocorreu um erro a registar a reclamação.";
         });
 };
 
@@ -161,6 +187,18 @@ watch(
                 />
             </SectionTitleLine>
             <CardBox is-form class="my-auto" @submit.prevent="createComplaint">
+                <FormValidationErrors
+                    v-if="statusComplaint == false"
+                    :errors="resErrors"
+                />
+                <Transition name="fade">
+                    <NotificationBarInCard
+                        v-if="statusComplaint"
+                        color="success"
+                    >
+                        <b>{{ resMessage }}</b>
+                    </NotificationBarInCard>
+                </Transition>
                 <FormField
                     label="Título"
                     help="O título da reclamação. Obrigatório."
@@ -177,32 +215,31 @@ watch(
                     <FormField
                         label="Estado"
                         help="O estado da reclamação. Obrigatório."
-                        required
                     >
                         <FormControl
                             v-model="form.status"
                             :options="selectOptions"
                             :icon="form.status.icon"
                             :disabled="selected ? true : false"
+                            required
                         />
                     </FormField>
                     <FormField
                         label="Local"
                         help="O local da reclamação. Obrigatório."
-                        required
                     >
                         <FormControl
                             v-model="form.local"
                             :icon="mdiMapMarker"
                             name="local"
                             :disabled="selected ? true : false"
+                            required
                         />
                     </FormField>
                 </FormField>
                 <FormField
                     label="Comentário"
                     help="O comentário da reclamação. Obrigatório."
-                    required
                 >
                     <FormControl
                         v-model="form.comment"
@@ -210,6 +247,7 @@ watch(
                         name="comment"
                         type="textarea"
                         :disabled="selected ? true : false"
+                        required
                     />
                 </FormField>
 
@@ -274,6 +312,7 @@ watch(
                         name="files"
                         type="file"
                         :disabled="selected ? true : false"
+                        multiple
                     />
                 </FormField>
 

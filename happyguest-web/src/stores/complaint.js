@@ -18,7 +18,7 @@ export const useComplaintStore = defineStore("complaint", () => {
             }
             return true;
         } else {
-            response = await axios.get("complaints?page=" + (page - 1));
+            response = await axios.get("complaints?page=" + page);
             complaints.value.push(response.data.data);
             pagesComplaints.value.push(page);
             return complaints.value[pagesComplaints.value.indexOf(page)];
@@ -53,6 +53,11 @@ export const useComplaintStore = defineStore("complaint", () => {
     async function createComplaint(data) {
         try {
             const response = await axios.post("complaints/", data);
+            if (response.status == 201) {
+                complaints.value = [];
+                pagesComplaints.value = [];
+                loadComplaints(0);
+            }
             return response;
         } catch (error) {
             return error;

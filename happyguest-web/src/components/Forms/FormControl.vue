@@ -49,6 +49,7 @@ const props = defineProps({
     ctrlKFocus: Boolean,
     disabled: Boolean,
     uppercase: Boolean,
+    multiple: Boolean,
 });
 
 const emit = defineEmits(["update:modelValue", "setRef"]);
@@ -135,6 +136,21 @@ onMounted(() => {
             :placeholder="placeholder"
             :required="required"
             :disabled="disabled"
+        />
+        <input
+            v-else-if="computedType === 'file'"
+            :id="id"
+            ref="inputEl"
+            v-model="computedValue"
+            :name="name"
+            :inputmode="inputmode"
+            :autocomplete="autocomplete"
+            :required="required"
+            :placeholder="placeholder"
+            :type="computedType"
+            :class="inputElClass"
+            :disabled="disabled"
+            multiple
         />
         <input
             v-else

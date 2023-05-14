@@ -18,7 +18,7 @@ export const useCodeStore = defineStore("code", () => {
             }
             return true;
         } else {
-            response = await axios.get("codes?page=" + (page - 1));
+            response = await axios.get("codes?page=" + page);
             codes.value.push(response.data.data);
             pagesCodes.value.push(page);
             return codes.value[pagesCodes.value.indexOf(page)];
