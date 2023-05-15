@@ -223,7 +223,8 @@ const submitDelete = (password) => {
                     <UserAvatar
                         :avatar="user.photo_url"
                         :username="user.name"
-                        class="w-24 h-24 mx-auto lg:w-6 lg:h-6"
+                        class="w-24 h-24 mx-auto lg:w-6 lg:h-6 inline-flex"
+                        is-table
                     />
                 </td>
                 <td data-label="Id" class="text-center">

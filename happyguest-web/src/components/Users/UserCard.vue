@@ -50,9 +50,11 @@ defineProps({
             <UserAvatarCurrentUser
                 :user-name="userName"
                 :user-avatar="userAvatar"
-                class="lg:mx-12 my-1 w-3/5"
+                class="lg:mx-12 my-1"
             />
-            <div class="space-y-3 text-center md:text-left lg:mx-12">
+            <div
+                class="space-y-3 text-center md:text-left lg:mx-12 mb-12 md:mb-0"
+            >
                 <h1 v-if="currentUser" class="text-2xl">
                     Olá, <b>{{ userName }}</b
                     >!

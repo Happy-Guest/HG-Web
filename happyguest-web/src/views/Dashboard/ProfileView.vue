@@ -91,6 +91,7 @@ const submitProfile = () => {
                         "user",
                         JSON.stringify(response.data.user)
                     );
+                    authStore.user = response.data.user;
                 }
                 setTimeout(function () {
                     statusProfile.value = null;
@@ -401,21 +402,18 @@ watch(
                                 "
                             />
                         </FormField>
-                        <FormField
-                            label="Avatar"
-                            class="w-full sm:w-1/6 ml-2"
-                            help="Opcional"
-                        >
-                            <FormFilePicker
-                                v-model="profileForm.photo"
-                                name="photo"
-                                label="Enviar"
-                                is-round-icon
-                                accept="
+                        <div class="w-full sm:w-1/6 flex justify-center">
+                            <FormField label="Avatar" help="Opcional">
+                                <FormFilePicker
+                                    v-model="profileForm.photo"
+                                    label="Enviar"
+                                    is-round-icon
+                                    accept="
                                     image/png,image/jpeg,image/jpg,image/gif,image/svg+xml,
                                 "
-                            />
-                        </FormField>
+                                />
+                            </FormField>
+                        </div>
                     </FormField>
 
                     <template #footer>
