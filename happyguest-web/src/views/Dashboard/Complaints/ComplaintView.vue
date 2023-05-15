@@ -17,6 +17,7 @@ import {
     mdiClose,
     mdiAccountMultiple,
     mdiCalendarRange,
+    mdiMail,
 } from "@mdi/js";
 import LayoutAuthenticated from "@/layouts/LayoutAuthenticated.vue";
 import SectionMain from "@/components/Sections/SectionMain.vue";
@@ -124,7 +125,6 @@ const createComplaint = () => {
             status: form.value.status.value,
         })
         .then((response) => {
-            console.log(response);
             if (response.status == 201) {
                 resMessage.value = response.data.message;
                 statusComplaint.value = true;
@@ -143,6 +143,33 @@ const createComplaint = () => {
         });
 };
 
+const responseComplaint = () => {
+    statusComplaint.value = null;
+    complaintStore
+        .responseComplaint(complaint.value.id, {
+            response: form.value.response,
+            status: form.value.status.value,
+        })
+        .then((response) => {
+            if (response.status == 200) {
+                resMessage.value = response.data.message;
+                statusComplaint.value = true;
+                complaint.value.status = response.data.complaint.status;
+                complaint.value.response = response.data.complaint.response;
+                setTimeout(() => {
+                    statusComplaint.value = null;
+                }, 5000);
+            } else {
+                statusComplaint.value = false;
+                resErrors.value = response.data.errors;
+            }
+        })
+        .catch(() => {
+            statusComplaint.value = false;
+            resMessage.value = "Ocorreu um erro a responder à reclamação.";
+        });
+};
+
 const clearComplaintFields = () => {
     form.value.title = "";
     form.value.date = "";
@@ -151,6 +178,13 @@ const clearComplaintFields = () => {
     form.value.user = "";
     form.value.response = "";
     form.value.status = selectOptions[0];
+};
+
+const clearAnswerComplaintFields = () => {
+    form.value.response = complaint.value.response ?? "Sem resposta";
+    form.value.status = selectOptions.find(
+        (option) => option.value === complaint.value.status
+    );
 };
 
 function format(date, api) {
@@ -275,7 +309,6 @@ watch(
                             v-model="form.status"
                             :options="selectOptions"
                             :icon="form.status.icon"
-                            :disabled="selected ? true : false"
                             required
                         />
                     </FormField>
@@ -334,7 +367,7 @@ watch(
                                     : 'w-10/12 flex flex-initial'
                             "
                         />
-                        <BaseButtons v-if="!selected">
+                        <BaseButtons>
                             <BaseButton
                                 color="info"
                                 class="w-12 h-12 sm:w-12 sm:h-12 my-auto flex-initial"
@@ -342,8 +375,17 @@ watch(
                                 small
                                 outline
                                 rounded-full
-                                title="Ver Clientes"
-                                @click="router.push({ name: 'users' })"
+                                :title="
+                                    selected ? 'Ver Cliente' : 'Ver Clientes'
+                                "
+                                @click="
+                                    selected
+                                        ? router.push({
+                                              name: 'profileUser',
+                                              params: { id: form.user.id },
+                                          })
+                                        : router.push({ name: 'users' })
+                                "
                             />
                         </BaseButtons>
                     </FormField>
@@ -394,12 +436,11 @@ watch(
                         :icon="mdiEmailFastOutline"
                         name="response"
                         :type="form.response ? 'textarea' : 'text'"
-                        :disabled="selected ? true : false"
                     />
                 </FormField>
 
                 <template #footer>
-                    <div class="relative" :class="selected ? 'mt-4' : ''">
+                    <div class="relative">
                         <span
                             v-if="selected"
                             class="static text-zinc-500 right-0 bottom-0 mb-1 text-center sm:text-right sm:absolute"
@@ -421,44 +462,24 @@ watch(
                                 @click="clearComplaintFields"
                             />
                         </BaseButtons>
+                        <BaseButtons v-if="selected">
+                            <BaseButton
+                                color="warning"
+                                label="Responder"
+                                :icon="mdiMail"
+                                @click="responseComplaint"
+                            />
+                            <BaseButton
+                                color="info"
+                                label="Repor"
+                                outline
+                                :icon="mdiLockReset"
+                                @click="clearAnswerComplaintFields"
+                            />
+                        </BaseButtons>
                     </div>
                 </template>
             </CardBox>
-
-            <SectionTitleLine
-                v-if="selected"
-                :icon="mdiEmailFastOutline"
-                title="
-                    Responder Reclamação
-                "
-            />
-
-            <CardBox v-if="selected" is-form class="my-auto">
-                <FormField
-                    label="Estado"
-                    help="Selecione o estado da reclamação. Obrigatório."
-                    label-for="status"
-                >
-                    <FormControl
-                        id="status"
-                        v-model="form.status"
-                        :options="selectOptions"
-                        :icon="form.status.icon"
-                    />
-                </FormField>
-                <FormField
-                    label="Resposta"
-                    help="Registe a resposta da reclamação. Obrigatório."
-                    label-for="response"
-                >
-                    <FormControl
-                        id="response"
-                        v-model="form.response"
-                        :icon="mdiEmailFastOutline"
-                        name="response"
-                        type="textarea"
-                    /> </FormField
-            ></CardBox>
         </SectionMain>
     </LayoutAuthenticated>
 </template>

@@ -75,7 +75,7 @@ const inputElClass = computed(() => {
     }
 
     if (props.disabled) {
-        base.push("cursor-not-allowed opacity-80");
+        base.push("cursor-not-allowed opacity-70");
     }
 
     if (props.uppercase) {

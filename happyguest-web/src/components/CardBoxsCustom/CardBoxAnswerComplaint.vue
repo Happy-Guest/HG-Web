@@ -58,6 +58,7 @@ const selectOptions = [
     { id: 0, label: "Pendente", value: "P", icon: mdiClockTimeTwoOutline },
     { id: 1, label: "Resolução", value: "S", icon: mdiCog },
     { id: 2, label: "Terminada", value: "R", icon: mdiCheck },
+    { id: 3, label: "Anulada", value: "C", icon: mdiClose },
 ];
 
 const responseComplaint = () => {
