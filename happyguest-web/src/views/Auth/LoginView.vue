@@ -9,7 +9,6 @@ import {
 import SectionFullScreen from "@/components/Sections/SectionFullScreen.vue";
 import CardBox from "@/components/CardBoxs/CardBox.vue";
 import FormCheckRadioGroup from "@/components/Forms/FormCheckRadioGroup.vue";
-import BaseDivider from "@/components/Bases/BaseDivider.vue";
 import BaseLevel from "@/components/Bases/BaseLevel.vue";
 import FormField from "@/components/Forms/FormField.vue";
 import FormControl from "@/components/Forms/FormControl.vue";
@@ -93,9 +92,7 @@ const submit = async () => {
                     :options="{ remember: 'Manter sessão iniciada' }"
                 />
 
-                <BaseDivider />
-
-                <BaseLevel>
+                <BaseLevel class="mt-8">
                     <BaseButtons>
                         <BaseButton
                             type="submit"

@@ -482,7 +482,7 @@ watch(
 
                     <FormField
                         label="Nova Palavra-passe"
-                        help="A sua nova palavra-passe. Deve conter pelo menos 8 caracteres. Obrigatório"
+                        help="A sua nova palavra-passe. Deve conter pelo menos 5 caracteres. Obrigatório"
                     >
                         <FormControl
                             v-model="passwordForm.new_password"

@@ -24,6 +24,7 @@ import BaseLevel from "@/components/Bases/BaseLevel.vue";
 import FormValidationErrors from "@/components/Forms/FormValidationErrors.vue";
 import SectionTitleLine from "@/components/Sections/SectionTitleLine.vue";
 import NotificationBarInCard from "@/components/Others/NotificationBarInCard.vue";
+import FormFilePicker from "@/components/Forms/FormFilePicker.vue";
 import { useRouter } from "vue-router";
 import { useAuthStore } from "@/stores/auth.js";
 
@@ -62,6 +63,7 @@ const form = ref({
     password_confirmation: "",
     type: selectOptions[0],
     role: selectOptions[0].value,
+    photo: null,
 });
 
 const submit = () => {
@@ -109,18 +111,34 @@ const submit = () => {
                     </NotificationBarInCard>
                 </Transition>
 
-                <FormField
-                    label="Nome"
-                    label-for="name"
-                    help="Insira o nome da conta. Obrigatório"
-                >
-                    <FormControl
-                        v-model="form.name"
-                        :icon="mdiAccount"
-                        type="text"
-                        autocomplete="name"
-                        required
-                    />
+                <FormField flex>
+                    <FormField
+                        label="Nome"
+                        label-for="name"
+                        help="Insira o nome da conta. Obrigatório"
+                        class="mb-4 sm:mb-0 w-full sm:w-5/6"
+                        no-margin
+                    >
+                        <FormControl
+                            v-model="form.name"
+                            :icon="mdiAccount"
+                            type="text"
+                            autocomplete="name"
+                            required
+                        />
+                    </FormField>
+                    <div class="w-full sm:w-1/6 flex justify-center">
+                        <FormField label="Avatar" help="Opcional">
+                            <FormFilePicker
+                                v-model="form.photo"
+                                label="Enviar"
+                                is-round-icon
+                                accept="
+                                    image/png,image/jpeg,image/jpg,image/gif,image/svg+xml,
+                                "
+                            />
+                        </FormField>
+                    </div>
                 </FormField>
 
                 <FormField
@@ -169,7 +187,7 @@ const submit = () => {
                     <FormField
                         label="Palavra-passe"
                         label-for="password"
-                        help="Insira a palavra-passe. Deve conter pelo menos 8 caracteres. Obrigatório"
+                        help="Insira a palavra-passe. Deve conter pelo menos 5 caracteres. Obrigatório"
                         no-margin
                     >
                         <FormControl
@@ -195,8 +213,6 @@ const submit = () => {
                         />
                     </FormField>
                 </FormField>
-
-                <BaseDivider />
 
                 <BaseLevel>
                     <BaseButtons>
