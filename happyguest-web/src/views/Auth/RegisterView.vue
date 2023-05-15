@@ -114,7 +114,6 @@ const submit = () => {
                 <FormField flex>
                     <FormField
                         label="Nome"
-                        label-for="name"
                         help="Insira o nome da conta. Obrigatório"
                         class="mb-4 sm:mb-0 w-full sm:w-5/6"
                         no-margin
@@ -128,7 +127,7 @@ const submit = () => {
                         />
                     </FormField>
                     <div class="w-full sm:w-1/6 flex justify-center">
-                        <FormField label="Avatar" help="Opcional">
+                        <FormField label="Foto" help="Opcional">
                             <FormFilePicker
                                 v-model="form.photo"
                                 label="Enviar"
@@ -143,7 +142,6 @@ const submit = () => {
 
                 <FormField
                     label="Email"
-                    label-for="email"
                     help="Insira o email da conta. Obrigatório"
                 >
                     <FormControl
@@ -169,7 +167,6 @@ const submit = () => {
                     </FormField>
                     <FormField
                         label="Nº Telefone"
-                        label-for="phone"
                         help="Insira o número de telefone. Opcional"
                     >
                         <FormControl
@@ -186,7 +183,6 @@ const submit = () => {
                 <FormField>
                     <FormField
                         label="Palavra-passe"
-                        label-for="password"
                         help="Insira a palavra-passe. Deve conter pelo menos 5 caracteres. Obrigatório"
                         no-margin
                     >
@@ -201,7 +197,6 @@ const submit = () => {
 
                     <FormField
                         label="Confirmar Palavra-passe"
-                        label-for="password_confirmation"
                         help="Confirme a palavra-passe. Obrigatório."
                     >
                         <FormControl

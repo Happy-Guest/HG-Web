@@ -326,25 +326,46 @@ watch(
                             <b>{{ resMessage }}</b>
                         </NotificationBarInCard>
                     </Transition>
-                    <FormField
-                        label="Nome"
-                        :help="
-                            account
-                                ? 'O nome do utilizador. Obrigatório'
-                                : 'O seu nome. Obrigatório'
-                        "
-                    >
-                        <FormControl
-                            v-model="profileForm.name"
-                            :icon="mdiAccount"
-                            name="username"
-                            required
-                            :disabled="
-                                user.id != authStore.user?.id &&
-                                authStore.user?.role == 'M' &&
-                                (user.role == 'A' || user.role == 'M')
+
+                    <FormField flex>
+                        <FormField
+                            label="Nome"
+                            :help="
+                                account
+                                    ? 'O nome do utilizador. Obrigatório'
+                                    : 'O seu nome. Obrigatório'
                             "
-                        />
+                            class="mb-4 sm:mb-0 w-full sm:w-5/6"
+                            label-for="name"
+                            no-margin
+                        >
+                            <FormControl
+                                id="name"
+                                v-model="profileForm.name"
+                                :icon="mdiAccount"
+                                name="username"
+                                autocomplete="name"
+                                required
+                                :disabled="
+                                    user.id != authStore.user?.id &&
+                                    authStore.user?.role == 'M' &&
+                                    (user.role == 'A' || user.role == 'M')
+                                "
+                            />
+                        </FormField>
+                        <div class="w-full sm:w-1/6 flex justify-center">
+                            <FormField label="Foto" help="Opcional">
+                                <FormFilePicker
+                                    id="userPhoto"
+                                    v-model="profileForm.photo"
+                                    label="Enviar"
+                                    is-round-icon
+                                    accept="
+                                    image/png,image/jpeg,image/jpg,image/gif,image/svg+xml,
+                                "
+                                />
+                            </FormField>
+                        </div>
                     </FormField>
 
                     <FormField
@@ -354,8 +375,10 @@ watch(
                                 ? 'O email do utilizador. Obrigatório'
                                 : 'O seu email. Obrigatório'
                         "
+                        label-for="email"
                     >
                         <FormControl
+                            id="email"
                             v-model="profileForm.email"
                             :icon="mdiEmail"
                             type="email"
@@ -372,48 +395,34 @@ watch(
 
                     <BaseDivider />
 
-                    <FormField flex>
-                        <FormField
-                            label="Nº Telefone"
-                            :help="
-                                account
-                                    ? 'O Nº de telefone do utilizador. Opcional'
-                                    : 'O seu Nº de telefone. Opcional'
+                    <FormField
+                        label="Nº Telefone"
+                        :help="
+                            account
+                                ? 'O Nº de telefone do utilizador. Opcional'
+                                : 'O seu Nº de telefone. Opcional'
+                        "
+                        label-for="phone"
+                    >
+                        <FormControl
+                            id="phone"
+                            v-model="profileForm.phone"
+                            :icon="mdiCellphone"
+                            type="number"
+                            name="phone"
+                            maxlength="1"
+                            autocomplete="phone"
+                            :placeholder="
+                                profileForm.phone.length === 0
+                                    ? 'Não definido'
+                                    : ''
                             "
-                            class="mb-4 sm:mb-0 w-full sm:w-5/6"
-                            no-margin
-                        >
-                            <FormControl
-                                v-model="profileForm.phone"
-                                :icon="mdiCellphone"
-                                type="number"
-                                name="phone"
-                                maxlength="1"
-                                autocomplete="phone"
-                                :placeholder="
-                                    profileForm.phone.length === 0
-                                        ? 'Não definido'
-                                        : ''
-                                "
-                                :disabled="
-                                    user.id != authStore.user?.id &&
-                                    authStore.user?.role == 'M' &&
-                                    (user.role == 'A' || user.role == 'M')
-                                "
-                            />
-                        </FormField>
-                        <div class="w-full sm:w-1/6 flex justify-center">
-                            <FormField label="Avatar" help="Opcional">
-                                <FormFilePicker
-                                    v-model="profileForm.photo"
-                                    label="Enviar"
-                                    is-round-icon
-                                    accept="
-                                    image/png,image/jpeg,image/jpg,image/gif,image/svg+xml,
-                                "
-                                />
-                            </FormField>
-                        </div>
+                            :disabled="
+                                user.id != authStore.user?.id &&
+                                authStore.user?.role == 'M' &&
+                                (user.role == 'A' || user.role == 'M')
+                            "
+                        />
                     </FormField>
 
                     <template #footer>
@@ -467,8 +476,10 @@ watch(
                     <FormField
                         label="Palavra-passe Atual"
                         help="A sua palavra-passe atual. Obrigatório"
+                        label-for="old_password"
                     >
                         <FormControl
+                            id="old_password"
                             v-model="passwordForm.old_password"
                             :icon="mdiAsterisk"
                             name="old_password"
@@ -483,8 +494,10 @@ watch(
                     <FormField
                         label="Nova Palavra-passe"
                         help="A sua nova palavra-passe. Deve conter pelo menos 5 caracteres. Obrigatório"
+                        label-for="new_password"
                     >
                         <FormControl
+                            id="new_password"
                             v-model="passwordForm.new_password"
                             :icon="mdiFormTextboxPassword"
                             name="new_password"
@@ -497,8 +510,10 @@ watch(
                     <FormField
                         label="Confirmar Palavra-passe"
                         help="Confirme a sua nova palavra-passe. Obrigatório"
+                        label-for="new_password_confirmation"
                     >
                         <FormControl
+                            id="new_password_confirmation"
                             v-model="passwordForm.new_password_confirmation"
                             :icon="mdiFormTextboxPassword"
                             name="new_password_confirmation"

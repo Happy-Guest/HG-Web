@@ -180,7 +180,7 @@ watch(
                     class="font-semibold mr-12 mt-2"
                     name="anon-switch"
                     type="switch"
-                    label="Anónimo"
+                    label="Anónima"
                     input-value="anonymous"
                     :disabled="selected ? true : false"
                     :class="selected ? 'cursor-not-allowed opacity-80' : ''"
@@ -202,8 +202,10 @@ watch(
                 <FormField
                     label="Título"
                     help="O título da reclamação. Obrigatório."
+                    label-for="title"
                 >
                     <FormControl
+                        id="title"
                         v-model="form.title"
                         :icon="mdiCursorText"
                         name="title"
@@ -215,9 +217,11 @@ watch(
                     <FormField
                         label="Estado"
                         help="O estado da reclamação. Obrigatório."
+                        label-for="status"
                         no-margin
                     >
                         <FormControl
+                            id="status"
                             v-model="form.status"
                             :options="selectOptions"
                             :icon="form.status.icon"
@@ -228,8 +232,10 @@ watch(
                     <FormField
                         label="Local"
                         help="O local da reclamação. Obrigatório."
+                        label-for="local"
                     >
                         <FormControl
+                            id="local"
                             v-model="form.local"
                             :icon="mdiMapMarker"
                             name="local"
@@ -241,8 +247,10 @@ watch(
                 <FormField
                     label="Comentário"
                     help="O comentário da reclamação. Obrigatório."
+                    label-for="comment"
                 >
                     <FormControl
+                        id="comment"
                         v-model="form.comment"
                         :icon="mdiCommentTextOutline"
                         name="comment"
@@ -259,10 +267,12 @@ watch(
                         label="ID Cliente"
                         help="O id do cliente da reclamação. Opcional"
                         class="w-full md:w-1/3 mb-4 sm:mb-0"
+                        label-for="client"
                         flex
                         no-margin
                     >
                         <FormControl
+                            id="client"
                             v-model="form.user.id"
                             :icon="mdiAccount"
                             name="Client"
@@ -291,8 +301,10 @@ watch(
                         label="Nome Cliente"
                         help="O nome do cliente selecionado. Opcional"
                         class="w-full md:w-2/3"
+                        label-for="clientName"
                     >
                         <FormControl
+                            id="clientName"
                             v-model="form.user.name"
                             :icon="mdiAccountCircle"
                             name="Client"
@@ -322,8 +334,10 @@ watch(
                 <FormField
                     label="Resposta"
                     help="A resposta da reclamação. Dada pelos gestores."
+                    label-for="response"
                 >
                     <FormControl
+                        id="response"
                         v-model="form.response"
                         :icon="mdiEmailFastOutline"
                         name="response"

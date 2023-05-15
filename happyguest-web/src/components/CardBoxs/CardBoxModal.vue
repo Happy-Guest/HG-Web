@@ -124,14 +124,16 @@ window.addEventListener("keydown", (e) => {
                     v-if="hasPassword"
                     label="Palavra-passe"
                     help="Confirme a sua palavra-passe. Obrigatório"
+                    label-for="password"
                 >
                     <FormControl
+                        id="password"
                         v-model="password"
                         :icon="mdiAsterisk"
                         name="password"
                         type="password"
                         required
-                        autocomplete="password"
+                        autocomplete="current-password"
                     />
                 </FormField>
             </div>

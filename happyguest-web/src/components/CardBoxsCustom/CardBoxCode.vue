@@ -168,10 +168,12 @@ const editCode = async () => {
             <FormField
                 label="Código"
                 help="O código de acesso. Obrigatório."
+                label-for="code"
                 flex
                 no-margin
             >
                 <FormControl
+                    id="code"
                     v-model="form.code"
                     :icon="mdiBarcode"
                     name="code"
@@ -195,8 +197,10 @@ const editCode = async () => {
             <FormField
                 label="Quarto(s)"
                 help="O(s) quarto(s), separados por vírgula. Obrigatório."
+                label-for="rooms"
             >
                 <FormControl
+                    id="rooms"
                     v-model="form.rooms"
                     :icon="mdiBed"
                     name="rooms"
@@ -209,9 +213,11 @@ const editCode = async () => {
             <FormField
                 label="Data de entrada"
                 help="A data de entrada. Obrigatório."
+                label-for="entry_date"
                 no-margin
             >
                 <FormControl
+                    id="entry_date"
                     v-model="form.entry_date"
                     :icon="mdiCalendarRange"
                     name="entry_date"
@@ -223,8 +229,10 @@ const editCode = async () => {
             <FormField
                 label="Data de saída"
                 help="A data de saída. Obrigatório."
+                label-for="exit_date"
             >
                 <FormControl
+                    id="exit_date"
                     v-model="form.exit_date"
                     :icon="mdiCalendarRange"
                     name="exit_date"
