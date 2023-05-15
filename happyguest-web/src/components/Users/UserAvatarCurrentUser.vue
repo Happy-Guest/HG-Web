@@ -10,11 +10,20 @@ defineProps({
         type: String,
         default: null,
     },
+    isProfile: {
+        type: Boolean,
+        default: false,
+    },
 });
 </script>
 
 <template>
-    <UserAvatar :username="userName" api="initials" :avatar="userAvatar">
+    <UserAvatar
+        :username="userName"
+        api="initials"
+        :avatar="userAvatar"
+        :is-profile="isProfile"
+    >
         <slot />
     </UserAvatar>
 </template>

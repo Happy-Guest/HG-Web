@@ -51,10 +51,9 @@ defineProps({
                 :user-name="userName"
                 :user-avatar="userAvatar"
                 class="lg:mx-12 my-1"
+                is-profile
             />
-            <div
-                class="space-y-3 text-center md:text-left lg:mx-12 mb-12 md:mb-0"
-            >
+            <div class="space-y-3 text-center md:text-left lg:mx-12">
                 <h1 v-if="currentUser" class="text-2xl">
                     Olá, <b>{{ userName }}</b
                     >!

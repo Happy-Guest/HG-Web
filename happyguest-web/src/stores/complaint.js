@@ -53,11 +53,6 @@ export const useComplaintStore = defineStore("complaint", () => {
     async function createComplaint(data) {
         try {
             const response = await axios.post("complaints/", data);
-            if (response.status == 201) {
-                complaints.value = [];
-                pagesComplaints.value = [];
-                loadComplaints(0);
-            }
             return response;
         } catch (error) {
             return error;

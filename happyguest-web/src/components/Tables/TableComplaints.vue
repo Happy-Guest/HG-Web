@@ -214,7 +214,7 @@ const submitDelete = () => {
                         />
                         <BaseButton
                             color="danger"
-                            title="Cancelar"
+                            title="Anular"
                             :icon="
                                 complaint.status == 'C' ? mdiCancel : mdiClose
                             "

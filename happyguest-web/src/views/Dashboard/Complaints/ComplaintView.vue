@@ -424,6 +424,41 @@ watch(
                     </div>
                 </template>
             </CardBox>
+
+            <SectionTitleLine
+                v-if="selected"
+                :icon="mdiEmailFastOutline"
+                title="
+                    Responder Reclamação
+                "
+            />
+
+            <CardBox v-if="selected" is-form class="my-auto">
+                <FormField
+                    label="Estado"
+                    help="Selecione o estado da reclamação. Obrigatório."
+                    label-for="status"
+                >
+                    <FormControl
+                        id="status"
+                        v-model="form.status"
+                        :options="selectOptions"
+                        :icon="form.status.icon"
+                    />
+                </FormField>
+                <FormField
+                    label="Resposta"
+                    help="Registe a resposta da reclamação. Obrigatório."
+                    label-for="response"
+                >
+                    <FormControl
+                        id="response"
+                        v-model="form.response"
+                        :icon="mdiEmailFastOutline"
+                        name="response"
+                        type="textarea"
+                    /> </FormField
+            ></CardBox>
         </SectionMain>
     </LayoutAuthenticated>
 </template>

@@ -20,6 +20,10 @@ const props = defineProps({
         type: Boolean,
         default: false,
     },
+    isProfile: {
+        type: Boolean,
+        default: false,
+    },
 });
 
 const avatar = computed(() =>
@@ -41,6 +45,7 @@ const username = computed(() => props.username);
             class="rounded-full block h-auto w-full max-w-md max-h-64 bg-gray-100 dark:bg-slate-800 object-cover"
             :class="{
                 'max-h-24 lg:max-h-6': isTable,
+                'h-40 w-40 md:h-56 md:w-56': isProfile,
             }"
         />
         <slot />
