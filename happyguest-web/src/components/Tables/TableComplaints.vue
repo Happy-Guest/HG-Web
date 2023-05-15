@@ -134,7 +134,7 @@ const submitDelete = () => {
                 <th>Título:</th>
                 <th>Local:</th>
                 <th>Estado:</th>
-                <th>Data:</th>
+                <th>Criada Em:</th>
                 <th />
             </tr>
         </thead>
@@ -183,7 +183,7 @@ const submitDelete = () => {
                         :icon="mdiClose"
                     />
                 </td>
-                <td data-label="Data" class="text-center">
+                <td data-label="Criada Em" class="text-center">
                     {{ complaint.created_at }}
                 </td>
                 <td
@@ -192,7 +192,7 @@ const submitDelete = () => {
                     <BaseButtons type="justify-start lg:justify-end" no-wrap>
                         <BaseButton
                             color="info"
-                            title="Reclmação"
+                            title="Reclamação"
                             :icon="mdiEye"
                             small
                             @click="

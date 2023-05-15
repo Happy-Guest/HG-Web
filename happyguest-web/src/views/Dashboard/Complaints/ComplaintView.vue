@@ -16,6 +16,7 @@ import {
     mdiClockTimeTwoOutline,
     mdiClose,
     mdiAccountMultiple,
+    mdiCalendarRange,
 } from "@mdi/js";
 import LayoutAuthenticated from "@/layouts/LayoutAuthenticated.vue";
 import SectionMain from "@/components/Sections/SectionMain.vue";
@@ -53,6 +54,7 @@ onMounted(() => {
             .then((response) => {
                 complaint.value = response;
                 form.value.title = complaint.value?.title;
+                form.value.date = format(complaint.value?.date, false);
                 form.value.comment = complaint.value?.comment;
                 form.value.local = complaint.value?.local;
                 form.value.response =
@@ -67,7 +69,7 @@ onMounted(() => {
                 } else {
                     anonymous.value = true;
                     form.value.user.id = "Sem ID";
-                    form.value.user.name = "Anónimo";
+                    form.value.user.name = "Anónima";
                 }
             });
     } else {
@@ -80,7 +82,7 @@ watch(
     (value) => {
         if (value) {
             form.value.user.id = "Sem ID";
-            form.value.user.name = "Anónimo";
+            form.value.user.name = "Anónima";
         } else {
             form.value.user.id = "";
             form.value.user.name = "";
@@ -97,6 +99,7 @@ const selectOptions = [
 
 const form = ref({
     title: "",
+    date: "",
     comment: "",
     local: "",
     user: [
@@ -113,6 +116,7 @@ const createComplaint = () => {
     complaintStore
         .createComplaint({
             title: form.value.title,
+            date: format(form.value.date, true),
             comment: form.value.comment,
             local: form.value.local,
             user_id: anonymous.value ? null : form.value.user.id,
@@ -141,12 +145,36 @@ const createComplaint = () => {
 
 const clearComplaintFields = () => {
     form.value.title = "";
+    form.value.date = "";
     form.value.comment = "";
     form.value.local = "";
     form.value.user = "";
     form.value.response = "";
     form.value.status = selectOptions[0];
 };
+
+function format(date, api) {
+    if (date) {
+        var tzoffset = new Date().getTimezoneOffset() * 60000;
+        var dateParts = null;
+        var newDate = new Date();
+        if (api) {
+            dateParts = date.split("-");
+            newDate = new Date(+dateParts[0], +dateParts[1] - 1, +dateParts[2]);
+            return new Date(newDate - tzoffset)
+                .toISOString()
+                .slice(0, -1)
+                .slice(0, 10)
+                .replace(/-/g, "/");
+        }
+        dateParts = date.split("/");
+        newDate = new Date(+dateParts[2], +dateParts[1] - 1, +dateParts[0]);
+        return new Date(newDate - tzoffset)
+            .toISOString()
+            .slice(0, -1)
+            .slice(0, 10);
+    }
+}
 
 watch(
     () => form.value.user.id,
@@ -199,20 +227,42 @@ watch(
                         <b>{{ resMessage }}</b>
                     </NotificationBarInCard>
                 </Transition>
-                <FormField
-                    label="Título"
-                    help="O título da reclamação. Obrigatório."
-                    label-for="title"
-                >
-                    <FormControl
-                        id="title"
-                        v-model="form.title"
-                        :icon="mdiCursorText"
-                        name="title"
-                        :disabled="selected ? true : false"
-                        required
-                    />
+
+                <FormField flex>
+                    <FormField
+                        label="Título"
+                        help="O título da reclamação. Obrigatório."
+                        class="w-full md:w-2/3 mb-4 sm:mb-0"
+                        label-for="title"
+                        no-margin
+                    >
+                        <FormControl
+                            id="title"
+                            v-model="form.title"
+                            :icon="mdiCursorText"
+                            name="title"
+                            :disabled="selected ? true : false"
+                            required
+                        />
+                    </FormField>
+                    <FormField
+                        label="Data"
+                        help="A data da ocorrência. Obrigatório."
+                        class="w-full md:w-1/3"
+                        label-for="date"
+                    >
+                        <FormControl
+                            id="date"
+                            v-model="form.date"
+                            type="date"
+                            :icon="mdiCalendarRange"
+                            name="date"
+                            :disabled="selected ? true : false"
+                            required
+                        />
+                    </FormField>
                 </FormField>
+
                 <FormField>
                     <FormField
                         label="Estado"
@@ -231,7 +281,7 @@ watch(
                     </FormField>
                     <FormField
                         label="Local"
-                        help="O local da reclamação. Obrigatório."
+                        help="O local da ocorrência. Obrigatório."
                         label-for="local"
                     >
                         <FormControl
@@ -265,7 +315,7 @@ watch(
                 <FormField flex>
                     <FormField
                         label="ID Cliente"
-                        help="O id do cliente da reclamação. Opcional"
+                        help="O ID do cliente. Opcional"
                         class="w-full md:w-1/3 mb-4 sm:mb-0"
                         label-for="client"
                         flex
@@ -318,8 +368,10 @@ watch(
                 <FormField
                     label="Ficheiro(s)"
                     help="O(s) ficheiro(s) da reclamação. Opcional."
+                    label-for="files"
                 >
                     <FormControl
+                        id="files"
                         v-model="form.file"
                         :icon="mdiEmailFastOutline"
                         name="files"
@@ -333,7 +385,7 @@ watch(
 
                 <FormField
                     label="Resposta"
-                    help="A resposta da reclamação. Dada pelos gestores."
+                    help="A resposta da reclamação. Apenas para funcionários certificados. Opcional."
                     label-for="response"
                 >
                     <FormControl
@@ -347,21 +399,29 @@ watch(
                 </FormField>
 
                 <template #footer>
-                    <BaseButtons v-if="!selected">
-                        <BaseButton
-                            type="submit"
-                            color="success"
-                            label="Registar"
-                            :icon="mdiContentSaveCheck"
-                        />
-                        <BaseButton
-                            color="info"
-                            label="Repor"
-                            outline
-                            :icon="mdiLockReset"
-                            @click="clearComplaintFields"
-                        />
-                    </BaseButtons>
+                    <div class="relative" :class="selected ? 'mt-4' : ''">
+                        <span
+                            v-if="selected"
+                            class="static text-zinc-500 right-0 bottom-0 mb-1 text-center sm:text-right sm:absolute"
+                            >Criada Em: {{ complaint.created_at }}<br />Última
+                            Atualização: {{ complaint.updated_at }}</span
+                        >
+                        <BaseButtons v-if="!selected">
+                            <BaseButton
+                                type="submit"
+                                color="success"
+                                label="Registar"
+                                :icon="mdiContentSaveCheck"
+                            />
+                            <BaseButton
+                                color="info"
+                                label="Repor"
+                                outline
+                                :icon="mdiLockReset"
+                                @click="clearComplaintFields"
+                            />
+                        </BaseButtons>
+                    </div>
                 </template>
             </CardBox>
         </SectionMain>
