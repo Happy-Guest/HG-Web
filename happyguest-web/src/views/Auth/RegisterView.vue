@@ -141,6 +141,7 @@ const submit = () => {
                     <FormField
                         label="Tipo"
                         help="Selecione o tipo de utilizador. Obrigatório"
+                        no-margin
                     >
                         <FormControl
                             v-model="form.type"
@@ -169,6 +170,7 @@ const submit = () => {
                         label="Palavra-passe"
                         label-for="password"
                         help="Insira a palavra-passe. Deve conter pelo menos 8 caracteres. Obrigatório"
+                        no-margin
                     >
                         <FormControl
                             v-model="form.password"

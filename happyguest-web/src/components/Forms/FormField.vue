@@ -47,7 +47,7 @@ const wrapperClass = computed(() => {
 </script>
 
 <template>
-    <div :class="props.noMargin ? '' : 'mb-6 last:mb-0'">
+    <div :class="props.noMargin ? 'mb-2 md:mb-0' : 'mb-6 last:mb-0'">
         <label v-if="label" :for="labelFor" class="block font-bold mb-2">{{
             label
         }}</label>

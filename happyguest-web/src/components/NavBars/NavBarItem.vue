@@ -50,14 +50,6 @@ const itemLabel = computed(() =>
     props.item.isCurrentUser ? authStore.user?.name : props.item.label
 );
 
-const name = computed(() =>
-    authStore.user?.name != null ? authStore.user?.name : ""
-);
-
-const avatar = computed(() =>
-    authStore.user?.photo_url != null ? authStore.user?.photo_url : ""
-);
-
 const isDropdownActive = ref(false);
 
 const menuClick = (event) => {
@@ -117,8 +109,8 @@ onBeforeUnmount(() => {
         >
             <UserAvatarCurrentUser
                 v-if="item.isCurrentUser"
-                :username="name"
-                :user-avatar="avatar"
+                :user-name="authStore.user?.name ?? ''"
+                :user-avatar="authStore.user?.photo_url ?? null"
                 class="w-6 h-6 mr-3 inline-flex"
             />
             <BaseIcon

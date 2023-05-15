@@ -215,6 +215,7 @@ watch(
                     <FormField
                         label="Estado"
                         help="O estado da reclamação. Obrigatório."
+                        no-margin
                     >
                         <FormControl
                             v-model="form.status"

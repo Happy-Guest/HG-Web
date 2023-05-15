@@ -41,8 +41,22 @@ export const useUserStore = defineStore("user", () => {
     }
 
     async function updateUser(userId, data) {
+        console.log(data);
         try {
-            let response = await axios.patch("users/" + userId, data);
+            let response = await axios.patch(
+                "users/" + userId,
+                {
+                    name: data.name,
+                    email: data.email,
+                    phone: data.phone,
+                    photo: data.photo,
+                },
+                {
+                    headers: {
+                        "Content-Type": "multipart/form-data",
+                    },
+                }
+            );
             return response;
         } catch (error) {
             return error.response;

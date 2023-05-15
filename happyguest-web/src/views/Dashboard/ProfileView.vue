@@ -29,6 +29,7 @@ import SectionTitleLine from "@/components/Sections/SectionTitleLine.vue";
 import NotificationBarInCard from "@/components/Others/NotificationBarInCard.vue";
 import CardBoxModal from "@/components/CardBoxs/CardBoxModal.vue";
 import FormValidationErrors from "@/components/Forms/FormValidationErrors.vue";
+import FormFilePicker from "@/components/Forms/FormFilePicker.vue";
 import { useAuthStore } from "@/stores/auth";
 import { useUserStore } from "@/stores/user";
 
@@ -44,6 +45,7 @@ const profileForm = ref({
     name: user.value.name,
     email: user.value.email,
     phone: user.value.phone ?? "",
+    photo: null,
 });
 
 const passwordForm = ref({
@@ -369,33 +371,51 @@ watch(
 
                     <BaseDivider />
 
-                    <FormField
-                        label="Nº Telefone"
-                        :help="
-                            account
-                                ? 'O nº de telefone do utilizador. Opcional'
-                                : 'O seu nº de telefone. Opcional'
-                        "
-                        class="mb-0"
-                    >
-                        <FormControl
-                            v-model="profileForm.phone"
-                            :icon="mdiCellphone"
-                            type="number"
-                            name="phone"
-                            maxlength="1"
-                            autocomplete="phone"
-                            :placeholder="
-                                profileForm.phone.length === 0
-                                    ? 'Não definido'
-                                    : ''
+                    <FormField flex>
+                        <FormField
+                            label="Nº Telefone"
+                            :help="
+                                account
+                                    ? 'O Nº de telefone do utilizador. Opcional'
+                                    : 'O seu Nº de telefone. Opcional'
                             "
-                            :disabled="
-                                user.id != authStore.user?.id &&
-                                authStore.user?.role == 'M' &&
-                                (user.role == 'A' || user.role == 'M')
-                            "
-                        />
+                            class="mb-4 sm:mb-0 w-full sm:w-5/6"
+                            no-margin
+                        >
+                            <FormControl
+                                v-model="profileForm.phone"
+                                :icon="mdiCellphone"
+                                type="number"
+                                name="phone"
+                                maxlength="1"
+                                autocomplete="phone"
+                                :placeholder="
+                                    profileForm.phone.length === 0
+                                        ? 'Não definido'
+                                        : ''
+                                "
+                                :disabled="
+                                    user.id != authStore.user?.id &&
+                                    authStore.user?.role == 'M' &&
+                                    (user.role == 'A' || user.role == 'M')
+                                "
+                            />
+                        </FormField>
+                        <FormField
+                            label="Avatar"
+                            class="w-full sm:w-1/6 ml-2"
+                            help="Opcional"
+                        >
+                            <FormFilePicker
+                                v-model="profileForm.photo"
+                                name="photo"
+                                label="Enviar"
+                                is-round-icon
+                                accept="
+                                    image/png,image/jpeg,image/jpg,image/gif,image/svg+xml,
+                                "
+                            />
+                        </FormField>
                     </FormField>
 
                     <template #footer>
