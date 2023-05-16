@@ -214,7 +214,11 @@ const submitDelete = (password) => {
                     {{ code.id }}
                 </td>
                 <td data-label="Código" class="font-semibold">
-                    {{ code.code }}
+                    {{
+                        code.code.length > 25
+                            ? code.code.substring(0, 25).toUpperCase() + "..."
+                            : code.code.toUpperCase()
+                    }}
                 </td>
                 <td data-label="Quarto(s)">
                     <PillTag

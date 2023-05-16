@@ -151,7 +151,11 @@ const submitDelete = () => {
                     }}
                 </td>
                 <td data-label="Local" class="text-center font-semibold">
-                    {{ complaint.local }}
+                    {{
+                        complaint.local.length > 20
+                            ? complaint.local.substring(0, 20) + "..."
+                            : complaint.local
+                    }}
                 </td>
                 <td data-label="Estado" class="text-center">
                     <PillTag

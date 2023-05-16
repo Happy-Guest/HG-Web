@@ -231,10 +231,18 @@ const submitDelete = (password) => {
                     {{ user.id }}
                 </td>
                 <td data-label="Nome">
-                    {{ user.name }}
+                    {{
+                        user.name.length > 20
+                            ? user.name.substring(0, 20) + "..."
+                            : user.name
+                    }}
                 </td>
                 <td data-label="Email">
-                    {{ user.email }}
+                    {{
+                        user.email.length > 25
+                            ? user.email.substring(0, 25) + "..."
+                            : user.email
+                    }}
                 </td>
                 <td data-label="Tipo" class="text-center">
                     <PillTag

@@ -180,6 +180,7 @@ const editCode = async () => {
                     :class="!selected ? 'w-10/12 flex flex-initial' : 'w-full'"
                     :disabled="selected ? true : false"
                     required
+                    uppercase
                 />
                 <BaseButtons v-if="!selected">
                     <BaseButton
