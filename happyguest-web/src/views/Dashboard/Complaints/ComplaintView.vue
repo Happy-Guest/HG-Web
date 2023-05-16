@@ -20,6 +20,7 @@ import {
     mdiMail,
     mdiDownload,
     mdiEye,
+    mdiFileMultiple,
 } from "@mdi/js";
 import LayoutAuthenticated from "@/layouts/LayoutAuthenticated.vue";
 import SectionMain from "@/components/Sections/SectionMain.vue";
@@ -35,6 +36,7 @@ import FormCheckRadio from "@/components/Forms/FormCheckRadio.vue";
 import NotificationBarInCard from "@/components/Others/NotificationBarInCard.vue";
 import FormValidationErrors from "@/components/Forms/FormValidationErrors.vue";
 import CardBoxComponentEmpty from "@/components/CardBoxs/CardBoxComponentEmpty.vue";
+import CardBoxComplaintFile from "@/components/CardBoxsCustom/CardBoxComplaintFile.vue";
 import { useRouter } from "vue-router";
 import { useUserStore } from "@/stores/user";
 
@@ -46,7 +48,12 @@ const userStore = useUserStore();
 
 const complaint = ref([]);
 
+const srcFile = ref(null);
+const fileName = ref("");
+const isImage = ref(false);
+
 const anonymous = ref(false);
+const isModalActive = ref(false);
 
 const resMessage = ref("");
 const resErrors = ref([]);
@@ -229,7 +236,21 @@ function format(date, api) {
 async function viewFile(file) {
     complaintStore.file(complaint.value.id, file.id).then((response) => {
         if (response.status == 200) {
-            //
+            switch (response.data.type) {
+                case "image/png":
+                case "image/jpeg":
+                case "image/jpg":
+                case "image/gif":
+                case "image/svg+xml":
+                    isImage.value = true;
+                    break;
+                default:
+                    isImage.value = false;
+                    break;
+            }
+            fileName.value = file.filename;
+            srcFile.value = URL.createObjectURL(response.data);
+            isModalActive.value = true;
         }
     });
 }
@@ -267,6 +288,13 @@ watch(
 <template>
     <LayoutAuthenticated>
         <SectionMain>
+            <CardBoxComplaintFile
+                :active="isModalActive"
+                :src-file="srcFile"
+                :file-name="fileName"
+                :is-image="isImage"
+                @update:active="isModalActive = $event"
+            />
             <SectionTitleLine
                 :title="
                     selected
@@ -452,11 +480,12 @@ watch(
                 >
                     <FormControl
                         id="files"
-                        :icon="mdiEmailFastOutline"
+                        :icon="mdiFileMultiple"
                         name="files[]"
                         type="file"
                         :disabled="selected ? true : false"
                         multiple
+                        accept="application/pdf,image/png,image/jpeg,image/jpg,image/gif,image/svg+xml"
                         @change="onFileChange"
                     />
                 </FormField>
@@ -464,18 +493,18 @@ watch(
                     <CardBoxComponentEmpty
                         v-if="complaint.files.length == 0"
                         padding="p-10"
-                        class="rounded-2xl dark:bg-slate-900/70 bg-white rounded-medium"
+                        class="rounded-2xl dark:bg-slate-900/50 bg-stone-100 rounded-medium"
                         message="Sem anexos associados..."
                     />
                     <table
                         v-else
-                        class="rounded-2xl dark:bg-slate-900/70 bg-white rounded-medium"
+                        class="rounded-2xl dark:bg-slate-900/50 bg-stone-100 rounded-medium"
                     >
                         <tr v-for="file in complaint.files" :key="file.id">
                             <td data-label="Nome">
                                 {{ " ➯ " + file.filename }}
                             </td>
-                            <td>
+                            <td data-label="Ações">
                                 <BaseButtons type="justify-center" no-wrap>
                                     <BaseButton
                                         color="info"

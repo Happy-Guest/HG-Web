@@ -43,6 +43,10 @@ const props = defineProps({
         type: [String, Number, Boolean, Array, Object],
         default: "",
     },
+    accept: {
+        type: String,
+        default: null,
+    },
     required: Boolean,
     borderless: Boolean,
     transparent: Boolean,
@@ -150,6 +154,7 @@ onMounted(() => {
             :type="computedType"
             :class="inputElClass"
             :disabled="disabled"
+            :accept="accept"
             multiple
         />
         <input
