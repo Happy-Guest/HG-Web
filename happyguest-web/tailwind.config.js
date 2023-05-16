@@ -38,7 +38,7 @@ module.exports = {
             animation: {
                 "fade-out": "fade-out 250ms ease-in-out",
                 "fade-in": "fade-in 250ms ease-in-out",
-                "bounce-slow": "bounce 3s linear infinite",
+                "bounce-slow": "bounce 4s linear infinite",
             },
         },
     },

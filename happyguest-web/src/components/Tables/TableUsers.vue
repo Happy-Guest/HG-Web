@@ -164,7 +164,7 @@ const submitDelete = (password) => {
         v-if="isSuccessNotifActive"
         color="success"
         :icon="mdiCheckCircle"
-        class="animate-bounce-slow -mb-1 mx-8"
+        table
     >
         <b>{{ notifText }}</b>
     </NotificationBar>
@@ -172,7 +172,7 @@ const submitDelete = (password) => {
         v-if="isErrorNotifActive"
         color="danger"
         :icon="mdiAlertCircle"
-        class="animate-bounce-slow -mb-1 mx-8"
+        table
     >
         <b>{{ notifText }}</b>
     </NotificationBar>

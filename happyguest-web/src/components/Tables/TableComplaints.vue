@@ -105,7 +105,7 @@ const submitDelete = () => {
         v-if="isSuccessNotifUpdateActive"
         color="success"
         :icon="mdiCheckCircle"
-        class="animate-bounce-slow -mb-1 mx-8"
+        table
     >
         <b>Resposta enviada com sucesso!</b>
     </NotificationBar>

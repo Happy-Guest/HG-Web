@@ -16,10 +16,16 @@ const props = defineProps({
         type: String,
         required: true,
     },
+    table: Boolean,
 });
 
 const componentClass = computed(() =>
-    props.outline ? colorsOutline[props.color] : colorsBgLight[props.color]
+    props.outline
+        ? colorsOutline[props.color]
+        : colorsBgLight[props.color] +
+          (props.table
+              ? " -mb-1 mx-6 md:py-2 animate-bounce-slow"
+              : "mb-6 md:py-3")
 );
 
 const isDismissed = ref(false);
@@ -36,8 +42,8 @@ const hasRightSlot = computed(() => slots.right);
 <template>
     <div
         v-if="!isDismissed"
+        class="px-3 py-6 last:mb-0 border rounded-lg transition-colors duration-150"
         :class="componentClass"
-        class="px-3 py-6 md:py-3 mb-6 last:mb-0 border rounded-lg transition-colors duration-150"
     >
         <BaseLevel>
             <div class="flex flex-col md:flex-row items-center">
