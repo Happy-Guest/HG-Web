@@ -48,7 +48,7 @@ const asideLgCloseClick = (event) => {
             >
                 <div class="flex justify-center flex-1">
                     <img
-                        class="h-12 lg:h-10 lg:ml-6 xl:-ml-4 -ml-4"
+                        class="h-12 lg:h-10 lg:ml-6 xl:-ml-3 -ml-3"
                         src="/logo.png"
                         alt="Logo"
                         title="Logo"
