@@ -51,8 +51,41 @@ export const useComplaintStore = defineStore("complaint", () => {
     }
 
     async function createComplaint(data) {
+        let formData = new FormData();
+        formData.append("title", data.title);
+        formData.append("date", data.date);
+        formData.append("comment", data.comment);
+        formData.append("local", data.local);
+        formData.append("response", data.response);
+        formData.append("status", data.status);
+        if (data.user_id) {
+            formData.append("user_id", data.user_id);
+        }
+        if (data.files) {
+            for (let i = 0; i < data.files.length; i++) {
+                formData.append("files[]", data.files[i]);
+            }
+        }
         try {
-            const response = await axios.post("complaints/", data);
+            const response = await axios.post("complaints/", formData, {
+                headers: {
+                    "Content-Type": "multipart/form-data",
+                },
+            });
+            return response;
+        } catch (error) {
+            return error;
+        }
+    }
+
+    async function file(id, fileId) {
+        try {
+            const response = await axios.get(
+                "complaints/" + id + "/file/" + fileId,
+                {
+                    responseType: "blob",
+                }
+            );
             return response;
         } catch (error) {
             return error;
@@ -67,5 +100,6 @@ export const useComplaintStore = defineStore("complaint", () => {
         getComplaint,
         responseComplaint,
         createComplaint,
+        file,
     };
 });

@@ -18,6 +18,8 @@ import {
     mdiAccountMultiple,
     mdiCalendarRange,
     mdiMail,
+    mdiDownload,
+    mdiEye,
 } from "@mdi/js";
 import LayoutAuthenticated from "@/layouts/LayoutAuthenticated.vue";
 import SectionMain from "@/components/Sections/SectionMain.vue";
@@ -32,6 +34,7 @@ import SectionTitleLine from "@/components/Sections/SectionTitleLine.vue";
 import FormCheckRadio from "@/components/Forms/FormCheckRadio.vue";
 import NotificationBarInCard from "@/components/Others/NotificationBarInCard.vue";
 import FormValidationErrors from "@/components/Forms/FormValidationErrors.vue";
+import CardBoxComponentEmpty from "@/components/CardBoxs/CardBoxComponentEmpty.vue";
 import { useRouter } from "vue-router";
 import { useUserStore } from "@/stores/user";
 
@@ -42,7 +45,9 @@ const complaintStore = useComplaintStore();
 const userStore = useUserStore();
 
 const complaint = ref([]);
+
 const anonymous = ref(false);
+
 const resMessage = ref("");
 const resErrors = ref([]);
 const statusComplaint = ref(false);
@@ -111,7 +116,16 @@ const form = ref({
     ],
     response: "",
     status: selectOptions[0],
+    files: null,
 });
+
+const onFileChange = (e) => {
+    if (e.target.files.length > 0) {
+        form.value.files = [...e.target.files];
+    } else {
+        form.value.files = null;
+    }
+};
 
 const createComplaint = () => {
     complaintStore
@@ -123,6 +137,7 @@ const createComplaint = () => {
             user_id: anonymous.value ? null : form.value.user.id,
             response: form.value.response,
             status: form.value.status.value,
+            files: form.value.files,
         })
         .then((response) => {
             if (response.status == 201) {
@@ -178,6 +193,7 @@ const clearComplaintFields = () => {
     form.value.user = "";
     form.value.response = "";
     form.value.status = selectOptions[0];
+    form.value.files = null;
 };
 
 const clearAnswerComplaintFields = () => {
@@ -208,6 +224,29 @@ function format(date, api) {
             .slice(0, -1)
             .slice(0, 10);
     }
+}
+
+async function viewFile(file) {
+    complaintStore.file(complaint.value.id, file.id).then((response) => {
+        if (response.status == 200) {
+            //
+        }
+    });
+}
+
+async function downloadFile(file) {
+    complaintStore.file(complaint.value.id, file.id).then((response) => {
+        if (response.status == 200) {
+            const url = window.URL.createObjectURL(
+                new Blob([response.data], { type: file.mimetype })
+            );
+            const link = document.createElement("a");
+            link.href = url;
+            link.setAttribute("download", file.filename);
+            document.body.appendChild(link);
+            link.click();
+        }
+    });
 }
 
 watch(
@@ -361,17 +400,15 @@ watch(
                             name="Client"
                             :disabled="selected ? true : false || anonymous"
                             :required="anonymous ? false : true"
-                            :class="
-                                selected
-                                    ? 'w-full'
-                                    : 'w-10/12 flex flex-initial'
-                            "
+                            class="w-10/12 flex flex-initial"
                         />
                         <BaseButtons>
                             <BaseButton
                                 color="info"
                                 class="w-12 h-12 sm:w-12 sm:h-12 my-auto flex-initial"
-                                :icon="mdiAccountMultiple"
+                                :icon="
+                                    selected ? mdiAccount : mdiAccountMultiple
+                                "
                                 small
                                 outline
                                 rounded-full
@@ -408,19 +445,56 @@ watch(
                 <BaseDivider />
 
                 <FormField
-                    label="Ficheiro(s)"
-                    help="O(s) ficheiro(s) da reclamação. Opcional."
+                    v-if="!selected"
+                    label="Anexo(s)"
+                    help="O(s) anexo(s) da reclamação. Opcional."
                     label-for="files"
                 >
                     <FormControl
                         id="files"
-                        v-model="form.file"
                         :icon="mdiEmailFastOutline"
-                        name="files"
+                        name="files[]"
                         type="file"
                         :disabled="selected ? true : false"
                         multiple
+                        @change="onFileChange"
                     />
+                </FormField>
+                <FormField v-else label="Anexo(s)">
+                    <CardBoxComponentEmpty
+                        v-if="complaint.files.length == 0"
+                        padding="p-10"
+                        class="rounded-2xl dark:bg-slate-900/70 bg-white rounded-medium"
+                        message="Sem anexos associados..."
+                    />
+                    <table
+                        v-else
+                        class="rounded-2xl dark:bg-slate-900/70 bg-white rounded-medium"
+                    >
+                        <tr v-for="file in complaint.files" :key="file.id">
+                            <td data-label="Nome">
+                                {{ " ➯ " + file.filename }}
+                            </td>
+                            <td>
+                                <BaseButtons type="justify-center" no-wrap>
+                                    <BaseButton
+                                        color="info"
+                                        :icon="mdiEye"
+                                        title="Ver Anexo"
+                                        small
+                                        @click="viewFile(file)"
+                                    />
+                                    <BaseButton
+                                        color="success"
+                                        :icon="mdiDownload"
+                                        title="Descarregar Anexo"
+                                        small
+                                        @click="downloadFile(file)"
+                                    />
+                                </BaseButtons>
+                            </td>
+                        </tr>
+                    </table>
                 </FormField>
 
                 <BaseDivider />
