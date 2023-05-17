@@ -149,8 +149,8 @@ const submitDelete = (password) => {
                 <th>ID:</th>
                 <th>ID Cliente:</th>
                 <th>Estrelas:</th>
-                <th>Partilhada:</th>
                 <th>Autorização:</th>
+                <th>Partilhada:</th>
                 <th>Criada Em:</th>
                 <th />
             </tr>
@@ -179,22 +179,6 @@ const submitDelete = (password) => {
                         class="dark:text-yellow-400 text-yellow-500 mt-1"
                     />
                 </td>
-                <td data-label="Partilhada" class="text-center">
-                    <PillTag
-                        v-if="review.shared == '1'"
-                        class="justify-center"
-                        label="Sim"
-                        color="success"
-                        :icon="mdiCheck"
-                    />
-                    <PillTag
-                        v-else
-                        class="justify-center"
-                        label="Não"
-                        color="danger"
-                        :icon="mdiClose"
-                    />
-                </td>
                 <td data-label="Autorização" class="text-center">
                     <PillTag
                         v-if="review.autorize == '1'"
@@ -211,6 +195,22 @@ const submitDelete = (password) => {
                         color="warning"
                         :icon="mdiClose"
                         outline
+                    />
+                </td>
+                <td data-label="Partilhada" class="text-center">
+                    <PillTag
+                        v-if="review.shared == '1'"
+                        class="justify-center"
+                        label="Sim"
+                        color="success"
+                        :icon="mdiCheck"
+                    />
+                    <PillTag
+                        v-else
+                        class="justify-center"
+                        label="Não"
+                        color="danger"
+                        :icon="mdiClose"
                     />
                 </td>
                 <td
