@@ -4,8 +4,10 @@ import { defineStore } from "pinia";
 export const useUserStore = defineStore("user", () => {
     const axios = inject("axios");
     const users = ref([]);
+
     const lastPage = ref();
     const pagesUsers = ref([]);
+    const updateTable = ref(false);
 
     async function loadUserById(id) {
         try {
@@ -82,15 +84,24 @@ export const useUserStore = defineStore("user", () => {
         }
     }
 
+    function clearStore() {
+        users.value = [];
+        lastPage.value = null;
+        pagesUsers.value = [];
+        updateTable.value = false;
+    }
+
     return {
         users,
         lastPage,
         pagesUsers,
+        updateTable,
         loadUserById,
         loadUsers,
         getUsers,
         updateUser,
         deleteUser,
         changeStateUser,
+        clearStore,
     };
 });

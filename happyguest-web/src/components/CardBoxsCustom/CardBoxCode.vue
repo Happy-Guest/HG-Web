@@ -114,8 +114,9 @@ const createCode = async () => {
             resMessage.value = response.data.message;
             if (response.status == 201) {
                 isModalActive.value = false;
+                codeStore.updateTable = true;
                 emit("update:active", false);
-                emit("updated", response.data.code);
+                emit("updated", true);
             } else {
                 resErrors.value = response.data.errors;
             }

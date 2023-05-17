@@ -66,19 +66,19 @@ onMounted(() => {
             .getComplaint(router.currentRoute.value.params?.id)
             .then((response) => {
                 complaint.value = response;
-                form.value.title = complaint.value?.title;
-                form.value.date = format(complaint.value?.date, false);
-                form.value.comment = complaint.value?.comment;
-                form.value.local = complaint.value?.local;
+                form.value.title = complaint.value.title;
+                form.value.date = format(complaint.value.date, false);
+                form.value.comment = complaint.value.comment;
+                form.value.local = complaint.value.local;
                 form.value.response =
                     complaint.value?.response ?? "Sem resposta";
                 form.value.status = selectOptions.find(
-                    (option) => option.value === complaint.value?.status
+                    (option) => option.value === complaint.value.status
                 );
                 selected.value = router.currentRoute.value.params.id;
-                if (complaint.value?.user) {
+                if (complaint.value.user) {
                     anonymous.value = false;
-                    form.value.user = complaint.value?.user;
+                    form.value.user = complaint.value.user;
                 } else {
                     anonymous.value = true;
                     form.value.user.id = "Sem ID";
@@ -150,6 +150,7 @@ const createComplaint = () => {
             if (response.status == 201) {
                 resMessage.value = response.data.message;
                 statusComplaint.value = true;
+                complaintStore.updateTable = true;
                 setTimeout(() => {
                     router.push({ name: "complaints" });
                 }, 5000);
@@ -178,6 +179,7 @@ const responseComplaint = () => {
                 statusComplaint.value = true;
                 complaint.value.status = response.data.complaint.status;
                 complaint.value.response = response.data.complaint.response;
+                complaintStore.updateTable = true;
                 setTimeout(() => {
                     statusComplaint.value = null;
                 }, 5000);
@@ -428,9 +430,13 @@ watch(
                             name="Client"
                             :disabled="selected ? true : false || anonymous"
                             :required="anonymous ? false : true"
-                            class="w-10/12 flex flex-initial"
+                            :class="
+                                selected && !anonymous
+                                    ? 'w-10/12 flex flex-initial'
+                                    : 'w-full'
+                            "
                         />
-                        <BaseButtons>
+                        <BaseButtons v-if="!anonymous">
                             <BaseButton
                                 color="info"
                                 class="w-12 h-12 sm:w-12 sm:h-12 my-auto flex-initial"
@@ -449,7 +455,8 @@ watch(
                                               name: 'profileUser',
                                               params: { id: form.user.id },
                                           })
-                                        : router.push({ name: 'users' })
+                                        : (router.push({ name: 'users' }),
+                                          (userStore.updateTable = true))
                                 "
                             />
                         </BaseButtons>

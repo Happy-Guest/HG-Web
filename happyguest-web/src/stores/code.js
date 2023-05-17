@@ -7,6 +7,7 @@ export const useCodeStore = defineStore("code", () => {
 
     const lastPage = ref();
     const pagesCodes = ref([]);
+    const updateTable = ref(false);
 
     async function loadCodes(page) {
         let response;
@@ -81,6 +82,13 @@ export const useCodeStore = defineStore("code", () => {
         }
     }
 
+    function clearStore() {
+        codes.value = [];
+        lastPage.value = null;
+        pagesCodes.value = [];
+        updateTable.value = false;
+    }
+
     return {
         codes,
         lastPage,
@@ -91,5 +99,6 @@ export const useCodeStore = defineStore("code", () => {
         createCode,
         updateCode,
         deleteCode,
+        clearStore,
     };
 });

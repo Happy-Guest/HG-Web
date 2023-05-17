@@ -27,10 +27,12 @@ import NotificationBarInCard from "@/components/Others/NotificationBarInCard.vue
 import FormFilePicker from "@/components/Forms/FormFilePicker.vue";
 import { useRouter } from "vue-router";
 import { useAuthStore } from "@/stores/auth.js";
+import { useUserStore } from "@/stores/user.js";
 
 const router = useRouter();
 
 const authStore = useAuthStore();
+const userStore = useUserStore();
 
 const statusAccount = ref(false);
 const resMessage = ref("");
@@ -74,6 +76,7 @@ const submit = () => {
             resMessage.value = response.data.message;
             if (response.status === 201) {
                 statusAccount.value = true;
+                userStore.updateTable = true;
                 setTimeout(() => {
                     router.push({ name: "users" });
                 }, 5000);

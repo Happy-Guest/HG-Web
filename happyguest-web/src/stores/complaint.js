@@ -7,6 +7,7 @@ export const useComplaintStore = defineStore("complaint", () => {
 
     const lastPage = ref();
     const pagesComplaints = ref([]);
+    const updateTable = ref(false);
 
     async function loadComplaints(page) {
         let response;
@@ -92,6 +93,13 @@ export const useComplaintStore = defineStore("complaint", () => {
         }
     }
 
+    function clearStore() {
+        complaints.value = [];
+        lastPage.value = null;
+        pagesComplaints.value = [];
+        updateTable.value = false;
+    }
+
     return {
         complaints,
         lastPage,
@@ -101,5 +109,6 @@ export const useComplaintStore = defineStore("complaint", () => {
         responseComplaint,
         createComplaint,
         file,
+        clearStore,
     };
 });

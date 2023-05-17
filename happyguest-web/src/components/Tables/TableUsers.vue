@@ -1,5 +1,5 @@
 <script setup>
-import { computed, ref, watch, onMounted, onUpdated } from "vue";
+import { computed, ref, watch, onMounted, watchEffect } from "vue";
 import {
     mdiEye,
     mdiCrown,
@@ -54,10 +54,6 @@ onMounted(async () => {
     users.value = await userStore.getUsers(1);
 });
 
-onUpdated(async () => {
-    users.value = await userStore.getUsers(1);
-});
-
 watch(
     () => isModalDeleteActive.value,
     (value) => {
@@ -66,6 +62,13 @@ watch(
         }
     }
 );
+
+watchEffect(async () => {
+    if (userStore.updateTable) {
+        userStore.clearStore();
+        users.value = await userStore.getUsers(1);
+    }
+});
 
 const pagesList = computed(() => {
     const pagesList = [];

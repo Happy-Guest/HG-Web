@@ -1,5 +1,5 @@
 <script setup>
-import { computed, ref, watch, onMounted } from "vue";
+import { computed, ref, watch, onMounted, watchEffect } from "vue";
 import {
     mdiEmailFastOutline,
     mdiClose,
@@ -43,6 +43,13 @@ watch(currentPageHuman, async () => {
 
 onMounted(async () => {
     complaints.value = await complaintStore.getComplaints(1);
+});
+
+watchEffect(async () => {
+    if (complaintStore.updateTable) {
+        complaintStore.clearStore();
+        complaints.value = await complaintStore.getComplaints(1);
+    }
 });
 
 const pagesList = computed(() => {

@@ -1,5 +1,5 @@
 <script setup>
-import { computed, ref, watch, onMounted } from "vue";
+import { computed, ref, watch, onMounted, watchEffect } from "vue";
 import {
     mdiRename,
     mdiClose,
@@ -20,8 +20,8 @@ import { useCodeStore } from "@/stores/code";
 
 const props = defineProps({
     newCode: {
-        type: Object,
-        default: null,
+        type: Boolean,
+        default: false,
     },
 });
 
@@ -53,7 +53,7 @@ watch(
     () => props.newCode,
     (value) => {
         if (value) {
-            updateModal(value, true);
+            updateModal(null, value);
         }
     }
 );
@@ -66,6 +66,13 @@ watch(
         }
     }
 );
+
+watchEffect(async () => {
+    if (codeStore.updateTable) {
+        codeStore.clearStore();
+        codes.value = await codeStore.getCodes(1);
+    }
+});
 
 onMounted(async () => {
     codes.value = await codeStore.getCodes(1);
@@ -107,7 +114,6 @@ function updateModal(resCode, newCode) {
     isSuccessNotifActive.value = true;
     isModalActive.value = false;
     if (newCode) {
-        codes.value.unshift(resCode);
         notifText.value = "Código criado com sucesso!";
     } else {
         codes.value = codes.value.map((code) => {
