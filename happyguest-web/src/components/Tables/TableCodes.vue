@@ -193,6 +193,7 @@ const submitDelete = (password) => {
     <CardBoxCode
         :selected="selected"
         :active="isModalActive"
+        only-view
         @update:active="isModalActive = $event"
         @updated="updateModal($event)"
     />

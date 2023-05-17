@@ -56,7 +56,7 @@ watch(
             <thead>
                 <tr>
                     <th>Nome</th>
-                    <th>E-mail</th>
+                    <th>Email</th>
                 </tr>
             </thead>
             <tbody>

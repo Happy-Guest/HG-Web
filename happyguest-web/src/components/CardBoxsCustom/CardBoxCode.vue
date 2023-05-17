@@ -33,6 +33,10 @@ const props = defineProps({
         type: Boolean,
         default: false,
     },
+    onlyView: {
+        type: Boolean,
+        default: false,
+    },
 });
 
 watchEffect(() => {
@@ -169,12 +173,12 @@ const editCode = async () => {
             <FormField
                 label="Código"
                 help="O código de acesso. Obrigatório."
-                label-for="code"
+                :label-for="onlyView ? 'code' : 'newCode'"
                 flex
                 no-margin
             >
                 <FormControl
-                    id="code"
+                    :id="onlyView ? 'code' : 'newCode'"
                     v-model="form.code"
                     :icon="mdiBarcode"
                     name="code"
@@ -199,10 +203,10 @@ const editCode = async () => {
             <FormField
                 label="Quarto(s)"
                 help="O(s) quarto(s), separados por vírgula. Obrigatório."
-                label-for="rooms"
+                :label-for="onlyView ? 'rooms' : 'newRooms'"
             >
                 <FormControl
-                    id="rooms"
+                    :id="onlyView ? 'rooms' : 'newRooms'"
                     v-model="form.rooms"
                     :icon="mdiBed"
                     name="rooms"
@@ -215,11 +219,11 @@ const editCode = async () => {
             <FormField
                 label="Data de entrada"
                 help="A data de entrada. Obrigatório."
-                label-for="entry_date"
+                :label-for="onlyView ? 'entry_date' : 'newEntryDate'"
                 no-margin
             >
                 <FormControl
-                    id="entry_date"
+                    :id="onlyView ? 'entry_date' : 'newEntryDate'"
                     v-model="form.entry_date"
                     :icon="mdiCalendarRange"
                     name="entry_date"
@@ -231,10 +235,10 @@ const editCode = async () => {
             <FormField
                 label="Data de saída"
                 help="A data de saída. Obrigatório."
-                label-for="exit_date"
+                :label-for="onlyView ? 'exit_date' : 'newExitDate'"
             >
                 <FormControl
-                    id="exit_date"
+                    :id="onlyView ? 'exit_date' : 'newExitDate'"
                     v-model="form.exit_date"
                     :icon="mdiCalendarRange"
                     name="exit_date"

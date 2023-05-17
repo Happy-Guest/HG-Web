@@ -1,9 +1,4 @@
-import {
-    mdiHome,
-    mdiBarcode,
-    mdiAccountGroup,
-    mdiBullhorn,
-} from "@mdi/js";
+import { mdiHome, mdiBarcode, mdiAccountGroup, mdiBullhorn } from "@mdi/js";
 
 export default [
     {
