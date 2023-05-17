@@ -21,7 +21,14 @@ import { useMainStore } from "@/stores/main";
 const mainStore = useMainStore();
 
 const chartData = ref(null);
-const statistics = ref(null);
+const statistics = ref({
+    clients: 0,
+    codes: 0,
+    complaints: 0,
+    percentageClients: 0,
+    percentageCodesUsed: 0,
+    percentageComplaints: 0,
+});
 
 const fillChartData = () => {
     chartData.value = chartConfig.sampleChartData();
@@ -31,7 +38,6 @@ onMounted(async () => {
     fillChartData();
     await mainStore.getHomeStatistics().then((response) => {
         statistics.value = response.data;
-        console.log(statistics.value);
     });
 });
 </script>
@@ -63,7 +69,7 @@ onMounted(async () => {
                 />
                 <CardBoxWidget
                     :trend="statistics?.codes + ' Códigos'"
-                    :trend-type="info"
+                    trend-type="code"
                     color="text-blue-500"
                     :icon="mdiBarcode"
                     :number="statistics?.percentageCodesUsed"

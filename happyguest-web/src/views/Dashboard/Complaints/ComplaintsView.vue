@@ -39,7 +39,7 @@ onMounted(() => {
                 <TableComplaints v-if="hasComplaints" />
                 <CardBoxComponentEmpty
                     v-else
-                    message="Sem reclamações registados..."
+                    message="Sem reclamações registadas..."
                 />
             </CardBox>
         </SectionMain>

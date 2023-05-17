@@ -5,6 +5,7 @@ import {
     mdiChevronDown,
     mdiAlertCircleOutline,
     mdiEqual,
+    mdiOrderNumericAscending,
 } from "@mdi/js";
 import PillTag from "@/components/PillTags/PillTag.vue";
 
@@ -45,6 +46,13 @@ const trendStyle = computed(() => {
     if (props.trendType === "zero") {
         return {
             icon: mdiEqual,
+            style: "info",
+        };
+    }
+
+    if (props.trendType === "code") {
+        return {
+            icon: mdiOrderNumericAscending,
             style: "info",
         };
     }

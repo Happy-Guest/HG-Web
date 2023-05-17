@@ -20,6 +20,13 @@ import CardBoxAnswerComplaint from "../CardBoxsCustom/CardBoxAnswerComplaint.vue
 import CardBoxModal from "../CardBoxs/CardBoxModal.vue";
 import { useRouter } from "vue-router";
 
+const props = defineProps({
+    userId: {
+        type: Number,
+        default: null,
+    },
+});
+
 const router = useRouter();
 
 const complaintStore = useComplaintStore();
@@ -37,18 +44,25 @@ const resErrors = ref([]);
 
 watch(currentPageHuman, async () => {
     complaints.value = await complaintStore.getComplaints(
-        currentPage.value + 1
+        currentPage.value + 1,
+        props.userId
     );
 });
 
 onMounted(async () => {
-    complaints.value = await complaintStore.getComplaints(1);
+    complaints.value = await complaintStore.getComplaints(1, props.userId);
 });
 
 watchEffect(async () => {
     if (complaintStore.updateTable) {
         complaintStore.clearStore();
-        complaints.value = await complaintStore.getComplaints(1);
+        complaints.value = await complaintStore.getComplaints(1, props.userId);
+    }
+});
+
+watchEffect(() => {
+    if (props.userId != null) {
+        complaintStore.updateTable = true;
     }
 });
 

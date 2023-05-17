@@ -15,6 +15,7 @@ import {
     mdiContentSaveCheck,
     mdiAccountGroup,
     mdiAccountCheck,
+    mdiBullhorn,
 } from "@mdi/js";
 import SectionMain from "@/components/Sections/SectionMain.vue";
 import CardBox from "@/components/CardBoxs/CardBox.vue";
@@ -30,16 +31,21 @@ import NotificationBarInCard from "@/components/Others/NotificationBarInCard.vue
 import CardBoxModal from "@/components/CardBoxs/CardBoxModal.vue";
 import FormValidationErrors from "@/components/Forms/FormValidationErrors.vue";
 import FormFilePicker from "@/components/Forms/FormFilePicker.vue";
+import TableComplaints from "@/components/Tables/TableComplaints.vue";
+import CardBoxComponentEmpty from "@/components/CardBoxs/CardBoxComponentEmpty.vue";
 import { useAuthStore } from "@/stores/auth";
 import { useUserStore } from "@/stores/user";
+import { useComplaintStore } from "@/stores/complaint";
 
 const router = useRouter();
 
 const authStore = useAuthStore();
 const userStore = useUserStore();
+const complaintStore = useComplaintStore();
 
 const user = ref({});
 const account = ref(false);
+const hasComplaints = ref(false);
 
 const profileForm = ref({
     name: user.value.name,
@@ -186,6 +192,10 @@ function defineUser() {
         getUser().then((response) => {
             user.value = response;
             clearProfileFields();
+            hasComplaints.value = complaintStore.getComplaints(
+                0,
+                user.value.id
+            );
         });
     } else {
         account.value = false;
@@ -193,13 +203,6 @@ function defineUser() {
         clearProfileFields();
     }
 }
-
-watch(
-    () => router.currentRoute.value.params.id,
-    () => {
-        defineUser();
-    }
-);
 </script>
 
 <template>
@@ -546,6 +549,21 @@ watch(
                     </template>
                 </CardBox>
             </div>
+            <SectionTitleLine
+                v-if="user.role == 'C'"
+                :icon="mdiBullhorn"
+                title="Reclamações do Cliente"
+                class="mt-2"
+            >
+            </SectionTitleLine>
+            <CardBox v-if="user.role == 'C'" class="my-auto">
+                <TableComplaints v-if="hasComplaints" :user-id="user.id" />
+                <CardBoxComponentEmpty
+                    v-else
+                    padding="p-12"
+                    message="Sem reclamações registadas..."
+                />
+            </CardBox>
         </SectionMain>
     </LayoutAuthenticated>
 </template>

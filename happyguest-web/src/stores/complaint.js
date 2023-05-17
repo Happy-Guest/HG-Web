@@ -9,28 +9,38 @@ export const useComplaintStore = defineStore("complaint", () => {
     const pagesComplaints = ref([]);
     const updateTable = ref(false);
 
-    async function loadComplaints(page) {
+    async function loadComplaints(page, userId) {
         let response;
         if (page == 0) {
-            response = await axios.get("complaints/");
+            if (userId) {
+                response = await axios.get("users/" + userId + "/complaints");
+            } else {
+                response = await axios.get("complaints/");
+            }
             lastPage.value = response.data.meta.last_page;
             if (response.data.meta.total == 0) {
                 return false;
             }
             return true;
         } else {
-            response = await axios.get("complaints?page=" + page);
+            if (userId) {
+                response = await axios.get(
+                    "users/" + userId + "/complaints?page=" + page
+                );
+            } else {
+                response = await axios.get("complaints?page=" + page);
+            }
             complaints.value.push(response.data.data);
             pagesComplaints.value.push(page);
             return complaints.value[pagesComplaints.value.indexOf(page)];
         }
     }
 
-    async function getComplaints(page) {
+    async function getComplaints(page, userId) {
         if (pagesComplaints.value.includes(page)) {
             return complaints.value[pagesComplaints.value.indexOf(page)];
         }
-        return await loadComplaints(page);
+        return await loadComplaints(page, userId);
     }
 
     async function getComplaint(id) {
