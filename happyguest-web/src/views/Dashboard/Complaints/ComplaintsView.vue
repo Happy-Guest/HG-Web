@@ -1,5 +1,5 @@
 <script setup>
-import { mdiBullhornVariant, mdiFilePlus } from "@mdi/js";
+import { mdiBullhorn, mdiFilePlus } from "@mdi/js";
 import LayoutAuthenticated from "@/layouts/LayoutAuthenticated.vue";
 import SectionMain from "@/components/Sections/SectionMain.vue";
 import SectionTitleLine from "@/components/Sections/SectionTitleLine.vue";
@@ -23,11 +23,7 @@ onMounted(() => {
 <template>
     <LayoutAuthenticated>
         <SectionMain>
-            <SectionTitleLine
-                :icon="mdiBullhornVariant"
-                :title="'Reclamações'"
-                main
-            >
+            <SectionTitleLine :icon="mdiBullhorn" :title="'Reclamações'" main>
                 <BaseButtons>
                     <BaseButton
                         :icon="mdiFilePlus"

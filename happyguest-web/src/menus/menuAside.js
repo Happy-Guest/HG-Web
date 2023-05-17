@@ -2,7 +2,7 @@ import {
     mdiHome,
     mdiBarcode,
     mdiAccountGroup,
-    mdiBullhornVariant,
+    mdiBullhorn,
 } from "@mdi/js";
 
 export default [
@@ -30,7 +30,7 @@ export default [
         middleware: ["A", "M"],
         to: "/reclamacoes",
         label: "Reclamações",
-        icon: mdiBullhornVariant,
+        icon: mdiBullhorn,
     },
     {
         isDivider: true,
