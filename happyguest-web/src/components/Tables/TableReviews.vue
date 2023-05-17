@@ -14,7 +14,7 @@ import BaseLevel from "@/components/Bases/BaseLevel.vue";
 import BaseButtons from "@/components/Bases/BaseButtons.vue";
 import BaseButton from "@/components/Bases/BaseButton.vue";
 import PillTag from "@/components/PillTags/PillTag.vue";
-//import CardBoxReview from "@/components/CardBoxsCustom/CardBoxReview.vue";
+import CardBoxReview from "@/components/CardBoxsCustom/CardBoxReview.vue";
 import NotificationBar from "@/components/Others/NotificationBar.vue";
 import CardBoxModal from "@/components/CardBoxs/CardBoxModal.vue";
 import BaseIcon from "@/components/Bases/BaseIcon.vue";
@@ -137,12 +137,12 @@ const submitDelete = (password) => {
     >
         <p>Tem a certeza que <b>deseja remover</b> a avaliação?</p>
     </CardBoxModal>
-    <!--     <CardBoxReview
+    <CardBoxReview
         :selected="selected"
         :active="isModalActive"
         only-view
         @update:active="isModalActive = $event"
-    /> -->
+    />
     <table class="w-full">
         <thead>
             <tr>
