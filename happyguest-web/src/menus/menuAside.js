@@ -1,4 +1,10 @@
-import { mdiHome, mdiBarcode, mdiAccountGroup, mdiBullhorn } from "@mdi/js";
+import {
+    mdiHome,
+    mdiBarcode,
+    mdiAccountGroup,
+    mdiBullhorn,
+    mdiStarShooting,
+} from "@mdi/js";
 
 export default [
     {
@@ -26,6 +32,12 @@ export default [
         to: "/reclamacoes",
         label: "Reclamações",
         icon: mdiBullhorn,
+    },
+    {
+        middleware: ["A", "M"],
+        to: "/avaliacoes",
+        label: "Avaliações",
+        icon: mdiStarShooting,
     },
     {
         isDivider: true,

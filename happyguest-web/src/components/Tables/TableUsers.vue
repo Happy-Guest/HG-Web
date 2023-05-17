@@ -230,7 +230,7 @@ const submitDelete = (password) => {
                         is-table
                     />
                 </td>
-                <td data-label="Id" class="text-center">
+                <td data-label="ID" class="text-center">
                     {{ user.id }}
                 </td>
                 <td data-label="Nome">

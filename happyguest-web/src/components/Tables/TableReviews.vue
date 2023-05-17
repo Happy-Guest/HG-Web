@@ -1,62 +1,45 @@
 <script setup>
 import { computed, ref, watch, onMounted, watchEffect } from "vue";
 import {
-    mdiRename,
+    mdiEye,
     mdiClose,
     mdiCheck,
     mdiTrashCan,
     mdiCheckCircle,
-    mdiAccountSupervisor,
+    mdiStar,
+    mdiStarOutline,
+    mdiMonitorShare,
 } from "@mdi/js";
 import BaseLevel from "@/components/Bases/BaseLevel.vue";
 import BaseButtons from "@/components/Bases/BaseButtons.vue";
 import BaseButton from "@/components/Bases/BaseButton.vue";
 import PillTag from "@/components/PillTags/PillTag.vue";
-import CardBoxCode from "@/components/CardBoxsCustom/CardBoxCode.vue";
-import CardBoxCodeUsers from "../CardBoxsCustom/CardBoxCodeUsers.vue";
+//import CardBoxReview from "@/components/CardBoxsCustom/CardBoxReview.vue";
 import NotificationBar from "@/components/Others/NotificationBar.vue";
 import CardBoxModal from "@/components/CardBoxs/CardBoxModal.vue";
-import { useCodeStore } from "@/stores/code";
+import BaseIcon from "@/components/Bases/BaseIcon.vue";
+import { useReviewStore } from "@/stores/review";
 
-const props = defineProps({
-    newCode: {
-        type: Boolean,
-        default: false,
-    },
-});
+const reviewStore = useReviewStore();
 
-const codeStore = useCodeStore();
-
-const codes = ref([]);
+const reviews = ref([]);
 
 const currentPage = ref(0);
-const numPages = computed(() => codeStore.lastPage);
+const numPages = computed(() => reviewStore.lastPage);
 const currentPageHuman = computed(() => currentPage.value + 1);
 
 const isModalActive = ref(false);
 const isModalDeleteActive = ref(false);
 const isSuccessNotifActive = ref(false);
 const isErrorNotifActive = ref(false);
-const isModalUsersActive = ref(false);
 
 const notifText = ref("");
 const resErrors = ref([]);
 const selected = ref(null);
-const selectedUsed = ref(null);
-const selectedCode = ref(null);
 
 watch(currentPageHuman, async () => {
-    codes.value = await codeStore.getCodes(currentPage.value + 1);
+    reviews.value = await reviewStore.getReviews(currentPage.value + 1);
 });
-
-watch(
-    () => props.newCode,
-    (value) => {
-        if (value) {
-            updateModal(null, value);
-        }
-    }
-);
 
 watch(
     () => isModalDeleteActive.value,
@@ -68,14 +51,14 @@ watch(
 );
 
 watchEffect(async () => {
-    if (codeStore.updateTable) {
-        codeStore.clearStore();
-        codes.value = await codeStore.getCodes(1);
+    if (reviewStore.updateTable) {
+        reviewStore.clearStore();
+        reviews.value = await reviewStore.getReviews(1);
     }
 });
 
 onMounted(async () => {
-    codes.value = await codeStore.getCodes(1);
+    reviews.value = await reviewStore.getReviews(1);
 });
 
 const pagesList = computed(() => {
@@ -96,48 +79,15 @@ const pagesList = computed(() => {
     return pagesList[parseInt(currentPage.value / 10)];
 });
 
-const dateSurpassed = (date) => {
-    const dateParts = date.split("/");
-    const dateString = new Date(+dateParts[2], dateParts[1] - 1, +dateParts[0]);
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    if (today.getTime() == dateString.getTime()) {
-        return "text-yellow-600";
-    } else if (dateString < today) {
-        return "text-red-600";
-    } else {
-        return "text-green-500";
-    }
-};
-
-function updateModal(resCode, newCode) {
-    isSuccessNotifActive.value = true;
-    isModalActive.value = false;
-    if (newCode) {
-        notifText.value = "Código criado com sucesso!";
-    } else {
-        codes.value = codes.value.map((code) => {
-            if (code.id == resCode.id) {
-                code = resCode;
-            }
-            return code;
-        });
-        notifText.value = "Código atualizado com sucesso!";
-    }
-    setTimeout(() => {
-        isSuccessNotifActive.value = false;
-    }, 5000);
-}
-
 const submitDelete = (password) => {
-    codeStore
-        .deleteCode(selected.value, password)
+    reviewStore
+        .deleteReview(selected.value, password)
         .then((response) => {
             notifText.value = response.data.message;
             if (response.status === 200) {
                 isModalDeleteActive.value = false;
-                codes.value = codes.value.filter(
-                    (code) => code.id != selected.value
+                reviews.value = reviews.value.filter(
+                    (review) => review.id != selected.value
                 );
                 isSuccessNotifActive.value = true;
                 setTimeout(function () {
@@ -148,7 +98,7 @@ const submitDelete = (password) => {
             }
         })
         .catch(() => {
-            notifText.value = "Ocorreu um erro ao remover o código.";
+            notifText.value = "Ocorreu um erro ao remover a avaliação.";
             isErrorNotifActive.value = true;
             setTimeout(function () {
                 isErrorNotifActive.value = false;
@@ -177,7 +127,7 @@ const submitDelete = (password) => {
     <CardBoxModal
         v-model="isModalDeleteActive"
         :errors="resErrors"
-        title="Remover Código"
+        title="Remover Avaliação"
         button="danger"
         :icon-title="mdiTrashCan"
         has-cancel
@@ -185,83 +135,89 @@ const submitDelete = (password) => {
         has-password
         @confirm="submitDelete"
     >
-        <p>Tem a certeza que <b>deseja remover</b> o código?</p>
-        <span v-if="selectedUsed == '1'">
-            O código foi utilizado e vai <b>ser desassociado</b> dos clientes.
-        </span>
+        <p>Tem a certeza que <b>deseja remover</b> a avaliação?</p>
     </CardBoxModal>
-    <CardBoxCode
+    <!--     <CardBoxReview
         :selected="selected"
         :active="isModalActive"
         only-view
         @update:active="isModalActive = $event"
-        @updated="updateModal($event)"
-    />
-    <CardBoxCodeUsers
-        :selected="selected"
-        :selected-code="selectedCode"
-        :active="isModalUsersActive"
-        @update:active="isModalUsersActive = $event"
-    />
+    /> -->
     <table class="w-full">
         <thead>
             <tr>
                 <th>ID:</th>
-                <th>Código:</th>
-                <th>Quarto(s):</th>
-                <th>Entrada:</th>
-                <th>Saída:</th>
-                <th>Estado:</th>
+                <th>ID Cliente:</th>
+                <th>Estrelas:</th>
+                <th>Partilhada:</th>
+                <th>Autorização:</th>
+                <th>Criada Em:</th>
                 <th />
             </tr>
         </thead>
         <tbody>
-            <tr v-for="code in codes" :key="code.id">
+            <tr v-for="review in reviews" :key="review.id">
                 <td data-label="ID" class="text-center">
-                    {{ code.id }}
+                    {{ review.id }}
                 </td>
-                <td data-label="Código" class="font-semibold">
+                <td data-label="Cliente" class="font-semibold">
                     {{
-                        code.code.length > 25
-                            ? code.code.substring(0, 25).toUpperCase() + "..."
-                            : code.code.toUpperCase()
+                        review.user
+                            ? review.user.length > 20
+                                ? review.user.substring(0, 20) + "..."
+                                : review.user
+                            : "Anónimo"
                     }}
                 </td>
-                <td data-label="Quarto(s)">
-                    <PillTag
-                        v-for="room in code.rooms"
-                        :key="room"
-                        class="justify-center ml-2 font-semibold"
-                        :label="room"
-                        color="info"
-                        small
+                <td data-label="Estrelas">
+                    <BaseIcon
+                        v-for="i in 5"
+                        :key="i"
+                        :path="i <= review.stars ? mdiStar : mdiStarOutline"
+                        h="h-4"
+                        w="w-4"
+                        class="dark:text-yellow-400 text-yellow-500 mt-1"
                     />
                 </td>
-                <td data-label="Entrada" class="text-center">
-                    {{ code.entry_date }}
-                </td>
-                <td
-                    data-label="Saída"
-                    :class="dateSurpassed(code.exit_date)"
-                    class="text-center"
-                >
-                    {{ code.exit_date }}
-                </td>
-                <td data-label="Estado" class="text-center">
+                <td data-label="Partilhada" class="text-center">
                     <PillTag
-                        v-if="code.used == '1'"
+                        v-if="review.shared == '1'"
                         class="justify-center"
-                        label="Utilizado"
+                        label="Sim"
                         color="success"
                         :icon="mdiCheck"
                     />
                     <PillTag
                         v-else
                         class="justify-center"
-                        label="Inutilizado"
+                        label="Não"
                         color="danger"
                         :icon="mdiClose"
                     />
+                </td>
+                <td data-label="Autorização" class="text-center">
+                    <PillTag
+                        v-if="review.autorize == '1'"
+                        class="justify-center ml-4"
+                        label="Autorizada"
+                        color="contrast"
+                        :icon="mdiCheck"
+                        outline
+                    />
+                    <PillTag
+                        v-else
+                        class="justify-center ml-4"
+                        label="Inválida"
+                        color="warning"
+                        :icon="mdiClose"
+                        outline
+                    />
+                </td>
+                <td
+                    data-label="Criada Em"
+                    class="text-center text-gray-500 dark:text-slate-400"
+                >
+                    {{ review.created_at }}
                 </td>
                 <td
                     class="before:hidden lg:w-1 whitespace-nowrap place-content-center"
@@ -269,24 +225,23 @@ const submitDelete = (password) => {
                     <BaseButtons type="justify-start lg:justify-end" no-wrap>
                         <BaseButton
                             color="info"
-                            title="Clientes Associados"
-                            :icon="mdiAccountSupervisor"
-                            small
-                            @click="
-                                isModalUsersActive = true;
-                                selected = code.id;
-                                selectedCode = code.code;
-                            "
-                        />
-                        <BaseButton
-                            color="warning"
-                            title="Editar"
-                            :icon="mdiRename"
+                            title="Ver Avaliação"
+                            :icon="mdiEye"
                             small
                             @click="
                                 isModalActive = true;
-                                selected = code.id;
+                                selected = review.id;
                             "
+                        />
+                        <BaseButton
+                            color="success"
+                            title="Partilhar"
+                            :icon="mdiMonitorShare"
+                            small
+                            :disabled="
+                                review.shared == '1' || review.autorize == '0'
+                            "
+                            @click="selected = review.id"
                         />
                         <BaseButton
                             color="danger"
@@ -295,8 +250,7 @@ const submitDelete = (password) => {
                             small
                             @click="
                                 isModalDeleteActive = true;
-                                selected = code.id;
-                                selectedUsed = code.used;
+                                selected = review.id;
                             "
                         />
                     </BaseButtons>

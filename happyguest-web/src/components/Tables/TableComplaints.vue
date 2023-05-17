@@ -161,7 +161,7 @@ const submitDelete = () => {
         </thead>
         <tbody>
             <tr v-for="complaint in complaints" :key="complaint.id">
-                <td data-label="Id" class="text-center">
+                <td data-label="ID" class="text-center">
                     {{ complaint.id }}
                 </td>
                 <td data-label="Título">
@@ -208,7 +208,10 @@ const submitDelete = () => {
                         :icon="mdiClose"
                     />
                 </td>
-                <td data-label="Criada Em" class="text-center">
+                <td
+                    data-label="Criada Em"
+                    class="text-center text-gray-500 dark:text-slate-400"
+                >
                     {{ complaint.created_at }}
                 </td>
                 <td
@@ -217,7 +220,7 @@ const submitDelete = () => {
                     <BaseButtons type="justify-start lg:justify-end" no-wrap>
                         <BaseButton
                             color="info"
-                            title="Reclamação"
+                            title="Ver Reclamação"
                             :icon="mdiEye"
                             small
                             @click="
