@@ -63,7 +63,7 @@ watch(
         only-view
         @cancel="emit('update:active', false)"
     >
-        <div>
+        <div class="mt-4">
             <div class="flex justify-between mb-0">
                 <div>
                     <div class="flex">
@@ -83,11 +83,14 @@ watch(
                         </div>
                     </div>
 
-                    <div class="flex mt-1">
-                        <p class="mt-3">
-                            <b>Cliente: </b>{{ review.user?.name }}
+                    <div class="flex">
+                        <p class="mt-4">
+                            <b>Cliente: </b
+                            >{{
+                                review.user?.name ? review.user.name : "Anónimo"
+                            }}
                         </p>
-                        <BaseButtons class="-mb-8">
+                        <BaseButtons v-if="review.user?.name" class="-mb-8">
                             <BaseButton
                                 color="info"
                                 class="w-12 h-12 flex-initial ml-4"
