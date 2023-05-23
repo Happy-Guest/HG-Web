@@ -7,7 +7,7 @@ import CardBoxComponentEmpty from "@/components/CardBoxs/CardBoxComponentEmpty.v
 import TableReviews from "@/components/Tables/TableReviews.vue";
 import FormControl from "@/components/Forms/FormControl.vue";
 import CardBox from "@/components/CardBoxs/CardBox.vue";
-import { onMounted, ref } from "vue";
+import { onMounted, ref, watch } from "vue";
 import { useReviewStore } from "@/stores/review";
 
 const reviewStore = useReviewStore();
@@ -25,7 +25,12 @@ const selectOptionsFilter = [
 const filter = ref(selectOptionsFilter[0]);
 
 onMounted(async () => {
-    hasReviews.value = await reviewStore.getReviews(0);
+    hasReviews.value = await reviewStore.getReviews(0, filter.value.value);
+});
+
+watch(filter, async (value) => {
+    hasReviews.value = await reviewStore.getReviews(0, value.value);
+    reviewStore.updateTable = true;
 });
 </script>
 
@@ -43,6 +48,7 @@ onMounted(async () => {
                         <FormControl
                             id="filter"
                             v-model="filter"
+                            class="w-48"
                             :options="selectOptionsFilter"
                             :icon="mdiFilterMultiple"
                         />

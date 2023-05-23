@@ -50,7 +50,7 @@ const selectedUsed = ref(null);
 const selectedCode = ref(null);
 
 watch(currentPageHuman, async () => {
-    codes.value = await codeStore.getCodes(currentPage.value + 1);
+    codes.value = await codeStore.getCodes(currentPage.value + 1, props.filter);
 });
 
 watch(
@@ -73,7 +73,7 @@ watch(
 
 onMounted(async () => {
     if (codeStore.updateTable != true) {
-        codes.value = await codeStore.getCodes(1);
+        codes.value = await codeStore.getCodes(1, props.filter);
     }
 });
 
@@ -81,7 +81,7 @@ watchEffect(async () => {
     if (codeStore.updateTable) {
         codeStore.clearStore();
         setTimeout(async () => {
-            codes.value = await codeStore.getCodes(1);
+            codes.value = await codeStore.getCodes(1, props.filter);
         }, 200);
     }
 });

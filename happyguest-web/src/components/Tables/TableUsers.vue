@@ -54,7 +54,7 @@ const isErrorNotifActive = ref(false);
 const isModalDeleteActive = ref(false);
 
 watch(currentPageHuman, async () => {
-    users.value = await userStore.getUsers(currentPage.value + 1);
+    users.value = await userStore.getUsers(currentPage.value + 1, props.filter);
 });
 
 watch(
@@ -68,7 +68,7 @@ watch(
 
 onMounted(async () => {
     if (userStore.updateTable != true) {
-        users.value = await userStore.getUsers(1);
+        users.value = await userStore.getUsers(1, props.filter);
     }
 });
 
@@ -76,7 +76,7 @@ watchEffect(async () => {
     if (userStore.updateTable) {
         userStore.clearStore();
         setTimeout(async () => {
-            users.value = await userStore.getUsers(1);
+            users.value = await userStore.getUsers(1, props.filter);
         }, 200);
     }
 });

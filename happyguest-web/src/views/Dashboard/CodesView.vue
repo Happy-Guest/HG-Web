@@ -25,7 +25,7 @@ const selectOptionsFilter = [
     { value: "V", label: "Válidos" },
     { value: "E", label: "Expirados" },
     { value: "U", label: "Utilizados" },
-    { value: "NU", label: "Não Utilizados" },
+    { value: "NU", label: "Inutilizados" },
 ];
 
 const filter = ref(selectOptionsFilter[0]);
@@ -50,6 +50,7 @@ onMounted(async () => {
                         <FormControl
                             id="filter"
                             v-model="filter"
+                            class="w-40"
                             :options="selectOptionsFilter"
                             :icon="mdiFilterMultiple"
                         />

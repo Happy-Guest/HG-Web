@@ -9,17 +9,26 @@ export const useReviewStore = defineStore("review", () => {
     const pagesReviews = ref([]);
     const updateTable = ref(false);
 
-    async function loadReviews(page) {
+    async function loadReviews(page, filter) {
         let response;
         if (page == 0) {
-            response = await axios.get("reviews/");
+            response = await axios.get("reviews/", {
+                params: {
+                    filter: filter,
+                },
+            });
             lastPage.value = response.data.meta.last_page;
             if (response.data.meta.total == 0) {
                 return false;
             }
             return true;
         } else {
-            response = await axios.get("reviews?page=" + page);
+            response = await axios.get("reviews/", {
+                params: {
+                    filter: filter,
+                    page: page,
+                },
+            });
             lastPage.value = response.data.meta.last_page;
             reviews.value.push(response.data.data);
             pagesReviews.value.push(page);
@@ -27,11 +36,11 @@ export const useReviewStore = defineStore("review", () => {
         }
     }
 
-    async function getReviews(page) {
+    async function getReviews(page, filter) {
         if (pagesReviews.value.includes(page)) {
             return reviews.value[pagesReviews.value.indexOf(page)];
         }
-        return await loadReviews(page);
+        return await loadReviews(page, filter);
     }
 
     async function getReview(id) {

@@ -9,6 +9,7 @@ import {
     mdiStar,
     mdiStarOutline,
     mdiMonitorShare,
+    mdiCancel,
 } from "@mdi/js";
 import BaseLevel from "@/components/Bases/BaseLevel.vue";
 import BaseButtons from "@/components/Bases/BaseButtons.vue";
@@ -66,14 +67,25 @@ onMounted(async () => {
     }
 });
 
+async function reloadTable() {
+    reviewStore.clearStore();
+    setTimeout(async () => {
+        reviews.value = await reviewStore.getReviews(1, props.filter);
+    }, 200);
+}
+
 watchEffect(async () => {
     if (reviewStore.updateTable) {
-        reviewStore.clearStore();
-        setTimeout(async () => {
-            reviews.value = await reviewStore.getReviews(1, props.filter);
-        }, 200);
+        await reloadTable();
     }
 });
+
+watch(
+    () => props.filter,
+    async () => {
+        await reloadTable();
+    }
+);
 
 const pagesList = computed(() => {
     const pagesList = [];
@@ -184,14 +196,16 @@ const submitDelete = (password) => {
                     }}
                 </td>
                 <td data-label="Estrelas">
-                    <BaseIcon
-                        v-for="i in 5"
-                        :key="i"
-                        :path="i <= review.stars ? mdiStar : mdiStarOutline"
-                        h="h-4"
-                        w="w-4"
-                        class="dark:text-yellow-400 text-yellow-500 mt-1"
-                    />
+                    <div>
+                        <BaseIcon
+                            v-for="i in 5"
+                            :key="i"
+                            :path="i <= review.stars ? mdiStar : mdiStarOutline"
+                            h="h-4"
+                            w="w-4"
+                            class="dark:text-yellow-400 text-yellow-500 mt-0 sm:mt-2"
+                        />
+                    </div>
                 </td>
                 <td data-label="Autorização" class="text-center">
                     <PillTag
@@ -250,7 +264,11 @@ const submitDelete = (password) => {
                         <BaseButton
                             color="success"
                             title="Partilhar"
-                            :icon="mdiMonitorShare"
+                            :icon="
+                                review.shared == '1' || review.autorize == '0'
+                                    ? mdiCancel
+                                    : mdiMonitorShare
+                            "
                             small
                             :disabled="
                                 review.shared == '1' || review.autorize == '0'

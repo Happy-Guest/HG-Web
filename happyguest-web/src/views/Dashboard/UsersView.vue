@@ -46,6 +46,7 @@ onMounted(async () => {
                         <FormControl
                             id="filter"
                             v-model="filter"
+                            class="w-40"
                             :options="selectOptionsFilter"
                             :icon="mdiFilterMultiple"
                         />
