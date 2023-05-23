@@ -67,15 +67,19 @@ watch(
     }
 );
 
-watchEffect(async () => {
-    if (codeStore.updateTable) {
-        codeStore.clearStore();
+onMounted(async () => {
+    if (codeStore.updateTable == null) {
         codes.value = await codeStore.getCodes(1);
     }
 });
 
-onMounted(async () => {
-    codes.value = await codeStore.getCodes(1);
+watchEffect(async () => {
+    if (codeStore.updateTable) {
+        codeStore.clearStore();
+        setTimeout(async () => {
+            codes.value = await codeStore.getCodes(1);
+        }, 200);
+    }
 });
 
 const pagesList = computed(() => {

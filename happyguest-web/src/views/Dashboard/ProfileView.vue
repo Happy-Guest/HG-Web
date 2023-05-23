@@ -33,6 +33,7 @@ import FormValidationErrors from "@/components/Forms/FormValidationErrors.vue";
 import FormFilePicker from "@/components/Forms/FormFilePicker.vue";
 import TableComplaints from "@/components/Tables/TableComplaints.vue";
 import CardBoxComponentEmpty from "@/components/CardBoxs/CardBoxComponentEmpty.vue";
+import FormCheckRadio from "@/components/Forms/FormCheckRadio.vue";
 import { useAuthStore } from "@/stores/auth";
 import { useUserStore } from "@/stores/user";
 import { useComplaintStore } from "@/stores/complaint";
@@ -46,6 +47,7 @@ const complaintStore = useComplaintStore();
 const user = ref({});
 const account = ref(false);
 const hasComplaints = ref(false);
+const seeComplaints = ref(false);
 
 const profileForm = ref({
     name: user.value.name,
@@ -189,10 +191,10 @@ function defineUser() {
         if (authStore.user?.id == router.currentRoute.value.params.id) {
             router.push({ name: "profile" });
         }
-        getUser().then((response) => {
+        getUser().then(async (response) => {
             user.value = response;
             clearProfileFields();
-            hasComplaints.value = complaintStore.getComplaints(
+            hasComplaints.value = await complaintStore.getComplaints(
                 0,
                 user.value.id
             );
@@ -549,21 +551,44 @@ function defineUser() {
                     </template>
                 </CardBox>
             </div>
-            <SectionTitleLine
-                v-if="user.role == 'C'"
-                :icon="mdiBullhorn"
-                title="Reclamações do Cliente"
-                class="mt-2"
-            >
-            </SectionTitleLine>
-            <CardBox v-if="user.role == 'C'" class="my-auto">
-                <TableComplaints v-if="hasComplaints" :user-id="user.id" />
-                <CardBoxComponentEmpty
-                    v-else
-                    padding="p-12"
-                    message="Sem reclamações registadas..."
-                />
-            </CardBox>
+            <div v-if="user.role == 'C'">
+                <SectionTitleLine
+                    :icon="mdiBullhorn"
+                    title="Reclamações do Cliente"
+                    class="mt-2"
+                >
+                    <FormCheckRadio
+                        v-model="seeComplaints"
+                        class="font-semibold mr-12 mt-2"
+                        name="complaint-switch"
+                        type="switch"
+                        label="Mostrar"
+                        input-value="seeComplaints"
+                        :disabled="hasComplaints ? false : true"
+                        :class="
+                            !hasComplaints
+                                ? 'cursor-not-allowed opacity-80'
+                                : ''
+                        "
+                    />
+                </SectionTitleLine>
+                <CardBox class="my-auto" has-table>
+                    <TableComplaints
+                        v-if="hasComplaints && seeComplaints"
+                        :user-id="user.id"
+                    />
+                    <CardBoxComponentEmpty
+                        v-else-if="hasComplaints && !seeComplaints"
+                        padding="p-10"
+                        message="Clique para mostrar as reclamações..."
+                    />
+                    <CardBoxComponentEmpty
+                        v-else
+                        padding="p-10"
+                        message="Sem reclamações registadas..."
+                    />
+                </CardBox>
+            </div>
         </SectionMain>
     </LayoutAuthenticated>
 </template>

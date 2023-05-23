@@ -50,10 +50,6 @@ watch(currentPageHuman, async () => {
     users.value = await userStore.getUsers(currentPage.value + 1);
 });
 
-onMounted(async () => {
-    users.value = await userStore.getUsers(1);
-});
-
 watch(
     () => isModalDeleteActive.value,
     (value) => {
@@ -63,10 +59,18 @@ watch(
     }
 );
 
+onMounted(async () => {
+    if (userStore.updateTable == null) {
+        users.value = await userStore.getUsers(1);
+    }
+});
+
 watchEffect(async () => {
     if (userStore.updateTable) {
         userStore.clearStore();
-        users.value = await userStore.getUsers(1);
+        setTimeout(async () => {
+            users.value = await userStore.getUsers(1);
+        }, 200);
     }
 });
 

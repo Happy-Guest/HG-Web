@@ -19,8 +19,8 @@ const newCode = ref(null);
 
 const isModalActiveCreate = ref(false);
 
-onMounted(() => {
-    hasCodes.value = codeStore.getCodes(0);
+onMounted(async () => {
+    hasCodes.value = await codeStore.getCodes(0);
 });
 </script>
 

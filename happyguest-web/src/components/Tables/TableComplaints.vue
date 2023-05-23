@@ -50,13 +50,20 @@ watch(currentPageHuman, async () => {
 });
 
 onMounted(async () => {
-    complaints.value = await complaintStore.getComplaints(1, props.userId);
+    if (complaintStore.updateTable == null) {
+        complaints.value = await complaintStore.getComplaints(1, props.userId);
+    }
 });
 
 watchEffect(async () => {
     if (complaintStore.updateTable) {
         complaintStore.clearStore();
-        complaints.value = await complaintStore.getComplaints(1, props.userId);
+        setTimeout(async () => {
+            complaints.value = await complaintStore.getComplaints(
+                1,
+                props.userId
+            );
+        }, 200);
     }
 });
 

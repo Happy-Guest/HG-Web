@@ -15,8 +15,8 @@ const userStore = useUserStore();
 
 const hasUsers = ref(false);
 
-onMounted(() => {
-    hasUsers.value = userStore.getUsers(0);
+onMounted(async () => {
+    hasUsers.value = await userStore.getUsers(0);
 });
 </script>
 

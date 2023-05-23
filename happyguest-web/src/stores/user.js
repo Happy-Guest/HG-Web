@@ -29,6 +29,7 @@ export const useUserStore = defineStore("user", () => {
             return true;
         } else {
             response = await axios.get("users?page=" + page);
+            lastPage.value = response.data.meta.last_page;
             users.value.push(response.data.data);
             pagesUsers.value.push(page);
             return users.value[pagesUsers.value.indexOf(page)];

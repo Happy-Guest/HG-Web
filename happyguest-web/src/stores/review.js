@@ -20,6 +20,7 @@ export const useReviewStore = defineStore("review", () => {
             return true;
         } else {
             response = await axios.get("reviews?page=" + page);
+            lastPage.value = response.data.meta.last_page;
             reviews.value.push(response.data.data);
             pagesReviews.value.push(page);
             return reviews.value[pagesReviews.value.indexOf(page)];

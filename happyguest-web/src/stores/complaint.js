@@ -30,6 +30,7 @@ export const useComplaintStore = defineStore("complaint", () => {
             } else {
                 response = await axios.get("complaints?page=" + page);
             }
+            lastPage.value = response.data.meta.last_page;
             complaints.value.push(response.data.data);
             pagesComplaints.value.push(page);
             return complaints.value[pagesComplaints.value.indexOf(page)];

@@ -50,15 +50,19 @@ watch(
     }
 );
 
-watchEffect(async () => {
-    if (reviewStore.updateTable) {
-        reviewStore.clearStore();
+onMounted(async () => {
+    if (reviewStore.updateTable == null) {
         reviews.value = await reviewStore.getReviews(1);
     }
 });
 
-onMounted(async () => {
-    reviews.value = await reviewStore.getReviews(1);
+watchEffect(async () => {
+    if (reviewStore.updateTable) {
+        reviewStore.clearStore();
+        setTimeout(async () => {
+            reviews.value = await reviewStore.getReviews(1);
+        }, 200);
+    }
 });
 
 const pagesList = computed(() => {

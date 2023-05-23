@@ -15,8 +15,8 @@ const complaintStore = useComplaintStore();
 
 const hasComplaints = ref(false);
 
-onMounted(() => {
-    hasComplaints.value = complaintStore.getComplaints(0);
+onMounted(async () => {
+    hasComplaints.value = await complaintStore.getComplaints(0);
 });
 </script>
 
