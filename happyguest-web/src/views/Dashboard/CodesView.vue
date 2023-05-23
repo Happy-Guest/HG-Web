@@ -45,7 +45,7 @@ onMounted(async () => {
         <SectionMain>
             <SectionTitleLine :icon="mdiBarcode" :title="'Códigos'" main>
                 <div class="flex">
-                    <div class="flex mr-4 sm:mr-12">
+                    <div class="flex mr-4 sm:mr-8">
                         <b class="my-auto mr-4">Filtrar:</b>
                         <FormControl
                             id="filter"
@@ -55,7 +55,7 @@ onMounted(async () => {
                             :icon="mdiFilterMultiple"
                         />
                     </div>
-                    <BaseButtons class="mr-0 sm:mr-12">
+                    <BaseButtons class="mr-0 sm:mr-10">
                         <BaseButton
                             :icon="mdiPlusBoxMultiple"
                             label="Criar"

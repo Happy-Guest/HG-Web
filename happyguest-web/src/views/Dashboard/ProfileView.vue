@@ -253,7 +253,7 @@ function defineUser() {
                 "
                 main
             >
-                <BaseButtons class="mr-0 sm:mr-12">
+                <BaseButtons class="mr-0 sm:mr-10">
                     <BaseButton
                         v-if="
                             account &&

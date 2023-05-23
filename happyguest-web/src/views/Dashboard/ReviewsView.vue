@@ -1,5 +1,10 @@
 <script setup>
-import { mdiStarShooting, mdiFilterMultiple } from "@mdi/js";
+import {
+    mdiStarShooting,
+    mdiFilterMultiple,
+    mdiOrderNumericDescending,
+    mdiOrderNumericAscending,
+} from "@mdi/js";
 import LayoutAuthenticated from "@/layouts/LayoutAuthenticated.vue";
 import SectionMain from "@/components/Sections/SectionMain.vue";
 import SectionTitleLine from "@/components/Sections/SectionTitleLine.vue";
@@ -22,7 +27,13 @@ const selectOptionsFilter = [
     { value: "NA", label: "Sem Autorização" },
 ];
 
+const selectOptionsOrder = [
+    { value: "DESC", label: "Descendente" },
+    { value: "ASC", label: "Ascendente" },
+];
+
 const filter = ref(selectOptionsFilter[0]);
+const order = ref(selectOptionsOrder[0]);
 
 onMounted(async () => {
     hasReviews.value = await reviewStore.getReviews(0, filter.value.value);
@@ -42,8 +53,20 @@ watch(filter, async (value) => {
                 :title="'Avaliações'"
                 main
             >
-                <div>
-                    <div class="flex mr-0 sm:mr-12">
+                <div class="flex ml-2 sm:ml-0">
+                    <div class="flex flex-col md:flex-row mr-0 sm:mr-4 md:mr-8">
+                        <b class="my-auto mr-4">Ordenar:</b>
+                        <FormControl
+                            id="order"
+                            v-model="order"
+                            class="w-48 mr-0 md:mr-2 lg:mr-4 xl:mr-6 mb-2 md:mb-0"
+                            :options="selectOptionsOrder"
+                            :icon="
+                                order.value === 'DESC'
+                                    ? mdiOrderNumericDescending
+                                    : mdiOrderNumericAscending
+                            "
+                        />
                         <b class="my-auto mr-4">Filtrar:</b>
                         <FormControl
                             id="filter"
@@ -56,7 +79,11 @@ watch(filter, async (value) => {
                 </div>
             </SectionTitleLine>
             <CardBox class="mb-6" has-table>
-                <TableReviews v-if="hasReviews" :filter="filter.value" />
+                <TableReviews
+                    v-if="hasReviews"
+                    :filter="filter.value"
+                    :order="order.value"
+                />
                 <CardBoxComponentEmpty
                     v-else
                     message="Sem avaliações registadas..."

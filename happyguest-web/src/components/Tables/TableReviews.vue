@@ -26,6 +26,10 @@ const props = defineProps({
         type: String,
         default: "ALL",
     },
+    order: {
+        type: String,
+        default: "DESC",
+    },
 });
 
 const reviewStore = useReviewStore();
@@ -63,14 +67,22 @@ watch(
 
 onMounted(async () => {
     if (reviewStore.updateTable != true) {
-        reviews.value = await reviewStore.getReviews(1, props.filter);
+        reviews.value = await reviewStore.getReviews(
+            1,
+            props.filter,
+            props.order
+        );
     }
 });
 
 async function reloadTable() {
     reviewStore.clearStore();
     setTimeout(async () => {
-        reviews.value = await reviewStore.getReviews(1, props.filter);
+        reviews.value = await reviewStore.getReviews(
+            1,
+            props.filter,
+            props.order
+        );
     }, 200);
 }
 
@@ -82,6 +94,13 @@ watchEffect(async () => {
 
 watch(
     () => props.filter,
+    async () => {
+        await reloadTable();
+    }
+);
+
+watch(
+    () => props.order,
     async () => {
         await reloadTable();
     }

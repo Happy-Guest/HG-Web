@@ -35,8 +35,8 @@ onMounted(async () => {
     <LayoutAuthenticated>
         <SectionMain>
             <SectionTitleLine :icon="mdiBullhorn" :title="'Reclamações'" main>
-                <div class="flex">
-                    <div class="flex mr-4 sm:mr-12">
+                <div class="flex ml-2 sm:ml-0">
+                    <div class="flex flex-col md:flex-row mr-0 sm:mr-4 md:mr-8">
                         <b class="my-auto mr-4">Filtrar:</b>
                         <FormControl
                             id="filter"
@@ -46,7 +46,7 @@ onMounted(async () => {
                             :icon="mdiFilterMultiple"
                         />
                     </div>
-                    <BaseButtons class="mr-0 sm:mr-12">
+                    <BaseButtons class="mr-0 sm:mr-10">
                         <BaseButton
                             :icon="mdiFilePlus"
                             :to="{ name: 'complaintCreate' }"
