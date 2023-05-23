@@ -60,7 +60,7 @@ watch(
 );
 
 onMounted(async () => {
-    if (userStore.updateTable == null) {
+    if (userStore.updateTable != true) {
         users.value = await userStore.getUsers(1);
     }
 });

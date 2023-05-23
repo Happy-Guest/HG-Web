@@ -68,7 +68,7 @@ watch(
 );
 
 onMounted(async () => {
-    if (codeStore.updateTable == null) {
+    if (codeStore.updateTable != true) {
         codes.value = await codeStore.getCodes(1);
     }
 });

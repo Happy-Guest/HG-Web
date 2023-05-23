@@ -50,7 +50,7 @@ watch(currentPageHuman, async () => {
 });
 
 onMounted(async () => {
-    if (complaintStore.updateTable == null) {
+    if (complaintStore.updateTable != true) {
         complaints.value = await complaintStore.getComplaints(1, props.userId);
     }
 });

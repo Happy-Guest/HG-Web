@@ -51,7 +51,7 @@ watch(
 );
 
 onMounted(async () => {
-    if (reviewStore.updateTable == null) {
+    if (reviewStore.updateTable != true) {
         reviews.value = await reviewStore.getReviews(1);
     }
 });
