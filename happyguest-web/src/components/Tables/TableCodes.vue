@@ -23,6 +23,10 @@ const props = defineProps({
         type: Boolean,
         default: false,
     },
+    filter: {
+        type: String,
+        default: "ALL",
+    },
 });
 
 const codeStore = useCodeStore();

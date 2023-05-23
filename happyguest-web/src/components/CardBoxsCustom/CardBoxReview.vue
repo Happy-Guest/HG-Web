@@ -67,6 +67,10 @@ watch(
             <div class="flex justify-between mb-0 md:flex-row flex-col">
                 <div>
                     <div class="flex">
+                        <b>Criada Em: </b>
+                        <p class="ml-2 mb-3">{{ review.created_at }}</p>
+                    </div>
+                    <div class="flex">
                         <b>Estrelas: </b>
                         <div class="ml-2">
                             <BaseIcon
@@ -84,16 +88,16 @@ watch(
                     </div>
 
                     <div class="flex">
-                        <p class="mt-4">
+                        <p class="mt-2">
                             <b>Cliente: </b
                             >{{
                                 review.user?.name ? review.user.name : "Anónimo"
                             }}
                         </p>
-                        <BaseButtons v-if="review.user?.name" class="-mb-8">
+                        <BaseButtons v-if="review.user?.name" class="-mb-6">
                             <BaseButton
                                 color="info"
-                                class="w-12 h-12 flex-initial ml-4"
+                                class="w-10 h-10 flex-initial ml-4"
                                 :icon="mdiAccount"
                                 small
                                 outline

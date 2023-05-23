@@ -73,7 +73,7 @@ watch(
         <CardBoxComponentEmpty
             v-else
             message="Sem clientes associados a este código..."
-            padding="py-8"
+            padding="py-6"
         />
     </CardBoxModal>
 </template>

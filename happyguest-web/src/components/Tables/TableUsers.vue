@@ -25,6 +25,13 @@ import { useUserStore } from "@/stores/user";
 import { useAuthStore } from "@/stores/auth";
 import { useRouter } from "vue-router";
 
+const props = defineProps({
+    filter: {
+        type: String,
+        default: "ALL",
+    },
+});
+
 const router = useRouter();
 
 const userStore = useUserStore();

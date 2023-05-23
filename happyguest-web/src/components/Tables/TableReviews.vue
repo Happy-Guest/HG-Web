@@ -20,6 +20,13 @@ import CardBoxModal from "@/components/CardBoxs/CardBoxModal.vue";
 import BaseIcon from "@/components/Bases/BaseIcon.vue";
 import { useReviewStore } from "@/stores/review";
 
+const props = defineProps({
+    filter: {
+        type: String,
+        default: "ALL",
+    },
+});
+
 const reviewStore = useReviewStore();
 
 const reviews = ref([]);
@@ -38,7 +45,10 @@ const resErrors = ref([]);
 const selected = ref(null);
 
 watch(currentPageHuman, async () => {
-    reviews.value = await reviewStore.getReviews(currentPage.value + 1);
+    reviews.value = await reviewStore.getReviews(
+        currentPage.value + 1,
+        props.filter
+    );
 });
 
 watch(
@@ -52,7 +62,7 @@ watch(
 
 onMounted(async () => {
     if (reviewStore.updateTable != true) {
-        reviews.value = await reviewStore.getReviews(1);
+        reviews.value = await reviewStore.getReviews(1, props.filter);
     }
 });
 
@@ -60,7 +70,7 @@ watchEffect(async () => {
     if (reviewStore.updateTable) {
         reviewStore.clearStore();
         setTimeout(async () => {
-            reviews.value = await reviewStore.getReviews(1);
+            reviews.value = await reviewStore.getReviews(1, props.filter);
         }, 200);
     }
 });

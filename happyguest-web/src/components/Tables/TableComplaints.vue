@@ -25,6 +25,10 @@ const props = defineProps({
         type: Number,
         default: null,
     },
+    filter: {
+        type: String,
+        default: "ALL",
+    },
 });
 
 const router = useRouter();

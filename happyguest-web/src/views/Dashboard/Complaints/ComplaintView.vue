@@ -439,7 +439,7 @@ watch(
                         <BaseButtons v-if="!anonymous">
                             <BaseButton
                                 color="info"
-                                class="w-12 h-12 sm:w-12 sm:h-12 my-auto flex-initial"
+                                class="w-10 h-10 my-auto flex-initial mb-4"
                                 :icon="
                                     selected ? mdiAccount : mdiAccountMultiple
                                 "
