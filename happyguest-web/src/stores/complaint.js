@@ -9,13 +9,17 @@ export const useComplaintStore = defineStore("complaint", () => {
     const pagesComplaints = ref([]);
     const updateTable = ref(false);
 
-    async function loadComplaints(page, userId) {
+    async function loadComplaints(page, userId, filter, order) {
         let response;
         if (page == 0) {
             if (userId) {
                 response = await axios.get("users/" + userId + "/complaints");
             } else {
-                response = await axios.get("complaints/");
+                response = await axios.get("complaints/", {
+                    params: {
+                        filter: filter,
+                    },
+                });
             }
             lastPage.value = response.data.meta.last_page;
             if (response.data.meta.total == 0) {
@@ -28,7 +32,13 @@ export const useComplaintStore = defineStore("complaint", () => {
                     "users/" + userId + "/complaints?page=" + page
                 );
             } else {
-                response = await axios.get("complaints?page=" + page);
+                response = await axios.get("complaints/", {
+                    params: {
+                        filter: filter,
+                        order: order,
+                        page: page,
+                    },
+                });
             }
             lastPage.value = response.data.meta.last_page;
             complaints.value.push(response.data.data);
@@ -37,11 +47,11 @@ export const useComplaintStore = defineStore("complaint", () => {
         }
     }
 
-    async function getComplaints(page, userId) {
+    async function getComplaints(page, userId, filter, order) {
         if (pagesComplaints.value.includes(page)) {
             return complaints.value[pagesComplaints.value.indexOf(page)];
         }
-        return await loadComplaints(page, userId);
+        return await loadComplaints(page, userId, filter, order);
     }
 
     async function getComplaint(id) {

@@ -27,6 +27,10 @@ const props = defineProps({
         type: String,
         default: "ALL",
     },
+    order: {
+        type: String,
+        default: "DESC",
+    },
 });
 
 const codeStore = useCodeStore();
@@ -50,7 +54,11 @@ const selectedUsed = ref(null);
 const selectedCode = ref(null);
 
 watch(currentPageHuman, async () => {
-    codes.value = await codeStore.getCodes(currentPage.value + 1, props.filter);
+    codes.value = await codeStore.getCodes(
+        currentPage.value + 1,
+        props.filter,
+        props.order
+    );
 });
 
 watch(
@@ -73,18 +81,36 @@ watch(
 
 onMounted(async () => {
     if (codeStore.updateTable != true) {
-        codes.value = await codeStore.getCodes(1, props.filter);
+        codes.value = await codeStore.getCodes(1, props.filter, props.order);
     }
 });
 
+async function reloadTable() {
+    codeStore.clearStore();
+    setTimeout(async () => {
+        codes.value = await codeStore.getCodes(1, props.filter, props.order);
+    }, 200);
+}
+
 watchEffect(async () => {
     if (codeStore.updateTable) {
-        codeStore.clearStore();
-        setTimeout(async () => {
-            codes.value = await codeStore.getCodes(1, props.filter);
-        }, 200);
+        await reloadTable();
     }
 });
+
+watch(
+    () => props.filter,
+    async () => {
+        await reloadTable();
+    }
+);
+
+watch(
+    () => props.order,
+    async () => {
+        await reloadTable();
+    }
+);
 
 const pagesList = computed(() => {
     const pagesList = [];
@@ -121,6 +147,7 @@ const dateSurpassed = (date) => {
 function updateModal(resCode, newCode) {
     isSuccessNotifActive.value = true;
     isModalActive.value = false;
+    codeStore.updateTable = true;
     if (newCode) {
         notifText.value = "Código criado com sucesso!";
     } else {

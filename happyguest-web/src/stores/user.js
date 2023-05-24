@@ -18,17 +18,27 @@ export const useUserStore = defineStore("user", () => {
         }
     }
 
-    async function loadUsers(page) {
+    async function loadUsers(page, filter, order) {
         let response;
         if (page == 0) {
-            response = await axios.get("users/");
+            response = await axios.get("users/", {
+                params: {
+                    filter: filter,
+                },
+            });
             lastPage.value = response.data.meta.last_page;
             if (response.data.meta.total == 0) {
                 return false;
             }
             return true;
         } else {
-            response = await axios.get("users?page=" + page);
+            response = await axios.get("users/", {
+                params: {
+                    filter: filter,
+                    order: order,
+                    page: page,
+                },
+            });
             lastPage.value = response.data.meta.last_page;
             users.value.push(response.data.data);
             pagesUsers.value.push(page);
@@ -36,11 +46,11 @@ export const useUserStore = defineStore("user", () => {
         }
     }
 
-    async function getUsers(page) {
+    async function getUsers(page, filter, order) {
         if (pagesUsers.value.includes(page)) {
             return users.value[pagesUsers.value.indexOf(page)];
         }
-        return await loadUsers(page);
+        return await loadUsers(page, filter, order);
     }
 
     async function updateUser(userId, data) {

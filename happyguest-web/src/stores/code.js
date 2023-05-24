@@ -9,17 +9,27 @@ export const useCodeStore = defineStore("code", () => {
     const pagesCodes = ref([]);
     const updateTable = ref(false);
 
-    async function loadCodes(page) {
+    async function loadCodes(page, filter, order) {
         let response;
         if (page == 0) {
-            response = await axios.get("codes/");
+            response = await axios.get("codes/", {
+                params: {
+                    filter: filter,
+                },
+            });
             lastPage.value = response.data.meta.last_page;
             if (response.data.meta.total == 0) {
                 return false;
             }
             return true;
         } else {
-            response = await axios.get("codes?page=" + page);
+            response = await axios.get("codes/", {
+                params: {
+                    filter: filter,
+                    order: order,
+                    page: page,
+                },
+            });
             lastPage.value = response.data.meta.last_page;
             codes.value.push(response.data.data);
             pagesCodes.value.push(page);
@@ -27,11 +37,11 @@ export const useCodeStore = defineStore("code", () => {
         }
     }
 
-    async function getCodes(page) {
+    async function getCodes(page, filter, order) {
         if (pagesCodes.value.includes(page)) {
             return codes.value[pagesCodes.value.indexOf(page)];
         }
-        return await loadCodes(page);
+        return await loadCodes(page, filter, order);
     }
 
     async function getCode(id) {

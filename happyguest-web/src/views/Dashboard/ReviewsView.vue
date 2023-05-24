@@ -53,13 +53,13 @@ watch(filter, async (value) => {
                 :title="'Avaliações'"
                 main
             >
-                <div class="flex ml-2 sm:ml-0">
-                    <div class="flex flex-col md:flex-row mr-0 sm:mr-4 md:mr-8">
+                <div class="flex mr-0 sm:mr-12 lg:mr-8">
+                    <div class="flex flex-col lg:flex-row">
                         <b class="my-auto mr-4">Ordenar:</b>
                         <FormControl
                             id="order"
                             v-model="order"
-                            class="w-48 mr-0 md:mr-2 lg:mr-4 xl:mr-6 mb-2 md:mb-0"
+                            class="w-48 mr-0 lg:mr-4 lg:mr-6 mb-2 lg:mb-0"
                             :options="selectOptionsOrder"
                             :icon="
                                 order.value === 'DESC'

@@ -30,6 +30,10 @@ const props = defineProps({
         type: String,
         default: "ALL",
     },
+    order: {
+        type: String,
+        default: "DESC",
+    },
 });
 
 const router = useRouter();
@@ -68,18 +72,36 @@ watch(
 
 onMounted(async () => {
     if (userStore.updateTable != true) {
-        users.value = await userStore.getUsers(1, props.filter);
+        users.value = await userStore.getUsers(1, props.filter, props.order);
     }
 });
 
+async function reloadTable() {
+    userStore.clearStore();
+    setTimeout(async () => {
+        users.value = await userStore.getUsers(1, props.filter, props.order);
+    }, 200);
+}
+
 watchEffect(async () => {
     if (userStore.updateTable) {
-        userStore.clearStore();
-        setTimeout(async () => {
-            users.value = await userStore.getUsers(1, props.filter);
-        }, 200);
+        await reloadTable();
     }
 });
+
+watch(
+    () => props.filter,
+    async () => {
+        await reloadTable();
+    }
+);
+
+watch(
+    () => props.order,
+    async () => {
+        await reloadTable();
+    }
+);
 
 const pagesList = computed(() => {
     const pagesList = [];

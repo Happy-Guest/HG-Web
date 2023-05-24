@@ -31,7 +31,7 @@ const hasSlot = computed(() => useSlots().default);
                 v-if="icon && main"
                 :icon="icon"
                 color="light"
-                class="mr-3 shadow-sm w-14 md:w-12"
+                class="mr-3 shadow-sm w-12"
                 bg
             />
             <BaseIcon

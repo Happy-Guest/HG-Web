@@ -29,6 +29,10 @@ const props = defineProps({
         type: String,
         default: "ALL",
     },
+    order: {
+        type: String,
+        default: "DESC",
+    },
 });
 
 const router = useRouter();
@@ -49,25 +53,20 @@ const resErrors = ref([]);
 watch(currentPageHuman, async () => {
     complaints.value = await complaintStore.getComplaints(
         currentPage.value + 1,
-        props.userId
+        props.userId,
+        props.filter,
+        props.order
     );
 });
 
 onMounted(async () => {
     if (complaintStore.updateTable != true) {
-        complaints.value = await complaintStore.getComplaints(1, props.userId);
-    }
-});
-
-watchEffect(async () => {
-    if (complaintStore.updateTable) {
-        complaintStore.clearStore();
-        setTimeout(async () => {
-            complaints.value = await complaintStore.getComplaints(
-                1,
-                props.userId
-            );
-        }, 200);
+        complaints.value = await complaintStore.getComplaints(
+            1,
+            props.userId,
+            props.filter,
+            props.order
+        );
     }
 });
 
@@ -76,6 +75,38 @@ watchEffect(() => {
         complaintStore.updateTable = true;
     }
 });
+
+async function reloadTable() {
+    complaintStore.clearStore();
+    setTimeout(async () => {
+        complaints.value = await complaintStore.getComplaints(
+            1,
+            props.userId,
+            props.filter,
+            props.order
+        );
+    }, 200);
+}
+
+watchEffect(async () => {
+    if (complaintStore.updateTable) {
+        await reloadTable();
+    }
+});
+
+watch(
+    () => props.filter,
+    async () => {
+        await reloadTable();
+    }
+);
+
+watch(
+    () => props.order,
+    async () => {
+        await reloadTable();
+    }
+);
 
 const pagesList = computed(() => {
     const pagesList = [];
