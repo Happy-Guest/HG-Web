@@ -68,7 +68,9 @@ watch(
                 <div>
                     <div class="flex">
                         <b>Criada Em: </b>
-                        <p class="ml-2 mb-3">{{ review.created_at }}</p>
+                        <p class="ml-2 mb-3 text-gray-500 dark:text-slate-400">
+                            {{ review.created_at }}
+                        </p>
                     </div>
                     <div class="flex">
                         <b>Estrelas: </b>

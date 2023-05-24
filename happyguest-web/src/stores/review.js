@@ -8,6 +8,8 @@ export const useReviewStore = defineStore("review", () => {
     const lastPage = ref();
     const pagesReviews = ref([]);
     const updateTable = ref(false);
+    const filterTable = ref(null);
+    const orderTable = ref(null);
 
     async function loadReviews(page, filter, order) {
         let response;
@@ -78,6 +80,8 @@ export const useReviewStore = defineStore("review", () => {
         lastPage,
         pagesReviews,
         updateTable,
+        filterTable,
+        orderTable,
         loadReviews,
         getReviews,
         getReview,

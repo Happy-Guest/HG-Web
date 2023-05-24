@@ -48,6 +48,7 @@ const isErrorNotifActive = ref(false);
 const notifText = ref("");
 const resErrors = ref([]);
 const selected = ref(null);
+const selectedView = ref(null);
 
 watch(currentPageHuman, async () => {
     reviews.value = await reviewStore.getReviews(
@@ -134,6 +135,7 @@ const submitDelete = (password) => {
                 reviews.value = reviews.value.filter(
                     (review) => review.id != selected.value
                 );
+                reviewStore.updateTable = true;
                 isSuccessNotifActive.value = true;
                 setTimeout(function () {
                     isSuccessNotifActive.value = false;
@@ -183,7 +185,7 @@ const submitDelete = (password) => {
         <p>Tem a certeza que <b>deseja remover</b> a avaliação?</p>
     </CardBoxModal>
     <CardBoxReview
-        :selected="selected"
+        :selected="selectedView"
         :active="isModalActive"
         only-view
         @update:active="isModalActive = $event"
@@ -202,7 +204,10 @@ const submitDelete = (password) => {
         </thead>
         <tbody>
             <tr v-for="review in reviews" :key="review.id">
-                <td data-label="ID" class="text-center">
+                <td
+                    data-label="ID"
+                    class="text-center text-gray-500 dark:text-slate-400 font-semibold"
+                >
                     {{ review.id }}
                 </td>
                 <td data-label="Cliente" class="font-semibold">
@@ -277,7 +282,7 @@ const submitDelete = (password) => {
                             small
                             @click="
                                 isModalActive = true;
-                                selected = review.id;
+                                selectedView = review.id;
                             "
                         />
                         <BaseButton

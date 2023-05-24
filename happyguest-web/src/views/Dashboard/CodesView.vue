@@ -16,7 +16,7 @@ import TableCodes from "@/components/Tables/TableCodes.vue";
 import CardBox from "@/components/CardBoxs/CardBox.vue";
 import CardBoxCode from "@/components/CardBoxsCustom/CardBoxCode.vue";
 import FormControl from "@/components/Forms/FormControl.vue";
-import { onMounted, ref, watch } from "vue";
+import { onMounted, ref, watch, watchEffect } from "vue";
 import { useCodeStore } from "@/stores/code";
 
 const codeStore = useCodeStore();
@@ -47,8 +47,32 @@ onMounted(async () => {
 });
 
 watch(filter, async (value) => {
-    hasCodes.value = await codeStore.getCodes(0, value.value);
-    codeStore.updateTable = true;
+    if (value.value != codeStore.filterTable) {
+        hasCodes.value = await codeStore.getCodes(0, value.value);
+        setTimeout(() => {
+            codeStore.filterTable = value.value;
+        }, 200);
+    }
+});
+
+watch(order, (value) => {
+    codeStore.orderTable = value.value;
+});
+
+watchEffect(() => {
+    if (codeStore.filterTable) {
+        filter.value = selectOptionsFilter.find(
+            (option) => option.value === codeStore.filterTable
+        );
+    }
+});
+
+watchEffect(() => {
+    if (codeStore.orderTable) {
+        order.value = selectOptionsOrder.find(
+            (option) => option.value === codeStore.orderTable
+        );
+    }
 });
 </script>
 

@@ -12,7 +12,7 @@ import CardBoxComponentEmpty from "@/components/CardBoxs/CardBoxComponentEmpty.v
 import TableReviews from "@/components/Tables/TableReviews.vue";
 import FormControl from "@/components/Forms/FormControl.vue";
 import CardBox from "@/components/CardBoxs/CardBox.vue";
-import { onMounted, ref, watch } from "vue";
+import { onMounted, ref, watch, watchEffect } from "vue";
 import { useReviewStore } from "@/stores/review";
 
 const reviewStore = useReviewStore();
@@ -40,8 +40,32 @@ onMounted(async () => {
 });
 
 watch(filter, async (value) => {
-    hasReviews.value = await reviewStore.getReviews(0, value.value);
-    reviewStore.updateTable = true;
+    if (value.value != reviewStore.filterTable) {
+        hasReviews.value = await reviewStore.getReviews(0, value.value);
+        setTimeout(() => {
+            reviewStore.filterTable = value.value;
+        }, 200);
+    }
+});
+
+watch(order, (value) => {
+    reviewStore.orderTable = value.value;
+});
+
+watchEffect(() => {
+    if (reviewStore.filterTable) {
+        filter.value = selectOptionsFilter.find(
+            (option) => option.value === reviewStore.filterTable
+        );
+    }
+});
+
+watchEffect(() => {
+    if (reviewStore.orderTable) {
+        order.value = selectOptionsOrder.find(
+            (option) => option.value === reviewStore.orderTable
+        );
+    }
 });
 </script>
 

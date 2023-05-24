@@ -15,7 +15,7 @@ import BaseButtons from "@/components/Bases/BaseButtons.vue";
 import BaseButton from "@/components/Bases/BaseButton.vue";
 import FormControl from "@/components/Forms/FormControl.vue";
 import CardBox from "@/components/CardBoxs/CardBox.vue";
-import { onMounted, ref, watch } from "vue";
+import { onMounted, ref, watch, watchEffect } from "vue";
 import { useComplaintStore } from "@/stores/complaint";
 
 const complaintStore = useComplaintStore();
@@ -47,12 +47,36 @@ onMounted(async () => {
 });
 
 watch(filter, async (value) => {
-    hasComplaints.value = await complaintStore.getComplaints(
-        0,
-        null,
-        value.value
-    );
-    complaintStore.updateTable = true;
+    if (value.value != complaintStore.filterTable) {
+        hasComplaints.value = await complaintStore.getComplaints(
+            0,
+            null,
+            value.value
+        );
+        setTimeout(() => {
+            complaintStore.filterTable = value.value;
+        }, 200);
+    }
+});
+
+watch(order, (value) => {
+    complaintStore.orderTable = value.value;
+});
+
+watchEffect(() => {
+    if (complaintStore.filterTable) {
+        filter.value = selectOptionsFilter.find(
+            (option) => option.value === complaintStore.filterTable
+        );
+    }
+});
+
+watchEffect(() => {
+    if (complaintStore.orderTable) {
+        order.value = selectOptionsOrder.find(
+            (option) => option.value === complaintStore.orderTable
+        );
+    }
 });
 </script>
 

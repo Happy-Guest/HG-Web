@@ -8,6 +8,8 @@ export const useComplaintStore = defineStore("complaint", () => {
     const lastPage = ref();
     const pagesComplaints = ref([]);
     const updateTable = ref(false);
+    const filterTable = ref(null);
+    const orderTable = ref(null);
 
     async function loadComplaints(page, userId, filter, order) {
         let response;
@@ -125,6 +127,9 @@ export const useComplaintStore = defineStore("complaint", () => {
         complaints,
         lastPage,
         pagesComplaints,
+        updateTable,
+        filterTable,
+        orderTable,
         getComplaints,
         getComplaint,
         responseComplaint,

@@ -177,6 +177,7 @@ const submitDelete = (password) => {
                     (user) => user.id == selected.value
                 );
                 users.value.splice(index, 1);
+                userStore.updateTable = true;
                 isSuccessNotifActive.value = true;
                 setTimeout(function () {
                     isSuccessNotifActive.value = false;
@@ -263,7 +264,10 @@ const submitDelete = (password) => {
                         is-table
                     />
                 </td>
-                <td data-label="ID" class="text-center">
+                <td
+                    data-label="ID"
+                    class="text-center text-gray-500 dark:text-slate-400 font-semibold"
+                >
                     {{ user.id }}
                 </td>
                 <td data-label="Nome">

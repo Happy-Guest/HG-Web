@@ -50,6 +50,8 @@ const isModalUsersActive = ref(false);
 const notifText = ref("");
 const resErrors = ref([]);
 const selected = ref(null);
+const selectedClients = ref(null);
+const selectedView = ref(null);
 const selectedUsed = ref(null);
 const selectedCode = ref(null);
 
@@ -174,6 +176,7 @@ const submitDelete = (password) => {
                 codes.value = codes.value.filter(
                     (code) => code.id != selected.value
                 );
+                codeStore.updateTable = true;
                 isSuccessNotifActive.value = true;
                 setTimeout(function () {
                     isSuccessNotifActive.value = false;
@@ -226,14 +229,14 @@ const submitDelete = (password) => {
         </span>
     </CardBoxModal>
     <CardBoxCode
-        :selected="selected"
+        :selected="selectedView"
         :active="isModalActive"
         only-view
         @update:active="isModalActive = $event"
         @updated="updateModal($event)"
     />
     <CardBoxCodeUsers
-        :selected="selected"
+        :selected="selectedClients"
         :selected-code="selectedCode"
         :active="isModalUsersActive"
         @update:active="isModalUsersActive = $event"
@@ -252,7 +255,10 @@ const submitDelete = (password) => {
         </thead>
         <tbody>
             <tr v-for="code in codes" :key="code.id">
-                <td data-label="ID" class="text-center">
+                <td
+                    data-label="ID"
+                    class="text-center text-gray-500 dark:text-slate-400 font-semibold"
+                >
                     {{ code.id }}
                 </td>
                 <td data-label="Código" class="font-semibold">
@@ -309,7 +315,7 @@ const submitDelete = (password) => {
                             small
                             @click="
                                 isModalUsersActive = true;
-                                selected = code.id;
+                                selectedClients = code.id;
                                 selectedCode = code.code;
                             "
                         />
@@ -320,7 +326,7 @@ const submitDelete = (password) => {
                             small
                             @click="
                                 isModalActive = true;
-                                selected = code.id;
+                                selectedCode = code.id;
                             "
                         />
                         <BaseButton

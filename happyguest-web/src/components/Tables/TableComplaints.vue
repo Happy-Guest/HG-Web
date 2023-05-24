@@ -47,6 +47,7 @@ const currentPageHuman = computed(() => currentPage.value + 1);
 const isModalActive = ref(false);
 const isModalDeleteActive = ref(false);
 const selected = ref(null);
+const selectedAnswer = ref(null);
 
 const resErrors = ref([]);
 
@@ -185,7 +186,7 @@ const submitDelete = () => {
         <p>Tem a certeza que <b>deseja anular</b> a reclamação?</p>
     </CardBoxModal>
     <CardBoxAnswerComplaint
-        :selected="selected"
+        :selected="selectedAnswer"
         :active="isModalActive"
         @update:active="isModalActive = $event"
         @updated="updateModal($event)"
@@ -203,7 +204,10 @@ const submitDelete = () => {
         </thead>
         <tbody>
             <tr v-for="complaint in complaints" :key="complaint.id">
-                <td data-label="ID" class="text-center">
+                <td
+                    data-label="ID"
+                    class="text-center text-gray-500 dark:text-slate-400 font-semibold"
+                >
                     {{ complaint.id }}
                 </td>
                 <td data-label="Título">
@@ -279,7 +283,7 @@ const submitDelete = () => {
                             small
                             @click="
                                 isModalActive = true;
-                                selected = complaint.id;
+                                selectedAnswer = complaint.id;
                             "
                         />
                         <BaseButton

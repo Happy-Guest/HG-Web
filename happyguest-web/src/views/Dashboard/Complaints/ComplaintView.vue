@@ -308,7 +308,7 @@ watch(
             >
                 <FormCheckRadio
                     v-model="anonymous"
-                    class="font-semibold mr-12 mt-2"
+                    class="font-semibold mr-8"
                     name="anon-switch"
                     type="switch"
                     label="Anónima"
@@ -554,7 +554,7 @@ watch(
                     <div class="relative">
                         <span
                             v-if="selected"
-                            class="static text-zinc-500 right-0 bottom-0 mb-1 text-center sm:text-right sm:absolute"
+                            class="static text-zinc-500 right-0 bottom-0 mb-3 text-center sm:text-right sm:absolute"
                             >Criada Em: {{ complaint.created_at }}<br />Última
                             Atualização: {{ complaint.updated_at }}</span
                         >

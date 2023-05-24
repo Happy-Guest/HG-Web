@@ -8,6 +8,8 @@ export const useCodeStore = defineStore("code", () => {
     const lastPage = ref();
     const pagesCodes = ref([]);
     const updateTable = ref(false);
+    const filterTable = ref(null);
+    const orderTable = ref(null);
 
     async function loadCodes(page, filter, order) {
         let response;
@@ -104,6 +106,9 @@ export const useCodeStore = defineStore("code", () => {
         codes,
         lastPage,
         pagesCodes,
+        updateTable,
+        filterTable,
+        orderTable,
         getCodes,
         getCode,
         getUsersByCode,

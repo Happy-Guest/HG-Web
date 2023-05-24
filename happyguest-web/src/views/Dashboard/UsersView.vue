@@ -44,14 +44,30 @@ onMounted(async () => {
 });
 
 watch(filter, async (value) => {
-    hasUsers.value = await userStore.getUsers(0, value.value);
-    userStore.updateTable = true;
+    if (value.value != userStore.filterTable) {
+        hasUsers.value = await userStore.getUsers(0, value.value);
+        setTimeout(() => {
+            userStore.filterTable = value.value;
+        }, 200);
+    }
 });
 
-watchEffect(async () => {
+watch(order, (value) => {
+    userStore.orderTable = value.value;
+});
+
+watchEffect(() => {
     if (userStore.filterTable) {
         filter.value = selectOptionsFilter.find(
             (option) => option.value === userStore.filterTable
+        );
+    }
+});
+
+watchEffect(() => {
+    if (userStore.orderTable) {
+        order.value = selectOptionsOrder.find(
+            (option) => option.value === userStore.orderTable
         );
     }
 });
