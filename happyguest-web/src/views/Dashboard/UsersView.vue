@@ -15,7 +15,7 @@ import CardBoxComponentEmpty from "@/components/CardBoxs/CardBoxComponentEmpty.v
 import FormControl from "@/components/Forms/FormControl.vue";
 import TableUsers from "@/components/Tables/TableUsers.vue";
 import CardBox from "@/components/CardBoxs/CardBox.vue";
-import { onMounted, ref, watch } from "vue";
+import { onMounted, ref, watch, watchEffect } from "vue";
 import { useUserStore } from "@/stores/user";
 
 const userStore = useUserStore();
@@ -46,6 +46,14 @@ onMounted(async () => {
 watch(filter, async (value) => {
     hasUsers.value = await userStore.getUsers(0, value.value);
     userStore.updateTable = true;
+});
+
+watchEffect(async () => {
+    if (userStore.filterTable) {
+        filter.value = selectOptionsFilter.find(
+            (option) => option.value === userStore.filterTable
+        );
+    }
 });
 </script>
 

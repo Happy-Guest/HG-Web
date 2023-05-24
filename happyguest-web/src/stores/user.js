@@ -8,6 +8,7 @@ export const useUserStore = defineStore("user", () => {
     const lastPage = ref();
     const pagesUsers = ref([]);
     const updateTable = ref(false);
+    const filterTable = ref(null);
 
     async function loadUserById(id) {
         try {
@@ -100,6 +101,7 @@ export const useUserStore = defineStore("user", () => {
         lastPage.value = null;
         pagesUsers.value = [];
         updateTable.value = false;
+        filterTable.value = null;
     }
 
     return {
@@ -107,6 +109,7 @@ export const useUserStore = defineStore("user", () => {
         lastPage,
         pagesUsers,
         updateTable,
+        filterTable,
         loadUserById,
         loadUsers,
         getUsers,

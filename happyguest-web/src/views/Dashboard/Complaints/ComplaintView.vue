@@ -456,7 +456,8 @@ watch(
                                               params: { id: form.user.id },
                                           })
                                         : (router.push({ name: 'users' }),
-                                          (userStore.updateTable = true))
+                                          (userStore.updateTable = true)),
+                                        (userStore.filterTable = 'C')
                                 "
                             />
                         </BaseButtons>
