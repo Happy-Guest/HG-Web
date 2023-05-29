@@ -6,7 +6,9 @@ import CardBox from "@/components/CardBoxs/CardBox.vue";
 import LayoutGuest from "@/layouts/LayoutGuest.vue";
 import BaseButton from "@/components/Bases/BaseButton.vue";
 import { useAuthStore } from "@/stores/auth";
+import { useRouter } from "vue-router";
 
+const router = useRouter();
 const canLogin = ref(true);
 const authStore = useAuthStore();
 </script>
@@ -22,20 +24,20 @@ const authStore = useAuthStore();
                 <div v-if="canLogin" class="text-center mt-6 space-y-2">
                     <BaseButton
                         v-if="authStore.isLogged"
-                        :to="{ name: 'dashboard' }"
                         color="info"
                         :icon="mdiLoginVariant"
                         label="Painel"
                         outline
+                        @click="router.push({ name: 'dashboard' })"
                     />
 
                     <template v-else>
                         <BaseButton
-                            :to="{ name: 'login' }"
                             color="success"
                             :icon="mdiLoginVariant"
                             label="Login"
                             outline
+                            @click="router.push({ name: 'login' })"
                         />
                     </template>
                 </div>
