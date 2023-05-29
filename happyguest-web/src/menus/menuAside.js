@@ -13,9 +13,6 @@ export default [
         label: "Página Inicial",
     },
     {
-        isDivider: true,
-    },
-    {
         middleware: ["A", "M"],
         to: "/utilizadores",
         label: "Utilizadores",
