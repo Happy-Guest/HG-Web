@@ -330,7 +330,9 @@ const submitDelete = (password) => {
                         :icon="mdiCheckAll"
                     />
                 </td>
-                <td class="before:hidden lg:w-1 whitespace-nowrap">
+                <td
+                    class="before:hidden lg:w-1 whitespace-nowrap place-content-center"
+                >
                     <BaseButtons type="justify-start lg:justify-end" no-wrap>
                         <BaseButton
                             color="info"

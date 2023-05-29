@@ -61,19 +61,16 @@ watch(currentPageHuman, async () => {
 });
 
 onMounted(async () => {
-    if (complaintStore.updateTable != true) {
+    if (
+        complaintStore.updateTable != true &&
+        props.userId == complaintStore.user
+    ) {
         complaints.value = await complaintStore.getComplaints(
             1,
             props.userId,
             props.filter,
             props.order
         );
-    }
-});
-
-watchEffect(() => {
-    if (props.userId != null) {
-        complaintStore.updateTable = true;
     }
 });
 
@@ -90,8 +87,12 @@ async function reloadTable() {
 }
 
 watchEffect(async () => {
-    if (complaintStore.updateTable) {
-        await reloadTable();
+    console.log(props.userId);
+    console.log(complaintStore.user);
+    if (complaintStore.updateTable || props.userId != complaintStore.user) {
+        await reloadTable().then(() => {
+            complaintStore.user = props.userId;
+        });
     }
 });
 

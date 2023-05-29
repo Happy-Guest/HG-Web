@@ -269,14 +269,16 @@ const submitDelete = (password) => {
                     }}
                 </td>
                 <td data-label="Quarto(s)">
-                    <PillTag
-                        v-for="room in code.rooms"
-                        :key="room"
-                        class="justify-center ml-2 font-semibold"
-                        :label="room"
-                        color="info"
-                        small
-                    />
+                    <div>
+                        <PillTag
+                            v-for="room in code.rooms"
+                            :key="room"
+                            class="justify-center ml-2 font-semibold"
+                            :label="room"
+                            color="info"
+                            small
+                        />
+                    </div>
                 </td>
                 <td data-label="Entrada" class="text-center">
                     {{ code.entry_date }}
