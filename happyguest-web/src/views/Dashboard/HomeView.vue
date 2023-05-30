@@ -30,14 +30,23 @@ const statistics = ref({
     percentageComplaints: 0,
 });
 
-const fillChartData = () => {
-    chartData.value = chartConfig.sampleChartData();
+const fillChartData = async (data, reload) => {
+    if (reload) {
+        chartData.value = null;
+        await mainStore.getHomeGraph().then((response) => {
+            chartData.value = chartConfig.chartData(12, response.data);
+        });
+    } else {
+        chartData.value = chartConfig.chartData(12, data);
+    }
 };
 
 onMounted(async () => {
-    fillChartData();
     await mainStore.getHomeStatistics().then((response) => {
         statistics.value = response.data;
+    });
+    await mainStore.getHomeGraph().then((response) => {
+        fillChartData(response.data);
     });
 });
 </script>
@@ -100,18 +109,24 @@ onMounted(async () => {
 
             <SectionTitleLine
                 :icon="mdiChartPie"
-                title="Gráfico de Reclamações"
+                title="Gráfico de Histórico por Mês"
             >
                 <BaseButton
                     :icon="mdiReload"
                     color="whiteDark"
-                    @click="fillChartData"
+                    @click="fillChartData(null, true)"
                 />
             </SectionTitleLine>
 
             <CardBox class="mb-6">
                 <div v-if="chartData">
                     <line-chart :data="chartData" class="h-96" />
+                </div>
+                <div class="mt-3">
+                    <b class="text-lg">Legenda:</b>
+                    <span class="text-emerald-500 ml-4">Clientes</span>
+                    <span class="text-blue-500 ml-4">Códigos</span>
+                    <span class="text-red-500 ml-4">Reclamações</span>
                 </div>
             </CardBox>
         </SectionMain>

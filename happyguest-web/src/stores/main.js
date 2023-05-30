@@ -12,7 +12,16 @@ export const useMainStore = defineStore("main", () => {
         }
     }
 
+    async function getHomeGraph() {
+        try {
+            return await axios.get("stats/graph");
+        } catch (error) {
+            return error;
+        }
+    }
+
     return {
         getHomeStatistics,
+        getHomeGraph,
     };
 });

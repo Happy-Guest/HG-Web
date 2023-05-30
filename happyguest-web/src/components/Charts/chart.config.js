@@ -6,17 +6,24 @@ export const chartColors = {
     },
 };
 
-const randomChartData = (n) => {
-    const data = [];
+const setChartData = (n, data) => {
+    const finalData = [];
 
     for (let i = 0; i < n; i++) {
-        data.push(Math.round(Math.random() * 200));
+        data.map((item) => {
+            if (item.month === i + 1) {
+                finalData[i] = item.total;
+            }
+        });
+        if (!finalData[i]) {
+            finalData[i] = 0;
+        }
     }
 
-    return data;
+    return finalData;
 };
 
-const datasetObject = (color, points) => {
+const datasetObject = (color, points, data) => {
     return {
         fill: false,
         borderColor: chartColors.default[color],
@@ -30,25 +37,25 @@ const datasetObject = (color, points) => {
         pointHoverRadius: 4,
         pointHoverBorderWidth: 15,
         pointRadius: 4,
-        data: randomChartData(points),
+        data: setChartData(points, data),
         tension: 0.5,
         cubicInterpolationMode: "default",
     };
 };
 
-export const sampleChartData = (points = 9) => {
+export const chartData = (points, data) => {
     const labels = [];
 
     for (let i = 1; i <= points; i++) {
-        labels.push(`0${i}`);
+        labels.push(`${i}`);
     }
 
     return {
         labels,
         datasets: [
-            datasetObject("primary", points),
-            datasetObject("info", points),
-            datasetObject("danger", points),
+            datasetObject("primary", points, data.clientsByMonth),
+            datasetObject("info", points, data.codesByMonth),
+            datasetObject("danger", points, data.complaintsByMonth),
         ],
     };
 };
