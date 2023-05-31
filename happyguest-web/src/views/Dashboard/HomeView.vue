@@ -107,10 +107,7 @@ onMounted(async () => {
                 />
             </div>
 
-            <SectionTitleLine
-                :icon="mdiChartPie"
-                title="Gráfico de Histórico por Mês"
-            >
+            <SectionTitleLine :icon="mdiChartPie" title="Registos por Mês">
                 <BaseButton
                     :icon="mdiReload"
                     color="whiteDark"
@@ -122,7 +119,7 @@ onMounted(async () => {
                 <div v-if="chartData">
                     <line-chart :data="chartData" class="h-96" />
                 </div>
-                <div class="mt-3">
+                <div class="mt-4">
                     <b class="text-lg">Legenda:</b>
                     <span class="text-emerald-500 ml-4">Clientes</span>
                     <span class="text-blue-500 ml-4">Códigos</span>
