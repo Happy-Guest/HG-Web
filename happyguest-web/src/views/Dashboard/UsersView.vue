@@ -29,6 +29,7 @@ const selectOptionsFilter = [
     { value: "A", label: "Admins" },
     { value: "NB", label: "Ativos" },
     { value: "B", label: "Bloqueados" },
+    { value: "D", label: "Eliminados" },
 ];
 
 const selectOptionsOrder = [

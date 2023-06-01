@@ -97,6 +97,15 @@ export const useUserStore = defineStore("user", () => {
         }
     }
 
+    async function getCodeByUser(id) {
+        try {
+            let response = await axios.get("users/" + id + "/codes");
+            return response.data.data;
+        } catch (error) {
+            return error;
+        }
+    }
+
     function clearStore() {
         users.value = [];
         lastPage.value = null;
@@ -117,6 +126,7 @@ export const useUserStore = defineStore("user", () => {
         updateUser,
         deleteUser,
         changeStateUser,
+        getCodeByUser,
         clearStore,
     };
 });

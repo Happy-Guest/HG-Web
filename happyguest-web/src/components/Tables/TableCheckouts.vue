@@ -1,30 +1,19 @@
 <script setup>
 import { computed, ref, watch, onMounted, watchEffect } from "vue";
-import {
-    mdiEmailFastOutline,
-    mdiClose,
-    mdiCheck,
-    mdiClockTimeTwoOutline,
-    mdiEye,
-    mdiCog,
-    mdiCheckCircle,
-    mdiAlertCircle,
-    mdiTrashCan,
-} from "@mdi/js";
+import { mdiEye, mdiCancel, mdiCheck, mdiClose, mdiTrashCan } from "@mdi/js";
 import BaseLevel from "@/components/Bases/BaseLevel.vue";
 import BaseButtons from "@/components/Bases/BaseButtons.vue";
 import BaseButton from "@/components/Bases/BaseButton.vue";
 import PillTag from "@/components/PillTags/PillTag.vue";
+import CardBoxModal from "@/components/CardBoxs/CardBoxModal.vue";
+import CardBoxCheckout from "@/components/CardBoxsCustom/CardBoxCheckout.vue";
 import NotificationBar from "@/components/Others/NotificationBar.vue";
-import { useComplaintStore } from "@/stores/complaint";
-import CardBoxAnswerComplaint from "../CardBoxsCustom/CardBoxAnswerComplaint.vue";
-import CardBoxModal from "../CardBoxs/CardBoxModal.vue";
-import { useRouter } from "vue-router";
+import { useCheckoutStore } from "@/stores/checkout";
 
 const props = defineProps({
-    userId: {
-        type: Number,
-        default: null,
+    newCheckout: {
+        type: Boolean,
+        default: false,
     },
     filter: {
         type: String,
@@ -36,42 +25,50 @@ const props = defineProps({
     },
 });
 
-const router = useRouter();
+const checkoutStore = useCheckoutStore();
 
-const complaintStore = useComplaintStore();
+const checkouts = ref([]);
 
 const currentPage = ref(0);
-const complaints = ref([]);
-const numPages = computed(() => complaintStore.lastPage);
+const numPages = computed(() => checkoutStore.lastPage);
 const currentPageHuman = computed(() => currentPage.value + 1);
 
-const isModalActive = ref(false);
 const isModalDeleteActive = ref(false);
-const isErrorNotifActive = ref(false);
+const isModalActive = ref(false);
+const isModalValidateActive = ref(false);
 const isSuccessNotifActive = ref(false);
-const selected = ref(null);
-const selectedAnswer = ref(null);
+const isErrorNotifActive = ref(false);
+const selectedView = ref(null);
 
 const notifText = ref("");
 const resErrors = ref([]);
 
 watch(currentPageHuman, async () => {
-    complaints.value = await complaintStore.getComplaints(
+    checkouts.value = await checkoutStore.getCheckouts(
         currentPage.value + 1,
-        props.userId,
-        props.filter,
-        props.order
+        props.filter
     );
 });
 
+watch(
+    () => props.newCheckout,
+    (value) => {
+        if (value) {
+            isSuccessNotifActive.value = true;
+            isModalActive.value = false;
+            checkoutStore.updateTable = true;
+            notifText.value = "Check-out criado com sucesso!";
+            setTimeout(() => {
+                isSuccessNotifActive.value = false;
+            }, 5000);
+        }
+    }
+);
+
 onMounted(async () => {
-    if (
-        complaintStore.updateTable != true &&
-        props.userId == complaintStore.user
-    ) {
-        complaints.value = await complaintStore.getComplaints(
+    if (checkoutStore.updateTable != true) {
+        checkouts.value = await checkoutStore.getCheckouts(
             1,
-            props.userId,
             props.filter,
             props.order
         );
@@ -79,11 +76,10 @@ onMounted(async () => {
 });
 
 async function reloadTable() {
-    complaintStore.clearStore();
+    checkoutStore.clearStore();
     setTimeout(async () => {
-        complaints.value = await complaintStore.getComplaints(
+        checkouts.value = await checkoutStore.getCheckouts(
             1,
-            props.userId,
             props.filter,
             props.order
         );
@@ -91,12 +87,8 @@ async function reloadTable() {
 }
 
 watchEffect(async () => {
-    console.log(props.userId);
-    console.log(complaintStore.user);
-    if (complaintStore.updateTable || props.userId != complaintStore.user) {
-        await reloadTable().then(() => {
-            complaintStore.user = props.userId;
-        });
+    if (checkoutStore.updateTable) {
+        await reloadTable();
     }
 });
 
@@ -131,34 +123,23 @@ const pagesList = computed(() => {
     }
     return pagesList[parseInt(currentPage.value / 10)];
 });
-
-const isSuccessNotifUpdateActive = ref(false);
-
-function updateModal(resComplaint) {
-    isModalActive.value = false;
-    isSuccessNotifUpdateActive.value = true;
-    complaints.value = complaints.value.map((complaint) => {
-        if (complaint.id == resComplaint.id) {
-            return resComplaint;
-        }
-        return complaint;
-    });
-    setTimeout(() => {
-        isSuccessNotifUpdateActive.value = false;
-    }, 5000);
-}
+const validateCheckout = async () => {
+    await checkoutStore.validateCheckout(selectedView.value);
+    isModalValidateActive.value = false;
+    reloadTable();
+};
 
 const submitDelete = (password) => {
-    complaintStore
-        .deleteComplaint(selected.value, password)
+    checkoutStore
+        .deleteCheckout(selectedView.value, password)
         .then((response) => {
             notifText.value = response.data.message;
             if (response.status === 200) {
                 isModalDeleteActive.value = false;
-                complaints.value = complaints.value.filter(
-                    (complaint) => complaint.id != selected.value
+                checkouts.value = checkouts.value.filter(
+                    (checkouts) => checkouts.id != selectedView.value
                 );
-                complaintStore.updateTable = true;
+                checkoutStore.updateTable = true;
                 isSuccessNotifActive.value = true;
                 setTimeout(function () {
                     isSuccessNotifActive.value = false;
@@ -168,7 +149,7 @@ const submitDelete = (password) => {
             }
         })
         .catch(() => {
-            notifText.value = "Ocorreu um erro ao remover a reclamação.";
+            notifText.value = "Ocorreu um erro ao remover o check-out.";
             isErrorNotifActive.value = true;
             setTimeout(function () {
                 isErrorNotifActive.value = false;
@@ -197,7 +178,7 @@ const submitDelete = (password) => {
     <CardBoxModal
         v-model="isModalDeleteActive"
         :errors="resErrors"
-        title="Remover Reclamação"
+        title="Remover Check-out"
         button="danger"
         :icon-title="mdiTrashCan"
         has-cancel
@@ -205,11 +186,25 @@ const submitDelete = (password) => {
         has-password
         @confirm="submitDelete"
     >
-        <p>Tem a certeza que <b>deseja remover</b> a reclamação?</p>
+        <p>Tem a certeza que <b>deseja remover</b> o check-out?</p>
     </CardBoxModal>
-    <CardBoxAnswerComplaint
-        :selected="selectedAnswer"
+    <CardBoxModal
+        v-model="isModalValidateActive"
+        :title="'Validar Check-out ➯ ' + selectedView"
+        button-label="Validar"
+        :icon-title="mdiCheck"
+        :button="'success'"
+        has-cancel
+        has-close
+        @confirm="validateCheckout()"
+    >
+        <p>Tem a certeza que deseja <b>validar</b> o Check-out selecionado?</p>
+        <span>Esta ação será <b>irreversível</b>.</span>
+    </CardBoxModal>
+    <CardBoxCheckout
+        :selected="selectedView"
         :active="isModalActive"
+        only-view
         @update:active="isModalActive = $event"
         @updated="updateModal($event)"
     />
@@ -217,105 +212,83 @@ const submitDelete = (password) => {
         <thead>
             <tr>
                 <th>ID:</th>
-                <th>Título:</th>
-                <th>Local:</th>
-                <th>Estado:</th>
-                <th>Criada Em:</th>
+                <th>Cliente:</th>
+                <th>Código:</th>
+                <th>Validado:</th>
+                <th>Efetuado Em:</th>
                 <th />
             </tr>
         </thead>
         <tbody>
-            <tr v-for="complaint in complaints" :key="complaint.id">
+            <tr v-for="checkout in checkouts" :key="checkout.id">
                 <td
                     data-label="ID"
                     class="text-center text-gray-500 dark:text-slate-400 font-semibold"
                 >
-                    {{ complaint.id }}
+                    {{ checkout.id }}
                 </td>
-                <td data-label="Título">
-                    {{
-                        complaint.title.length > 30
-                            ? complaint.title.substring(0, 30) + "..."
-                            : complaint.title
-                    }}
+                <td data-label="Cliente" class="font-semibold">
+                    {{ checkout.user }}
                 </td>
-                <td data-label="Local" class="text-center font-semibold">
-                    {{
-                        complaint.local.length > 20
-                            ? complaint.local.substring(0, 20) + "..."
-                            : complaint.local
-                    }}
+                <td data-label="Código" class="font-semibold text-center">
+                    {{ checkout.code }}
                 </td>
-                <td data-label="Estado" class="text-center">
+                <td data-label="Validado" class="text-center">
                     <PillTag
-                        v-if="complaint.status == 'P'"
+                        v-if="checkout.validated == '1'"
                         class="justify-center"
-                        label="Pendente"
-                        color="info"
-                        :icon="mdiClockTimeTwoOutline"
-                    />
-                    <PillTag
-                        v-else-if="complaint.status == 'S'"
-                        class="justify-center"
-                        label="Resolução"
-                        color="warning"
-                        :icon="mdiCog"
-                    />
-                    <PillTag
-                        v-else-if="complaint.status == 'R'"
-                        class="justify-center"
-                        label="Terminada"
+                        label="Sim"
                         color="success"
                         :icon="mdiCheck"
                     />
                     <PillTag
                         v-else
                         class="justify-center"
-                        label="Anulada"
+                        label="Não"
                         color="danger"
                         :icon="mdiClose"
                     />
                 </td>
                 <td
-                    data-label="Criada Em"
-                    class="text-center text-gray-500 dark:text-slate-400"
+                    data-label="Efetuado Em"
+                    class="text-gray-500 dark:text-slate-400 text-center"
                 >
-                    {{ complaint.created_at }}
+                    {{ checkout.date }}
                 </td>
+
                 <td
                     class="before:hidden lg:w-1 whitespace-nowrap place-content-center"
                 >
                     <BaseButtons type="justify-start lg:justify-end" no-wrap>
                         <BaseButton
                             color="info"
-                            title="Ver Reclamação"
+                            title="Ver Cliente"
                             :icon="mdiEye"
                             small
                             @click="
-                                router.push({
-                                    name: 'complaintView',
-                                    params: { id: complaint.id },
-                                })
+                                isModalActive = true;
+                                selectedView = checkout.id;
                             "
                         />
                         <BaseButton
-                            color="warning"
-                            title="Responder"
-                            :icon="mdiEmailFastOutline"
+                            color="success"
+                            title="Validar"
+                            :icon="checkout.validated ? mdiCancel : mdiCheck"
                             small
+                            :disabled="checkout.validated == '1'"
                             @click="
-                                isModalActive = true;
-                                selectedAnswer = complaint.id;
+                                isModalValidateActive = true;
+                                selectedView = checkout.id;
                             "
                         />
                         <BaseButton
                             color="danger"
-                            title="Eliminar"
+                            title="Remover"
                             :icon="mdiTrashCan"
                             small
                             @click="
                                 isModalDeleteActive = true;
-                                selected = complaint.id;
+                                selectedView = checkout.id;
                             "
                         />
                     </BaseButtons>

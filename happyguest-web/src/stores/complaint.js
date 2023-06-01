@@ -75,6 +75,19 @@ export const useComplaintStore = defineStore("complaint", () => {
         }
     }
 
+    async function deleteComplaint(complaintId, data) {
+        try {
+            let response = await axios.delete("complaints/" + complaintId, {
+                data: {
+                    password: data,
+                },
+            });
+            return response;
+        } catch (error) {
+            return error.response;
+        }
+    }
+
     async function createComplaint(data) {
         let formData = new FormData();
         formData.append("title", data.title);
@@ -139,5 +152,6 @@ export const useComplaintStore = defineStore("complaint", () => {
         createComplaint,
         file,
         clearStore,
+        deleteComplaint,
     };
 });

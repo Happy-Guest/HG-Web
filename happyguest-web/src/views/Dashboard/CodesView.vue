@@ -32,6 +32,7 @@ const selectOptionsFilter = [
     { value: "E", label: "Expirados" },
     { value: "U", label: "Utilizados" },
     { value: "NU", label: "Inutilizados" },
+    { value: "D", label: "Eliminados" },
 ];
 
 const selectOptionsOrder = [
@@ -91,7 +92,7 @@ watchEffect(() => {
                         <FormControl
                             id="order"
                             v-model="order"
-                            class="w-48 mr-0 lg:mr-4 lg:mr-6 mb-2 lg:mb-0"
+                            class="w-48 mr-0 lg:mr-6 mb-2 lg:mb-0"
                             :options="selectOptionsOrder"
                             :icon="
                                 order.value === 'DESC'
@@ -103,7 +104,7 @@ watchEffect(() => {
                         <FormControl
                             id="filter"
                             v-model="filter"
-                            class="w-48 mr-0 lg:mr-4 lg:mr-6 mb-2 lg:mb-0"
+                            class="w-48 mr-0 lg:mr-4 mb-2 lg:mb-0"
                             :options="selectOptionsFilter"
                             :icon="mdiFilterMultiple"
                         />

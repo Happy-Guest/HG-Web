@@ -4,6 +4,7 @@ import {
     mdiAccountGroup,
     mdiBullhorn,
     mdiStarShooting,
+    mdiDoorSliding,
 } from "@mdi/js";
 
 export default [
@@ -37,6 +38,9 @@ export default [
         icon: mdiStarShooting,
     },
     {
-        isDivider: true,
+        middleware: ["A", "M"],
+        to: "/checkouts",
+        label: "Check-Outs",
+        icon: mdiDoorSliding,
     },
 ];

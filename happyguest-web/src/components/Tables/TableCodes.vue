@@ -51,7 +51,6 @@ const notifText = ref("");
 const resErrors = ref([]);
 const selected = ref(null);
 const selectedClients = ref(null);
-const selectedView = ref(null);
 const selectedUsed = ref(null);
 const selectedCode = ref(null);
 
@@ -229,7 +228,7 @@ const submitDelete = (password) => {
         </span>
     </CardBoxModal>
     <CardBoxCode
-        :selected="selectedView"
+        :selected="selectedCode"
         :active="isModalActive"
         only-view
         @update:active="isModalActive = $event"

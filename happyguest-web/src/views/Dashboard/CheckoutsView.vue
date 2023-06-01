@@ -1,34 +1,35 @@
 <script setup>
 import {
-    mdiBullhorn,
-    mdiFilePlus,
-    mdiFilterMultiple,
+    mdiDoorSliding,
     mdiOrderNumericDescending,
     mdiOrderNumericAscending,
+    mdiFilePlus,
+    mdiFilterMultiple,
 } from "@mdi/js";
 import LayoutAuthenticated from "@/layouts/LayoutAuthenticated.vue";
 import SectionMain from "@/components/Sections/SectionMain.vue";
 import SectionTitleLine from "@/components/Sections/SectionTitleLine.vue";
 import CardBoxComponentEmpty from "@/components/CardBoxs/CardBoxComponentEmpty.vue";
-import TableComplaints from "@/components/Tables/TableComplaints.vue";
-import BaseButtons from "@/components/Bases/BaseButtons.vue";
-import BaseButton from "@/components/Bases/BaseButton.vue";
+import TableCheckouts from "@/components/Tables/TableCheckouts.vue";
+import CardBoxRegisterCheckout from "@/components/CardBoxsCustom/CardBoxRegisterCheckout.vue";
 import FormControl from "@/components/Forms/FormControl.vue";
 import CardBox from "@/components/CardBoxs/CardBox.vue";
+import BaseButtons from "@/components/Bases/BaseButtons.vue";
+import BaseButton from "@/components/Bases/BaseButton.vue";
 import { onMounted, ref, watch, watchEffect } from "vue";
-import { useComplaintStore } from "@/stores/complaint";
+import { useCheckoutStore } from "@/stores/checkout";
 
-const complaintStore = useComplaintStore();
+const checkoutStore = useCheckoutStore();
 
-const hasComplaints = ref(false);
+const hascheckouts = ref(false);
+const newCheckout = ref(null);
+
+const isModalActiveRegister = ref(false);
 
 const selectOptionsFilter = [
     { value: "ALL", label: "Todas" },
-    { value: "P", label: "Pendentes" },
-    { value: "S", label: "Resolvidas" },
-    { value: "R", label: "Terminadas" },
-    { value: "C", label: "Anuladas" },
-    { value: "D", label: "Eliminados" },
+    { value: "V", label: "Validados" },
+    { value: "NV", label: "Não Validados" },
 ];
 
 const selectOptionsOrder = [
@@ -40,42 +41,37 @@ const filter = ref(selectOptionsFilter[0]);
 const order = ref(selectOptionsOrder[0]);
 
 onMounted(async () => {
-    hasComplaints.value = await complaintStore.getComplaints(
+    hascheckouts.value = await checkoutStore.getCheckouts(
         0,
-        null,
         filter.value.value
     );
 });
 
 watch(filter, async (value) => {
-    if (value.value != complaintStore.filterTable) {
-        hasComplaints.value = await complaintStore.getComplaints(
-            0,
-            null,
-            value.value
-        );
+    if (value.value != checkoutStore.filterTable) {
+        hascheckouts.value = await checkoutStore.getReviews(0, value.value);
         setTimeout(() => {
-            complaintStore.filterTable = value.value;
+            checkoutStore.filterTable = value.value;
         }, 200);
     }
 });
 
 watch(order, (value) => {
-    complaintStore.orderTable = value.value;
+    checkoutStore.orderTable = value.value;
 });
 
 watchEffect(() => {
-    if (complaintStore.filterTable) {
+    if (checkoutStore.filterTable) {
         filter.value = selectOptionsFilter.find(
-            (option) => option.value === complaintStore.filterTable
+            (option) => option.value === checkoutStore.filterTable
         );
     }
 });
 
 watchEffect(() => {
-    if (complaintStore.orderTable) {
+    if (checkoutStore.orderTable) {
         order.value = selectOptionsOrder.find(
-            (option) => option.value === complaintStore.orderTable
+            (option) => option.value === checkoutStore.orderTable
         );
     }
 });
@@ -83,15 +79,20 @@ watchEffect(() => {
 
 <template>
     <LayoutAuthenticated>
+        <CardBoxRegisterCheckout
+            :active="isModalActiveRegister"
+            @update:active="isModalActiveRegister = $event"
+            @updated="newCheckout = $event"
+        />
         <SectionMain>
-            <SectionTitleLine :icon="mdiBullhorn" :title="'Reclamações'" main>
+            <SectionTitleLine :icon="mdiDoorSliding" :title="'Check-Outs'" main>
                 <div class="flex mr-0 sm:mr-12 lg:mr-8">
                     <div class="flex flex-col lg:flex-row">
                         <b class="my-auto mr-4">Ordenar:</b>
                         <FormControl
                             id="order"
                             v-model="order"
-                            class="w-48 mr-0 lg:mr-4 lg:mr-6 mb-2 lg:mb-0"
+                            class="w-48 mr-0 lg:mr-6 mb-2 lg:mb-0"
                             :options="selectOptionsOrder"
                             :icon="
                                 order.value === 'DESC'
@@ -103,33 +104,34 @@ watchEffect(() => {
                         <FormControl
                             id="filter"
                             v-model="filter"
-                            class="w-48 mr-0 lg:mr-4 lg:mr-6 mb-2 lg:mb-0"
+                            class="w-48 mr-0 lg:mr-6 mb-2 lg:mb-0"
                             :options="selectOptionsFilter"
                             :icon="mdiFilterMultiple"
                         />
                         <BaseButtons class="justify-center">
                             <BaseButton
                                 :icon="mdiFilePlus"
-                                :to="{ name: 'complaintCreate' }"
                                 label="Registar"
                                 class="mt-2 lg:mt-0"
                                 color="success"
                                 rounded-full
                                 small
+                                @click="isModalActiveRegister = true"
                             />
                         </BaseButtons>
                     </div>
                 </div>
             </SectionTitleLine>
             <CardBox class="mb-6" has-table>
-                <TableComplaints
-                    v-if="hasComplaints"
+                <TableCheckouts
+                    v-if="hascheckouts"
+                    :new-checkout="newCheckout"
                     :filter="filter.value"
                     :order="order.value"
                 />
                 <CardBoxComponentEmpty
                     v-else
-                    message="Sem reclamações registadas..."
+                    message="Sem check-outs registados..."
                 />
             </CardBox>
         </SectionMain>
