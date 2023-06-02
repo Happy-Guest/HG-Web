@@ -75,6 +75,14 @@ function format(date, api) {
     }
 }
 
+const clear = () => {
+    form.value.user.id = "";
+    form.value.user.name = "";
+    form.value.code = "";
+    form.value.date = "";
+    selectCode.value = [];
+};
+
 const registerCheckout = async () => {
     checkoutStore
         .registerCheckout({
@@ -90,6 +98,7 @@ const registerCheckout = async () => {
                 checkoutStore.updateTable = true;
                 emit("update:active", false);
                 emit("updated", true);
+                clear();
             } else {
                 resErrors.value = response.data.message;
             }
@@ -103,25 +112,27 @@ const selectCode = ref([]);
 watch(
     () => form.value.user.id,
     (value) => {
-        selectCode.value = [];
-        userStore.loadUserById(value).then((response) => {
-            if (response.role && response.role != "C")
-                form.value.user.name = "Utilizador não é cliente!";
-            else if (response.id) form.value.user.name = response.name;
-            else form.value.user.name = "Utilizador não encontrado!";
-        });
-        userStore.getCodeByUser(value).then((response) => {
-            console.log(response);
-            if (response[0]) {
-                for (let i = 0; i < response.length; i++) {
-                    selectCode.value.push({
-                        value: response[i].code.id,
-                        label: response[i].code.code,
-                    });
+        if (value != "") {
+            selectCode.value = [];
+            userStore.loadUserById(value).then((response) => {
+                if (response.role && response.role != "C")
+                    form.value.user.name = "Utilizador não é cliente!";
+                else if (response.id) form.value.user.name = response.name;
+                else form.value.user.name = "Utilizador não encontrado!";
+            });
+            userStore.getCodeByUser(value).then((response) => {
+                console.log(response);
+                if (response[0]) {
+                    for (let i = 0; i < response.length; i++) {
+                        selectCode.value.push({
+                            value: response[i].code.id,
+                            label: response[i].code.code,
+                        });
+                    }
+                    form.value.code = selectCode.value[0];
                 }
-                form.value.code = selectCode.value[0];
-            }
-        });
+            });
+        }
     }
 );
 </script>

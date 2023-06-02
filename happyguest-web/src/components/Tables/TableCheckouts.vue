@@ -57,7 +57,7 @@ watch(
             isSuccessNotifActive.value = true;
             isModalActive.value = false;
             checkoutStore.updateTable = true;
-            notifText.value = "Check-out criado com sucesso!";
+            notifText.value = "Check-out registado com sucesso!";
             setTimeout(() => {
                 isSuccessNotifActive.value = false;
             }, 5000);
