@@ -64,6 +64,15 @@ watch(currentPageHuman, async () => {
     );
 });
 
+watch(
+    () => isModalDeleteActive.value,
+    (value) => {
+        if (value) {
+            resErrors.value = [];
+        }
+    }
+);
+
 onMounted(async () => {
     if (
         complaintStore.updateTable != true &&

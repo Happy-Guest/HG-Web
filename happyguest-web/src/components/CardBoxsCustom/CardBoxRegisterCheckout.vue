@@ -101,7 +101,7 @@ const registerCheckout = async () => {
                 emit("updated", true);
                 clear();
             } else {
-                resErrors.value = response.data.message;
+                resErrors.value = response.data.errors;
             }
         })
         .catch(() => {
@@ -110,6 +110,7 @@ const registerCheckout = async () => {
 };
 
 const selectCode = ref([]);
+
 watch(
     () => form.value.user.id,
     (value) => {
