@@ -91,8 +91,6 @@ async function reloadTable() {
 }
 
 watchEffect(async () => {
-    console.log(props.userId);
-    console.log(complaintStore.user);
     if (complaintStore.updateTable || props.userId != complaintStore.user) {
         await reloadTable().then(() => {
             complaintStore.user = props.userId;

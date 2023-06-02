@@ -1,6 +1,13 @@
 <script setup>
 import { computed, ref, watch, onMounted, watchEffect } from "vue";
-import { mdiEye, mdiCancel, mdiCheck, mdiClose, mdiTrashCan } from "@mdi/js";
+import {
+    mdiEye,
+    mdiCancel,
+    mdiCheck,
+    mdiClose,
+    mdiTrashCan,
+    mdiCheckCircle,
+} from "@mdi/js";
 import BaseLevel from "@/components/Bases/BaseLevel.vue";
 import BaseButtons from "@/components/Bases/BaseButtons.vue";
 import BaseButton from "@/components/Bases/BaseButton.vue";
@@ -57,10 +64,19 @@ watch(
             isSuccessNotifActive.value = true;
             isModalActive.value = false;
             checkoutStore.updateTable = true;
-            notifText.value = "Check-out registado com sucesso!";
+            notifText.value = "Check-Out registado com sucesso!";
             setTimeout(() => {
                 isSuccessNotifActive.value = false;
             }, 5000);
+        }
+    }
+);
+
+watch(
+    () => isModalDeleteActive.value,
+    (value) => {
+        if (value) {
+            resErrors.value = [];
         }
     }
 );
@@ -126,7 +142,7 @@ const pagesList = computed(() => {
 const validateCheckout = async () => {
     await checkoutStore.validateCheckout(selectedView.value);
     isModalValidateActive.value = false;
-    reloadTable();
+    await reloadTable();
 };
 
 const submitDelete = (password) => {
@@ -178,7 +194,7 @@ const submitDelete = (password) => {
     <CardBoxModal
         v-model="isModalDeleteActive"
         :errors="resErrors"
-        title="Remover Check-out"
+        title="Remover Check-Out"
         button="danger"
         :icon-title="mdiTrashCan"
         has-cancel
@@ -190,7 +206,7 @@ const submitDelete = (password) => {
     </CardBoxModal>
     <CardBoxModal
         v-model="isModalValidateActive"
-        :title="'Validar Check-out ➯ ' + selectedView"
+        :title="'Validar Check-Out ➯ ' + selectedView"
         button-label="Validar"
         :icon-title="mdiCheck"
         :button="'success'"
@@ -198,8 +214,8 @@ const submitDelete = (password) => {
         has-close
         @confirm="validateCheckout()"
     >
-        <p>Tem a certeza que deseja <b>validar</b> o Check-out selecionado?</p>
-        <span>Esta ação será <b>irreversível</b>.</span>
+        <p>Tem a certeza que deseja <b>validar</b> o check-out?</p>
+        <span>Esta ação será <b>irreversível</b>!</span>
     </CardBoxModal>
     <CardBoxCheckout
         :selected="selectedView"

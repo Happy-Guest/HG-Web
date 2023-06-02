@@ -58,7 +58,6 @@ export const useCheckoutStore = defineStore("checkout", () => {
     async function validateCheckout(id) {
         try {
             let response = await axios.patch("checkouts/" + id + "/validate");
-            console.log(response);
             return response.data.data;
         } catch (error) {
             return error;
@@ -75,7 +74,6 @@ export const useCheckoutStore = defineStore("checkout", () => {
     }
 
     async function deleteCheckout(checkoutId, data) {
-        console.log(checkoutId);
         try {
             let response = await axios.delete("checkouts/" + checkoutId, {
                 data: {

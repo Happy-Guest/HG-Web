@@ -27,7 +27,7 @@ const newCheckout = ref(null);
 const isModalActiveRegister = ref(false);
 
 const selectOptionsFilter = [
-    { value: "ALL", label: "Todas" },
+    { value: "ALL", label: "Todos" },
     { value: "V", label: "Validados" },
     { value: "NV", label: "Não Validados" },
 ];
@@ -49,7 +49,7 @@ onMounted(async () => {
 
 watch(filter, async (value) => {
     if (value.value != checkoutStore.filterTable) {
-        hascheckouts.value = await checkoutStore.getReviews(0, value.value);
+        hascheckouts.value = await checkoutStore.getCheckouts(0, value.value);
         setTimeout(() => {
             checkoutStore.filterTable = value.value;
         }, 200);

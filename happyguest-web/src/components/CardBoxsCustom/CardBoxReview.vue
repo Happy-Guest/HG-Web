@@ -116,8 +116,8 @@ watch(
                     </div>
                 </div>
                 <div>
-                    <div class="flex md:justify-end mt-7 md:mt-0">
-                        <b>Autorização: </b>
+                    <div class="flex md:justify-end mt-6 md:mt-0">
+                        <b class="my-auto">Autorização: </b>
                         <div class="ml-3">
                             <PillTag
                                 v-if="review.autorize == '1'"
@@ -138,7 +138,7 @@ watch(
                         </div>
                     </div>
                     <div class="flex mt-4 md:justify-end">
-                        <b>Partilha: </b>
+                        <b class="my-auto">Partilha: </b>
                         <div class="ml-3">
                             <PillTag
                                 v-if="review.shared == '1'"

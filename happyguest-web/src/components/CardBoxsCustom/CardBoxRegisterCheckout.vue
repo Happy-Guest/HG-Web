@@ -3,9 +3,10 @@ import { watch, ref, watchEffect } from "vue";
 import {
     mdiContentSaveCheck,
     mdiCalendarRange,
+    mdiAccountMultiple,
     mdiAccount,
     mdiAccountCircle,
-    mdiPlusBoxMultiple,
+    mdiFilePlus,
     mdiBarcode,
 } from "@mdi/js";
 import CardBoxModal from "@/components/CardBoxs/CardBoxModal.vue";
@@ -104,7 +105,7 @@ const registerCheckout = async () => {
             }
         })
         .catch(() => {
-            resMessage.value = "Ocorreu um erro ao criar o check-out.";
+            resMessage.value = "Ocorreu um erro ao registar o check-out.";
         });
 };
 
@@ -121,7 +122,6 @@ watch(
                 else form.value.user.name = "Utilizador não encontrado!";
             });
             userStore.getCodeByUser(value).then((response) => {
-                console.log(response);
                 if (response[0]) {
                     for (let i = 0; i < response.length; i++) {
                         selectCode.value.push({
@@ -140,10 +140,10 @@ watch(
 <template>
     <CardBoxModal
         v-model="isModalActive"
-        :title="'Registar Check-out'"
+        :title="'Registar Check-Out'"
         :button-label="'Registar'"
         :icon="mdiContentSaveCheck"
-        :icon-title="mdiPlusBoxMultiple"
+        :icon-title="mdiFilePlus"
         button="success"
         has-errors
         has-cancel
@@ -152,75 +152,74 @@ watch(
         @cancel="emit('update:active', false)"
         @confirm="registerCheckout()"
     >
-        <FormField flex>
-            <FormField
-                label="ID Cliente"
-                help="O ID do cliente. Obrigatório."
-                class="w-full md:w-1/3 mb-4 sm:mb-0"
-                label-for="client"
-                flex
-                no-margin
-            >
-                <FormControl
-                    id="client"
-                    v-model="form.user.id"
-                    :icon="mdiAccount"
-                    name="Client"
-                    required
-                />
-                <BaseButtons>
-                    <BaseButton
-                        color="info"
-                        class="w-10 h-10 my-auto flex-initial mb-4"
+        <div class="mb-6">
+            <FormField>
+                <FormField
+                    label="ID Cliente"
+                    help="O ID do cliente. Obrigatório."
+                    class="mb-4 sm:mb-0"
+                    label-for="client"
+                    flex
+                >
+                    <FormControl
+                        id="client"
+                        v-model="form.user.id"
                         :icon="mdiAccount"
-                        small
-                        outline
-                        rounded-full
-                        :title="'Ver Clientes'"
-                        @click="
-                            (router.push({ name: 'users' }),
-                            (userStore.updateTable = true)),
-                                (userStore.filterTable = 'C')
-                        "
+                        class="w-10/12 flex flex-initial"
+                        name="Client"
+                        required
                     />
-                </BaseButtons>
+                    <BaseButtons>
+                        <BaseButton
+                            color="info"
+                            class="w-10 h-10 my-auto flex-initial mb-4"
+                            :icon="mdiAccountMultiple"
+                            small
+                            outline
+                            rounded-full
+                            :title="'Ver Clientes'"
+                            @click="
+                                (router.push({ name: 'users' }),
+                                (userStore.updateTable = true)),
+                                    (userStore.filterTable = 'C')
+                            "
+                        />
+                    </BaseButtons>
+                </FormField>
+                <FormField
+                    label="Nome Cliente"
+                    help="O nome do cliente selecionado. Automático."
+                    label-for="clientName"
+                >
+                    <FormControl
+                        id="clientName"
+                        v-model="form.user.name"
+                        :icon="mdiAccountCircle"
+                        name="Client"
+                        disabled
+                    />
+                </FormField>
             </FormField>
             <FormField
-                label="Nome Cliente"
-                help="O nome do cliente selecionado"
-                class="w-full md:w-2/3"
-                label-for="clientName"
+                label="Código"
+                help="O código do cliente selecionado. Obrigatório."
+                label-for="code"
+                class="w-full"
             >
                 <FormControl
-                    id="clientName"
-                    v-model="form.user.name"
-                    :icon="mdiAccountCircle"
-                    name="Client"
-                    disabled
+                    id="code"
+                    v-model="form.code"
+                    :options="selectCode"
+                    :icon="mdiBarcode"
+                    required
+                    :disabled="selectCode.length == 0"
                 />
             </FormField>
-        </FormField>
-        <BaseDivider />
-        <FormField
-            label="Código"
-            help="Código. Obrigatório."
-            label-for="code"
-            no-margin
-            class="w-full"
-        >
-            <FormControl
-                id="code"
-                v-model="form.code"
-                :options="selectCode"
-                :icon="mdiBarcode"
-                required
-                :disabled="selectCode.length == 0"
-            />
-        </FormField>
+        </div>
         <BaseDivider />
         <FormField
             label="Data"
-            help="A data da ocorrência. Obrigatório."
+            help="A data do check-out. Obrigatório."
             class="w-full"
             label-for="date"
         >

@@ -46,7 +46,7 @@ watch(
 <template>
     <CardBoxModal
         v-model="isModalActive"
-        :title="'Check-out ➯ ' + checkout?.id"
+        :title="'Check-Out ➯ ' + checkout?.id"
         :icon-title="mdiDoorSliding"
         button-cancel-label="Fechar"
         button-cancel="info"
@@ -61,7 +61,7 @@ watch(
                     <div class="flex justify-between mb-0 md:flex-row flex-col">
                         <div>
                             <div class="flex">
-                                <b>Efetudado em: </b>
+                                <b>Efetudado Em: </b>
                                 <p
                                     class="ml-2 mb-3 text-gray-500 dark:text-slate-400"
                                 >
@@ -94,8 +94,8 @@ watch(
                             </div>
                         </div>
 
-                        <div class="flex md:justify-end mt-7 md:mt-0">
-                            <b>Validado: </b>
+                        <div class="flex md:justify-end mt-6 md:mt-0">
+                            <b class="mt-1">Validado: </b>
                             <div class="ml-3">
                                 <PillTag
                                     v-if="checkout.validated == '1'"
@@ -117,9 +117,6 @@ watch(
                 </div>
                 <BaseDivider />
                 <div>
-                    <div class="flex justify-center mb-3">
-                        <h1 class="text-2xl">⟸Estadia⟹</h1>
-                    </div>
                     <div class="flex mb-3">
                         <b>Código: </b>
                         <div class="ml-3">
@@ -127,7 +124,7 @@ watch(
                         </div>
                     </div>
                     <div class="flex mb-3">
-                        <b>Quarto: </b>
+                        <b>Quarto(s): </b>
                         <div class="ml-3">
                             <PillTag
                                 v-for="room in checkout.code?.rooms"
@@ -140,17 +137,15 @@ watch(
                         </div>
                     </div>
                     <div class="flex">
-                        <b>Data de entrada:</b>
-                        <div class="ml-3">
-                            <p class="mb-3 text-gray-500 dark:text-slate-400">
+                        <b>Entrada:</b>
+                        <div class="ml-3 me-5">
+                            <p class="text-gray-500 dark:text-slate-400">
                                 {{ checkout.code?.entry_date }}
                             </p>
                         </div>
-                    </div>
-                    <div class="flex">
-                        <b>Data de saída:</b>
+                        <b>Saída:</b>
                         <div class="ml-3">
-                            <p class="mb-3 text-gray-500 dark:text-slate-400">
+                            <p class="text-gray-500 dark:text-slate-400">
                                 {{ checkout.code?.exit_date }}
                             </p>
                         </div>

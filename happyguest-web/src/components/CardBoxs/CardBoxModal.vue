@@ -97,7 +97,7 @@ window.addEventListener("keydown", (e) => {
     <OverlayLayer v-show="value" @overlay-click="cancel">
         <CardBox
             v-show="value"
-            class="shadow-lg w-11/12 md:w-3/5 lg:w-2/5 xl:w-4/12 z-50 overflow-auto md:overflow-hidden"
+            class="shadow-lg w-11/12 md:w-3/5 lg:w-3/5 xl:w-5/12 2xl:w-4/12 z-50 overflow-auto md:overflow-hidden"
             is-modal
             :is-form="hasPassword || hasErrors"
             @submit.prevent="confirmForm"

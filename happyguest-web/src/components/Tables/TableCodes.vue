@@ -53,6 +53,7 @@ const selected = ref(null);
 const selectedClients = ref(null);
 const selectedUsed = ref(null);
 const selectedCode = ref(null);
+const selectedId = ref(null);
 
 watch(currentPageHuman, async () => {
     codes.value = await codeStore.getCodes(
@@ -228,7 +229,7 @@ const submitDelete = (password) => {
         </span>
     </CardBoxModal>
     <CardBoxCode
-        :selected="selectedCode"
+        :selected="selectedId"
         :active="isModalActive"
         only-view
         @update:active="isModalActive = $event"
@@ -327,7 +328,7 @@ const submitDelete = (password) => {
                             small
                             @click="
                                 isModalActive = true;
-                                selectedCode = code.id;
+                                selectedId = code.id;
                             "
                         />
                         <BaseButton

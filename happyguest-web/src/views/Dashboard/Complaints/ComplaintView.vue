@@ -464,7 +464,7 @@ watch(
                     </FormField>
                     <FormField
                         label="Nome Cliente"
-                        help="O nome do cliente selecionado. Opcional"
+                        help="O nome do cliente selecionado. Automático."
                         class="w-full md:w-2/3"
                         label-for="clientName"
                     >
