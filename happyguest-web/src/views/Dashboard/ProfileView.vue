@@ -488,11 +488,6 @@ function format(date, api) {
                                 type="date"
                                 :icon="mdiCalendarRange"
                                 name="birth_date"
-                                :placeholder="
-                                    profileForm.birth_date == null
-                                        ? 'Não definida'
-                                        : ''
-                                "
                                 :disabled="
                                     user.id != authStore.user?.id &&
                                     authStore.user?.role == 'M' &&
