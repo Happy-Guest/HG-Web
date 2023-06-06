@@ -9,7 +9,9 @@ import {
     mdiFormTextboxPassword,
     mdiLockCheck,
     mdiLockReset,
+    mdiCalendarRange,
     mdiCellphone,
+    mdiMapMarker,
     mdiLock,
     mdiTrashCan,
     mdiContentSaveCheck,
@@ -53,6 +55,10 @@ const profileForm = ref({
     name: user.value.name,
     email: user.value.email,
     phone: user.value.phone ?? "",
+    address: user.value.address ?? "",
+    birth_date: user.value.birth_date
+        ? format(user.value.birth_date, false)
+        : "",
     photo: null,
 });
 
@@ -66,6 +72,10 @@ const clearProfileFields = () => {
     profileForm.value.name = user.value.name;
     profileForm.value.email = user.value.email;
     profileForm.value.phone = user.value.phone ?? "";
+    profileForm.value.address = user.value.address ?? "";
+    profileForm.value.birth_date = user.value.birth_date
+        ? format(user.value.birth_date, false)
+        : "";
 };
 
 defineUser();
@@ -88,7 +98,14 @@ const submitProfile = () => {
     statusPassword.value = null;
     statusProfile.value = null;
     userStore
-        .updateUser(user.value.id, profileForm.value)
+        .updateUser(user.value.id, {
+            name: profileForm.value.name,
+            email: profileForm.value.email,
+            phone: profileForm.value.phone,
+            address: profileForm.value.address,
+            birth_date: format(profileForm.value.birth_date, true),
+            photo: profileForm.value.photo,
+        })
         .then((response) => {
             resMessage.value = response.data.message;
             if (response.status === 200) {
@@ -203,6 +220,29 @@ function defineUser() {
         account.value = false;
         user.value = authStore.user;
         clearProfileFields();
+    }
+}
+
+function format(date, api) {
+    if (date) {
+        var tzoffset = new Date().getTimezoneOffset() * 60000;
+        var dateParts = null;
+        var newDate = new Date();
+        if (api) {
+            dateParts = date.split("-");
+            newDate = new Date(+dateParts[0], +dateParts[1] - 1, +dateParts[2]);
+            return new Date(newDate - tzoffset)
+                .toISOString()
+                .slice(0, -1)
+                .slice(0, 10)
+                .replace(/-/g, "/");
+        }
+        dateParts = date.split("/");
+        newDate = new Date(+dateParts[2], +dateParts[1] - 1, +dateParts[0]);
+        return new Date(newDate - tzoffset)
+            .toISOString()
+            .slice(0, -1)
+            .slice(0, 10);
     }
 }
 </script>
@@ -350,6 +390,7 @@ function defineUser() {
                                 :icon="mdiAccount"
                                 name="username"
                                 autocomplete="name"
+                                maxlength="255"
                                 required
                                 :disabled="
                                     user.id != authStore.user?.id &&
@@ -388,6 +429,7 @@ function defineUser() {
                             :icon="mdiEmail"
                             type="email"
                             name="email"
+                            maxlength="255"
                             required
                             autocomplete="email"
                             :disabled="
@@ -400,26 +442,85 @@ function defineUser() {
 
                     <BaseDivider />
 
+                    <FormField flex>
+                        <FormField
+                            label="Nº Telefone"
+                            class="w-full md:w-2/4 mb-4 sm:mb-0"
+                            :help="
+                                account
+                                    ? 'O Nº de telefone do utilizador. Opcional'
+                                    : 'O seu Nº de telefone. Opcional'
+                            "
+                            label-for="phone"
+                        >
+                            <FormControl
+                                id="phone"
+                                v-model="profileForm.phone"
+                                :icon="mdiCellphone"
+                                type="number"
+                                name="phone"
+                                autocomplete="phone"
+                                :placeholder="
+                                    profileForm.phone.length === 0
+                                        ? 'Não definido'
+                                        : ''
+                                "
+                                :disabled="
+                                    user.id != authStore.user?.id &&
+                                    authStore.user?.role == 'M' &&
+                                    (user.role == 'A' || user.role == 'M')
+                                "
+                            />
+                        </FormField>
+                        <FormField
+                            label="Data Nascimento"
+                            :help="
+                                account
+                                    ? 'A data de nascimento do utilizador. Opcional'
+                                    : 'A sua data de nascimento. Opcional'
+                            "
+                            class="w-full md:w-2/4"
+                            label-for="birth_date"
+                        >
+                            <FormControl
+                                id="birth_date"
+                                v-model="profileForm.birth_date"
+                                type="date"
+                                :icon="mdiCalendarRange"
+                                name="birth_date"
+                                :placeholder="
+                                    profileForm.birth_date == null
+                                        ? 'Não definida'
+                                        : ''
+                                "
+                                :disabled="
+                                    user.id != authStore.user?.id &&
+                                    authStore.user?.role == 'M' &&
+                                    (user.role == 'A' || user.role == 'M')
+                                "
+                            />
+                        </FormField>
+                    </FormField>
+
                     <FormField
-                        label="Nº Telefone"
+                        label="Morada"
                         :help="
                             account
-                                ? 'O Nº de telefone do utilizador. Opcional'
-                                : 'O seu Nº de telefone. Opcional'
+                                ? 'A morada do utilizador. Opcional'
+                                : 'A sua morada. Opcional'
                         "
-                        label-for="phone"
+                        label-for="address"
                     >
                         <FormControl
-                            id="phone"
-                            v-model="profileForm.phone"
-                            :icon="mdiCellphone"
-                            type="number"
-                            name="phone"
-                            maxlength="1"
-                            autocomplete="phone"
+                            id="address"
+                            v-model="profileForm.address"
+                            :icon="mdiMapMarker"
+                            name="address"
+                            maxlength="255"
+                            autocomplete="address"
                             :placeholder="
-                                profileForm.phone.length === 0
-                                    ? 'Não definido'
+                                profileForm.address.length === 0
+                                    ? 'Não definida'
                                     : ''
                             "
                             :disabled="

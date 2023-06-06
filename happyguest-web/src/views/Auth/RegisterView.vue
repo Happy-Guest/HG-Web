@@ -8,6 +8,8 @@ import {
     mdiAccountPlus,
     mdiStickerPlus,
     mdiCellphone,
+    mdiMapMarker,
+    mdiCalendarRange,
     mdiCrown,
     mdiAccountTie,
     mdiBriefcaseAccount,
@@ -65,13 +67,26 @@ const form = ref({
     password_confirmation: "",
     type: selectOptions[0],
     role: selectOptions[0].value,
+    address: "",
+    birth_date: "",
     photo: null,
 });
 
 const submit = () => {
     statusAccount.value = null;
     authStore
-        .register(form.value)
+        .register({
+            name: form.value.name,
+            email: form.value.email,
+            phone: form.value.phone,
+            password: form.value.password,
+            password_confirmation: form.value.password_confirmation,
+            type: form.value.type.value,
+            role: form.value.role,
+            address: form.value.address,
+            birth_date: format(form.value.birth_date),
+            photo: form.value.photo,
+        })
         .then((response) => {
             resMessage.value = response.data.message;
             if (response.status === 201) {
@@ -91,6 +106,21 @@ const submit = () => {
             resMessage.value = "Ocorreu um erro a registar o perfil.";
         });
 };
+
+function format(date) {
+    if (date) {
+        var tzoffset = new Date().getTimezoneOffset() * 60000;
+        var dateParts = null;
+        var newDate = new Date();
+        dateParts = date.split("-");
+        newDate = new Date(+dateParts[0], +dateParts[1] - 1, +dateParts[2]);
+        return new Date(newDate - tzoffset)
+            .toISOString()
+            .slice(0, -1)
+            .slice(0, 10)
+            .replace(/-/g, "/");
+    }
+}
 </script>
 
 <template>
@@ -125,6 +155,7 @@ const submit = () => {
                             v-model="form.name"
                             :icon="mdiAccount"
                             type="text"
+                            maxlength="255"
                             autocomplete="name"
                             required
                         />
@@ -143,20 +174,21 @@ const submit = () => {
                     </div>
                 </FormField>
 
-                <FormField
-                    label="Email"
-                    help="Insira o email da conta. Obrigatório"
-                >
-                    <FormControl
-                        v-model="form.email"
-                        :icon="mdiEmail"
-                        type="email"
-                        autocomplete="email"
-                        required
-                    />
-                </FormField>
-
                 <FormField>
+                    <FormField
+                        label="Email"
+                        help="Insira o email da conta. Obrigatório"
+                        no-margin
+                    >
+                        <FormControl
+                            v-model="form.email"
+                            :icon="mdiEmail"
+                            type="email"
+                            maxlength="255"
+                            autocomplete="email"
+                            required
+                        />
+                    </FormField>
                     <FormField
                         label="Tipo"
                         help="Selecione o tipo de utilizador. Obrigatório"
@@ -168,9 +200,15 @@ const submit = () => {
                             :icon="form.type.icon"
                         />
                     </FormField>
+                </FormField>
+
+                <BaseDivider />
+
+                <FormField>
                     <FormField
                         label="Nº Telefone"
                         help="Insira o número de telefone. Opcional"
+                        no-margin
                     >
                         <FormControl
                             v-model="form.phone"
@@ -179,6 +217,34 @@ const submit = () => {
                             autocomplete="phone"
                         />
                     </FormField>
+                    <FormField
+                        label="Data Nascimento"
+                        help="Insira a data de nascimento. Opcional"
+                        label-for="birth_date"
+                    >
+                        <FormControl
+                            id="birth_date"
+                            v-model="form.birth_date"
+                            type="date"
+                            :icon="mdiCalendarRange"
+                            name="birth_date"
+                        />
+                    </FormField>
+                </FormField>
+
+                <FormField
+                    label="Morada"
+                    help="Insira a morada da conta. Opcional"
+                    label-for="address"
+                >
+                    <FormControl
+                        id="address"
+                        v-model="form.address"
+                        :icon="mdiMapMarker"
+                        name="address"
+                        maxlength="255"
+                        autocomplete="address"
+                    />
                 </FormField>
 
                 <BaseDivider />
@@ -193,6 +259,7 @@ const submit = () => {
                             v-model="form.password"
                             :icon="mdiFormTextboxPassword"
                             type="password"
+                            maxlength="255"
                             autocomplete="new-password"
                             required
                         />
@@ -206,6 +273,7 @@ const submit = () => {
                             v-model="form.password_confirmation"
                             :icon="mdiFormTextboxPassword"
                             type="password"
+                            maxlength="255"
                             autocomplete="new-password"
                             required
                         />
