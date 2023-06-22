@@ -233,7 +233,7 @@ const submitDelete = (password) => {
                 </td>
                 <td data-label="Autorização" class="text-center">
                     <PillTag
-                        v-if="review.autorize == '1'"
+                        v-if="review.authorize == '1'"
                         class="justify-center ml-4"
                         label="Autorizada"
                         color="contrast"
@@ -289,13 +289,13 @@ const submitDelete = (password) => {
                             color="success"
                             title="Partilhar"
                             :icon="
-                                review.shared == '1' || review.autorize == '0'
+                                review.shared == '1' || review.authorize == '0'
                                     ? mdiCancel
                                     : mdiMonitorShare
                             "
                             small
                             :disabled="
-                                review.shared == '1' || review.autorize == '0'
+                                review.shared == '1' || review.authorize == '0'
                             "
                             @click="selected = review.id"
                         />

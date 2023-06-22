@@ -120,7 +120,7 @@ watch(
                         <b class="my-auto">Autorização: </b>
                         <div class="ml-3">
                             <PillTag
-                                v-if="review.autorize == '1'"
+                                v-if="review.authorize == '1'"
                                 class="justify-center"
                                 label="Autorizada"
                                 color="contrast"
