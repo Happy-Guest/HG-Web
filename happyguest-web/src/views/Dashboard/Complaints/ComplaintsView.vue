@@ -28,7 +28,7 @@ const selectOptionsFilter = [
     { value: "S", label: "Resolvidas" },
     { value: "R", label: "Terminadas" },
     { value: "C", label: "Anuladas" },
-    { value: "D", label: "Eliminados" },
+    { value: "D", label: "Eliminadas" },
 ];
 
 const selectOptionsOrder = [
