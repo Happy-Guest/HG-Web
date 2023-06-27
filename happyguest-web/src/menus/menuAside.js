@@ -5,6 +5,13 @@ import {
     mdiBullhorn,
     mdiStarShooting,
     mdiDoorSliding,
+    mdiRoomService,
+    mdiVacuum,
+    mdiBedQueen,
+    mdiFoodTurkey,
+    mdiSilverwareForkKnife,
+    mdiSpa,
+    mdiWeightLifter,
 } from "@mdi/js";
 
 export default [
@@ -36,6 +43,42 @@ export default [
         to: "/avaliacoes",
         label: "Avaliações",
         icon: mdiStarShooting,
+    },
+    {
+        label: "Serviços",
+        icon: mdiRoomService,
+        menu: [
+            {
+                to: "/service/1",
+                label: "Limpeza",
+                icon: mdiVacuum,
+            },
+            {
+                to: "/service/2",
+                label: "Objetos",
+                icon: mdiBedQueen,
+            },
+            {
+                to: "/service/3",
+                label: "Alimentos",
+                icon: mdiFoodTurkey,
+            },
+            {
+                to: "/service/4",
+                label: "Restaurante",
+                icon: mdiSilverwareForkKnife,
+            },
+            {
+                to: "/service/5",
+                label: "Spa",
+                icon: mdiSpa,
+            },
+            {
+                to: "/service/6",
+                label: "Ginásio",
+                icon: mdiWeightLifter,
+            },
+        ],
     },
     {
         middleware: ["A", "M"],

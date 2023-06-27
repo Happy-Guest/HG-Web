@@ -135,6 +135,16 @@ const routes = [
         name: "checkouts",
         component: () => import("@/views/Dashboard/CheckoutsView.vue"),
     },
+    //services
+    {
+        meta: {
+            title: "Serviços",
+            middleware: [auth, manager],
+        },
+        path: "/service/:id",
+        name: "cleaningRooms",
+        component: () => import("@/views/Dashboard/ServicesView.vue"),
+    },
 
     // Not Found
 
