@@ -10,36 +10,54 @@ import {
     mdiCog,
     mdiShower,
     mdiBed,
+    mdiCube,
 } from "@mdi/js";
 import BaseLevel from "@/components/Bases/BaseLevel.vue";
 import BaseButtons from "@/components/Bases/BaseButtons.vue";
 import BaseButton from "@/components/Bases/BaseButton.vue";
 import PillTag from "@/components/PillTags/PillTag.vue";
 import { useServiceStore } from "@/stores/service";
+import { useItemStore } from "@/stores/item";
+
+const itemStore = useItemStore();
 
 const serviceStore = useServiceStore();
 
 const props = defineProps({
     serviceId: {
         type: Number,
-        required: true,
+        default: null,
     },
 });
 
 const currentPage = ref(0);
 const items = ref([]);
-const numPages = computed(() => serviceStore.lastPage);
+const numPages = computed(() => {
+    if (props.serviceId != null) {
+        return serviceStore.lastPage;
+    } else {
+        return itemStore.lastPage;
+    }
+});
 const currentPageHuman = computed(() => currentPage.value + 1);
 
 onMounted(async () => {
-    items.value = await serviceStore.getItemsService(props.serviceId, 1);
+    if (props.serviceId != null) {
+        items.value = await serviceStore.getItemsService(props.serviceId, 1);
+    } else {
+        items.value = await itemStore.getItems(1);
+    }
 });
 
 watch(currentPageHuman, async () => {
-    items.value = await serviceStore.getItemsService(
-        props.serviceId,
-        currentPage.value + 1
-    );
+    if (props.serviceId != null) {
+        items.value = await serviceStore.getItemsService(
+            props.serviceId,
+            currentPage.value + 1
+        );
+    } else {
+        items.value = await itemStore.getItems(currentPage.value + 1);
+    }
 });
 
 watch(
@@ -80,6 +98,7 @@ const pagesList = computed(() => {
             <tr>
                 <th>Nome</th>
                 <th>Nome em Inglês</th>
+                <th v-if="props.serviceId == null">Tipo</th>
                 <th>Categoria</th>
                 <th>Stock</th>
                 <th>Preço</th>
@@ -90,6 +109,24 @@ const pagesList = computed(() => {
             <tr v-for="item in items" :key="item.id">
                 <td>{{ item.name }}</td>
                 <td>{{ item.nameEN }}</td>
+                <td v-if="props.serviceId == null" class="text-center">
+                    <PillTag
+                        v-if="item.type == 'F'"
+                        class="justify-center"
+                        label="Comida"
+                        color="warning"
+                        :icon="mdiFood"
+                        outline
+                    />
+                    <PillTag
+                        v-else-if="item.type == 'O'"
+                        class="justify-center"
+                        label="Objeto"
+                        color="success"
+                        :icon="mdiCube"
+                        outline
+                    />
+                </td>
                 <td class="text-center">
                     <PillTag
                         v-if="item.category == 'drink'"

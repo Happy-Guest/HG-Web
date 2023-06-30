@@ -142,8 +142,19 @@ const routes = [
             middleware: [auth, manager],
         },
         path: "/service/:id",
-        name: "cleaningRooms",
+        name: "services",
         component: () => import("@/views/Dashboard/ServicesView.vue"),
+    },
+
+    //items
+    {
+        meta: {
+            title: "Objetos",
+            middleware: [auth, manager],
+        },
+        path: "/items",
+        name: "items",
+        component: () => import("@/views/Dashboard/ItemsView.vue"),
     },
 
     // Not Found

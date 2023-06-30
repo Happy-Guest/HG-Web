@@ -12,6 +12,7 @@ import {
     mdiSilverwareForkKnife,
     mdiSpa,
     mdiWeightLifter,
+    mdiCube,
 } from "@mdi/js";
 
 export default [
@@ -79,6 +80,12 @@ export default [
                 icon: mdiWeightLifter,
             },
         ],
+    },
+    {
+        middleware: ["A", "M"],
+        to: "/items",
+        label: "Objetos",
+        icon: mdiCube,
     },
     {
         middleware: ["A", "M"],
