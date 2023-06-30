@@ -125,6 +125,11 @@ const editService = () => {
             }, 5000);
         });
 };
+
+const cancel = () => {
+    update.value = false;
+    fillForm(service.value);
+};
 </script>
 
 <template>
@@ -356,7 +361,7 @@ const editService = () => {
                                 label="Cancelar"
                                 outline
                                 :icon="mdiCancel"
-                                @click="update = false"
+                                @click="cancel()"
                             />
                         </BaseButtons>
                     </div>
