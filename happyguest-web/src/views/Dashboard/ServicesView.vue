@@ -9,15 +9,6 @@ import {
     mdiStoreClock,
     mdiClockTimeEleven,
     mdiFile,
-    mdiEye,
-    mdiFoodCroissant,
-    mdiFood,
-    mdiFoodTurkey,
-    mdiCoffee,
-    mdiBeer,
-    mdiCog,
-    mdiShower,
-    mdiBed,
 } from "@mdi/js";
 import LayoutAuthenticated from "@/layouts/LayoutAuthenticated.vue";
 import SectionMain from "@/components/Sections/SectionMain.vue";
@@ -28,10 +19,10 @@ import FormControl from "@/components/Forms/FormControl.vue";
 import BaseDivider from "@/components/Bases/BaseDivider.vue";
 import BaseButton from "@/components/Bases/BaseButton.vue";
 import BaseButtons from "@/components/Bases/BaseButtons.vue";
-import PillTag from "@/components/PillTags/PillTag.vue";
 import { onMounted, ref, watch } from "vue";
 import { useServiceStore } from "@/stores/service";
 import { useRouter } from "vue-router";
+import TableItems from "@/components/Tables/TableItems.vue";
 
 const router = useRouter();
 
@@ -41,8 +32,8 @@ const hasItems = ref(false);
 const service = ref([]);
 
 const form = ref({
-    email: "",
-    phone: "",
+    email: null,
+    phone: null,
     schedule: "",
     occupation: null,
     location: null,
@@ -56,47 +47,53 @@ onMounted(() => {
     serviveStore
         .getService(router.currentRoute.value.params?.id)
         .then((response) => {
-            service.value = response;
-            form.value.email = response.email;
-            form.value.phone = response.phone;
-            form.value.schedule = response.schedule;
-            form.value.occupation = response.occupation;
-            form.value.location = response.location;
-            form.value.limit = response.limit;
-            form.value.description = response.description;
-            form.value.descriptionEN = response.descriptionEN;
-            form.value.menu_url = response.menu_url;
-            hasItems.value = response.items.length > 0;
+            fillForm(response);
         });
 });
+
 watch(
     () => router.currentRoute.value.params?.id,
     () => {
-        service.value = null;
         serviveStore
             .getService(router.currentRoute.value.params?.id)
             .then((response) => {
-                service.value = response;
-                form.value.email = response.email;
-                form.value.phone = response.phone;
-                form.value.schedule = response.schedule;
-                form.value.occupation = response.occupation;
-                form.value.location = response.location;
-                form.value.limit = response.limit;
-                form.value.description = response.description;
-                form.value.descriptionEN = response.descriptionEN;
-                form.value.menu_url = response.menu_url;
-                hasItems.value = response.items.length > 0;
+                fillForm(response);
             });
     }
 );
 
+const fillForm = (response) => {
+    service.value = null;
+    hasItems.value = false;
+    service.value = response;
+    form.value.email = response.email;
+    form.value.phone = response.phone;
+    form.value.schedule = response.schedule;
+    form.value.occupation = response.occupation;
+    form.value.location = response.location;
+    form.value.limit = response.limit;
+    form.value.description = response.description;
+    form.value.descriptionEN = response.descriptionEN;
+    form.value.menu_url = response.menu_url;
+    hasItems.value = response.items.length > 0;
+};
+
 const editService = () => {
     console.log(form.value);
     serviveStore
-        .editService(router.currentRoute.value.params?.id, form.value)
+        .editService(router.currentRoute.value.params?.id, {
+            email: form.value.email,
+            phone: form.value.phone,
+            schedule: form.value.schedule,
+            occupation: form.value.occupation,
+            location: form.value.location,
+            limit: form.value.limit,
+            description: form.value.description,
+            descriptionEN: form.value.descriptionEN,
+            menu_url: form.value.menu_url,
+        })
         .then(() => {
-            console.log("Serviço editado com sucesso");
+            console.log("Serviço editado");
         });
 };
 </script>
@@ -106,7 +103,7 @@ const editService = () => {
         <SectionMain>
             <SectionTitleLine
                 :icon="mdiRoomService"
-                :title="service?.name"
+                :title="service?.name ?? 'Serviço'"
                 main
             />
             <CardBox class="mb-6" is-form @submit.prevent="editService">
@@ -280,93 +277,7 @@ const editService = () => {
                 </template>
             </CardBox>
             <CardBox v-if="hasItems">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Nome</th>
-                            <th>Nome em Inglês</th>
-                            <th>Categoria</th>
-                            <th>Stock</th>
-                            <th>Preço</th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr v-for="item in service?.items" :key="item.id">
-                            <td>{{ item.name }}</td>
-                            <td>{{ item.nameEN }}</td>
-                            <td class="text-center">
-                                <PillTag
-                                    v-if="item.category == 'drink'"
-                                    class="justify-center"
-                                    label="Bebida"
-                                    color="warning"
-                                    :icon="mdiBeer"
-                                />
-                                <PillTag
-                                    v-else-if="item.category == 'snack'"
-                                    class="justify-center"
-                                    label="Lanche"
-                                    color="success"
-                                    :icon="mdiCoffee"
-                                />
-                                <PillTag
-                                    v-else-if="item.category == 'breakfast'"
-                                    class="justify-center"
-                                    label="Pequeno-Almoço"
-                                    color="info"
-                                    :icon="mdiFoodCroissant"
-                                />
-                                <PillTag
-                                    v-else-if="item.category == 'lunch'"
-                                    class="justify-center"
-                                    label="Almoço"
-                                    color="contrast"
-                                    :icon="mdiFoodTurkey"
-                                />
-                                <PillTag
-                                    v-else-if="item.category == 'dinner'"
-                                    class="justify-center"
-                                    label="Jantar"
-                                    color="danger"
-                                    :icon="mdiFood"
-                                />
-                                <PillTag
-                                    v-else-if="item.category == 'room'"
-                                    class="justify-center"
-                                    label="Quarto"
-                                    color="warning"
-                                    :icon="mdiBed"
-                                />
-                                <PillTag
-                                    v-else-if="item.category == 'bathroom'"
-                                    class="justify-center"
-                                    label="Casa de Banho"
-                                    color="success"
-                                    :icon="mdiShower"
-                                />
-                                <PillTag
-                                    v-else
-                                    class="justify-center"
-                                    label="Jantar"
-                                    color="danger"
-                                    :icon="mdiCog"
-                                />
-                            </td>
-                            <td class="text-center">
-                                {{ item.stock ? item.stock : "-" }}
-                            </td>
-                            <td class="text-center">
-                                {{ item.price ? item.price : "-" }}
-                            </td>
-                            <td>
-                                <BaseButtons>
-                                    <BaseButton color="info" :icon="mdiEye" />
-                                </BaseButtons>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+                <TableItems :service-id="service?.id" />
             </CardBox>
         </SectionMain>
     </LayoutAuthenticated>
