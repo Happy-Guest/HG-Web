@@ -1,5 +1,5 @@
 <script setup>
-import { mdiCube } from "@mdi/js";
+import { mdiBookOpenPageVariant } from "@mdi/js";
 import LayoutAuthenticated from "@/layouts/LayoutAuthenticated.vue";
 import SectionMain from "@/components/Sections/SectionMain.vue";
 import SectionTitleLine from "@/components/Sections/SectionTitleLine.vue";
@@ -68,7 +68,11 @@ watchEffect(() => {
 <template>
     <LayoutAuthenticated>
         <SectionMain>
-            <SectionTitleLine :icon="mdiCube" :title="'Objetos'" main>
+            <SectionTitleLine
+                :icon="mdiBookOpenPageVariant"
+                :title="'Menu de Pedidos'"
+                main
+            >
                 <!-- <div class="flex mr-0 sm:mr-12 lg:mr-8">
                     <div class="flex flex-col lg:flex-row">
                         <b class="my-auto mr-4">Ordenar:</b>
@@ -95,7 +99,7 @@ watchEffect(() => {
                 </div>-->
             </SectionTitleLine>
             <CardBox class="mb-6" has-table>
-                <TableItems v-if="hasitems" />
+                <TableItems v-if="hasitems" :name-e-n="true" />
                 <CardBoxComponentEmpty
                     v-else
                     message="Sem objetos registados..."

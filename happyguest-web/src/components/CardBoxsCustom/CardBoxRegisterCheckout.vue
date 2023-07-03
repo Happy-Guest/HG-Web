@@ -100,6 +100,8 @@ const registerCheckout = async () => {
                 emit("update:active", false);
                 emit("updated", true);
                 clear();
+            } else if (response.status == 401) {
+                resErrors.value = response.data.message;
             } else {
                 resErrors.value = response.data.errors;
             }

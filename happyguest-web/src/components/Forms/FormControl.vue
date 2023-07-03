@@ -155,7 +155,7 @@ onMounted(() => {
             :class="inputElClass"
             :disabled="disabled"
             :accept="accept"
-            multiple
+            :multiple="multiple"
         />
         <input
             v-else

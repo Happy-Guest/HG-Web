@@ -4,15 +4,17 @@ import {
     mdiAccountGroup,
     mdiBullhorn,
     mdiStarShooting,
-    mdiDoorSliding,
-    mdiRoomService,
+    mdiFolderKey,
+    mdiReceiptClock,
+    mdiNewspaperVariant,
     mdiVacuum,
-    mdiBedQueen,
-    mdiFoodTurkey,
+    mdiPaperRoll,
+    mdiFood,
     mdiSilverwareForkKnife,
     mdiSpa,
     mdiWeightLifter,
-    mdiCube,
+    mdiBookOpenPageVariant,
+    mdiBookClock,
 } from "@mdi/js";
 
 export default [
@@ -34,6 +36,9 @@ export default [
         icon: mdiBarcode,
     },
     {
+        isDivider: true,
+    },
+    {
         middleware: ["A", "M"],
         to: "/reclamacoes",
         label: "Reclamações",
@@ -46,27 +51,45 @@ export default [
         icon: mdiStarShooting,
     },
     {
+        middleware: ["A", "M"],
+        to: "/checkouts",
+        label: "Check-Outs",
+        icon: mdiFolderKey,
+    },
+    {
+        isDivider: true,
+    },
+    {
+        to: "/items",
+        label: "Menu",
+        icon: mdiBookOpenPageVariant,
+    },
+    {
+        middleware: ["A", "M"],
         label: "Serviços",
-        icon: mdiRoomService,
+        icon: mdiNewspaperVariant,
         menu: [
+            {
+                to: "/service/2",
+                label: "Objetos",
+                icon: mdiPaperRoll,
+            },
+            {
+                to: "/service/3",
+                label: "Alimentos",
+                icon: mdiFood,
+            },
+            {
+                isDivider: true,
+            },
             {
                 to: "/service/1",
                 label: "Limpeza",
                 icon: mdiVacuum,
             },
             {
-                to: "/service/2",
-                label: "Objetos",
-                icon: mdiBedQueen,
-            },
-            {
-                to: "/service/3",
-                label: "Alimentos",
-                icon: mdiFoodTurkey,
-            },
-            {
                 to: "/service/4",
-                label: "Restaurante",
+                label: "Reservar Mesa",
                 icon: mdiSilverwareForkKnife,
             },
             {
@@ -83,14 +106,14 @@ export default [
     },
     {
         middleware: ["A", "M"],
-        to: "/items",
-        label: "Objetos",
-        icon: mdiCube,
+        //to: "/checkouts",
+        label: "Pedidos",
+        icon: mdiReceiptClock,
     },
     {
         middleware: ["A", "M"],
-        to: "/checkouts",
-        label: "Check-Outs",
-        icon: mdiDoorSliding,
+        //to: "/checkouts",
+        label: "Reservas",
+        icon: mdiBookClock,
     },
 ];

@@ -1,6 +1,6 @@
 <script setup>
 import {
-    mdiDoorSliding,
+    mdiFolderKey,
     mdiOrderNumericDescending,
     mdiOrderNumericAscending,
     mdiFilePlus,
@@ -85,7 +85,7 @@ watchEffect(() => {
             @updated="newCheckout = $event"
         />
         <SectionMain>
-            <SectionTitleLine :icon="mdiDoorSliding" :title="'Check-Outs'" main>
+            <SectionTitleLine :icon="mdiFolderKey" :title="'Check-Outs'" main>
                 <div class="flex mr-0 sm:mr-12 lg:mr-8">
                     <div class="flex flex-col lg:flex-row">
                         <b class="my-auto mr-4">Ordenar:</b>

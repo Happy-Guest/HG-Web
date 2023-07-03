@@ -5,12 +5,13 @@ import {
     mdiFoodCroissant,
     mdiFood,
     mdiFoodTurkey,
-    mdiCoffee,
+    mdiFoodApple,
     mdiBeer,
-    mdiCog,
+    mdiFoodVariant,
     mdiShower,
     mdiBed,
-    mdiCube,
+    mdiPaperRoll,
+    mdiHamburger,
 } from "@mdi/js";
 import BaseLevel from "@/components/Bases/BaseLevel.vue";
 import BaseButtons from "@/components/Bases/BaseButtons.vue";
@@ -18,8 +19,10 @@ import BaseButton from "@/components/Bases/BaseButton.vue";
 import PillTag from "@/components/PillTags/PillTag.vue";
 import { useServiceStore } from "@/stores/service";
 import { useItemStore } from "@/stores/item";
+import { useAuthStore } from "@/stores/auth";
 
 const itemStore = useItemStore();
+const authStore = useAuthStore();
 
 const serviceStore = useServiceStore();
 
@@ -27,6 +30,10 @@ const props = defineProps({
     serviceId: {
         type: Number,
         default: null,
+    },
+    nameEN: {
+        type: Boolean,
+        default: false,
     },
 });
 
@@ -96,19 +103,49 @@ const pagesList = computed(() => {
     <table class="w-full">
         <thead>
             <tr>
-                <th>Nome</th>
-                <th>Nome em Inglês</th>
-                <th v-if="props.serviceId == null">Tipo</th>
-                <th>Categoria</th>
-                <th>Stock</th>
-                <th>Preço</th>
-                <th></th>
+                <th>ID:</th>
+                <th>Nome:</th>
+                <th v-if="nameEN">Nome (Inglês):</th>
+                <th v-if="props.serviceId == null">Tipo:</th>
+                <th>Categoria:</th>
+                <th>Stock:</th>
+                <th
+                    v-if="
+                        authStore.user?.role == 'A' ||
+                        authStore.user?.role == 'M'
+                    "
+                >
+                    Preço:
+                </th>
+                <th />
             </tr>
         </thead>
         <tbody>
             <tr v-for="item in items" :key="item.id">
-                <td>{{ item.name }}</td>
-                <td>{{ item.nameEN }}</td>
+                <td
+                    data-label="ID"
+                    class="text-center text-gray-500 dark:text-slate-400 font-semibold"
+                >
+                    {{ item.id }}
+                </td>
+                <td>
+                    {{
+                        !nameEN
+                            ? item.name.length > 50
+                                ? item.name.substring(0, 50) + "..."
+                                : item.name
+                            : item.name.length > 25
+                            ? item.name.substring(0, 25) + "..."
+                            : item.name
+                    }}
+                </td>
+                <td v-if="nameEN" class="text-gray-500 dark:text-slate-400">
+                    {{
+                        item.nameEN.length > 25
+                            ? item.nameEN.substring(0, 25) + "..."
+                            : item.nameEN
+                    }}
+                </td>
                 <td v-if="props.serviceId == null" class="text-center">
                     <PillTag
                         v-if="item.type == 'F'"
@@ -116,15 +153,13 @@ const pagesList = computed(() => {
                         label="Comida"
                         color="warning"
                         :icon="mdiFood"
-                        outline
                     />
                     <PillTag
                         v-else-if="item.type == 'O'"
                         class="justify-center"
                         label="Objeto"
                         color="success"
-                        :icon="mdiCube"
-                        outline
+                        :icon="mdiPaperRoll"
                     />
                 </td>
                 <td class="text-center">
@@ -134,20 +169,23 @@ const pagesList = computed(() => {
                         label="Bebida"
                         color="warning"
                         :icon="mdiBeer"
+                        outline
                     />
                     <PillTag
                         v-else-if="item.category == 'snack'"
                         class="justify-center"
                         label="Lanche"
                         color="success"
-                        :icon="mdiCoffee"
+                        :icon="mdiFoodApple"
+                        outline
                     />
                     <PillTag
                         v-else-if="item.category == 'breakfast'"
                         class="justify-center"
-                        label="Pequeno-Almoço"
+                        label="P. Almoço"
                         color="info"
                         :icon="mdiFoodCroissant"
+                        outline
                     />
                     <PillTag
                         v-else-if="item.category == 'lunch'"
@@ -155,13 +193,15 @@ const pagesList = computed(() => {
                         label="Almoço"
                         color="contrast"
                         :icon="mdiFoodTurkey"
+                        outline
                     />
                     <PillTag
                         v-else-if="item.category == 'dinner'"
                         class="justify-center"
                         label="Jantar"
                         color="danger"
-                        :icon="mdiFood"
+                        :icon="mdiHamburger"
+                        outline
                     />
                     <PillTag
                         v-else-if="item.category == 'room'"
@@ -169,30 +209,49 @@ const pagesList = computed(() => {
                         label="Quarto"
                         color="warning"
                         :icon="mdiBed"
+                        outline
                     />
                     <PillTag
                         v-else-if="item.category == 'bathroom'"
                         class="justify-center"
-                        label="Casa de Banho"
-                        color="success"
+                        label="Casa Banho"
+                        color="contrast"
                         :icon="mdiShower"
+                        outline
                     />
                     <PillTag
                         v-else
                         class="justify-center"
-                        label="Jantar"
-                        color="danger"
-                        :icon="mdiCog"
+                        label="Outro"
+                        color="info"
+                        :icon="mdiFoodVariant"
+                        outline
                     />
                 </td>
-                <td class="text-center">
+                <td
+                    class="text-center text-gray-500 dark:text-slate-400"
+                    :class="item.stock ? 'font-semibold' : ''"
+                >
                     {{ item.stock ? item.stock : "N/A" }}
                 </td>
-                <td class="text-center">
-                    {{ item.price ? item.price : "N/A" }}
+                <td
+                    v-if="
+                        authStore.user?.role == 'A' ||
+                        authStore.user?.role == 'M'
+                    "
+                    class="text-center"
+                    :class="
+                        item.price
+                            ? 'text-green-500 font-semibold'
+                            : 'text-gray-500 dark:text-slate-400'
+                    "
+                >
+                    {{ item.price ? item.price + "€" : "N/A" }}
                 </td>
-                <td>
-                    <BaseButtons>
+                <td
+                    class="before:hidden lg:w-1 whitespace-nowrap place-content-center"
+                >
+                    <BaseButtons type="justify-start lg:justify-end" no-wrap>
                         <BaseButton color="info" :icon="mdiEye" />
                     </BaseButtons>
                 </td>

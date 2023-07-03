@@ -135,7 +135,6 @@ const routes = [
         name: "checkouts",
         component: () => import("@/views/Dashboard/CheckoutsView.vue"),
     },
-    //services
     {
         meta: {
             title: "Serviços",
@@ -143,10 +142,8 @@ const routes = [
         },
         path: "/service/:id",
         name: "services",
-        component: () => import("@/views/Dashboard/ServicesView.vue"),
+        component: () => import("@/views/Dashboard/Services/ServicesView.vue"),
     },
-
-    //items
     {
         meta: {
             title: "Objetos",
@@ -154,7 +151,7 @@ const routes = [
         },
         path: "/items",
         name: "items",
-        component: () => import("@/views/Dashboard/ItemsView.vue"),
+        component: () => import("@/views/Dashboard/Services/ItemsView.vue"),
     },
 
     // Not Found

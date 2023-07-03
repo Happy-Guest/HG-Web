@@ -1,6 +1,6 @@
 <script setup>
 import {
-    mdiRoomService,
+    mdiNewspaperVariant,
     mdiText,
     mdiLockCheck,
     mdiTextBox,
@@ -13,7 +13,13 @@ import {
     mdiContentSaveCheck,
     mdiCheckCircle,
     mdiAlertCircle,
-    mdiCube,
+    mdiBookOpenPageVariant,
+    mdiVacuum,
+    mdiPaperRoll,
+    mdiFoodTurkey,
+    mdiSilverwareForkKnife,
+    mdiSpa,
+    mdiWeightLifter,
 } from "@mdi/js";
 import LayoutAuthenticated from "@/layouts/LayoutAuthenticated.vue";
 import SectionMain from "@/components/Sections/SectionMain.vue";
@@ -24,6 +30,7 @@ import FormControl from "@/components/Forms/FormControl.vue";
 import BaseDivider from "@/components/Bases/BaseDivider.vue";
 import BaseButton from "@/components/Bases/BaseButton.vue";
 import BaseButtons from "@/components/Bases/BaseButtons.vue";
+import CardBoxComponentEmpty from "@/components/CardBoxs/CardBoxComponentEmpty.vue";
 import NotificationBar from "@/components/Others/NotificationBar.vue";
 import FormValidationErrors from "@/components/Forms/FormValidationErrors.vue";
 import { onMounted, ref, watch } from "vue";
@@ -39,12 +46,12 @@ const update = ref(false);
 const service = ref([]);
 
 const form = ref({
-    email: null,
-    phone: null,
+    email: "",
+    phone: "",
     schedule: "",
-    occupation: null,
-    location: null,
-    limit: null,
+    occupation: "",
+    location: "",
+    limit: "",
     description: "",
     descriptionEN: "",
     menu_url: null,
@@ -130,13 +137,32 @@ const cancel = () => {
     update.value = false;
     fillForm(service.value);
 };
+
+function serviceIcon() {
+    switch (service.value?.id) {
+        case 1:
+            return mdiVacuum;
+        case 2:
+            return mdiPaperRoll;
+        case 3:
+            return mdiFoodTurkey;
+        case 4:
+            return mdiSilverwareForkKnife;
+        case 5:
+            return mdiSpa;
+        case 6:
+            return mdiWeightLifter;
+        default:
+            return mdiNewspaperVariant;
+    }
+}
 </script>
 
 <template>
     <LayoutAuthenticated>
         <SectionMain>
             <SectionTitleLine
-                :icon="mdiRoomService"
+                :icon="serviceIcon(service?.id)"
                 :title="service?.name ?? 'Serviço'"
                 main
             />
@@ -163,7 +189,7 @@ const cancel = () => {
                         label="Nome do Serviço"
                         class="w-full md:w-2/4 mb-4 sm:mb-0"
                         label-for="name"
-                        help="O nome do serviço."
+                        help="O nome do serviço. Obrigatório."
                     >
                         <FormControl
                             id="name"
@@ -172,13 +198,14 @@ const cancel = () => {
                             name="name"
                             autocomplete="name"
                             disabled
+                            required
                         />
                     </FormField>
                     <FormField
-                        label="Nome do Serviço em Inglês"
+                        label="Nome do Serviço (Inglês)"
                         class="w-full md:w-2/4 mb-4 sm:mb-0"
                         label-for="nameEN"
-                        help="O nome do serviço em inglês."
+                        help="O nome do serviço em inglês. Obrigatório."
                     >
                         <FormControl
                             id="nameEN"
@@ -187,6 +214,7 @@ const cancel = () => {
                             name="nameEN"
                             autocomplete="nameEN"
                             disabled
+                            required
                         />
                     </FormField>
                 </FormField>
@@ -196,7 +224,7 @@ const cancel = () => {
                         label="Email"
                         class="w-full md:w-2/4 mb-4 sm:mb-0"
                         label-for="email"
-                        help="O email do serviço. Opicional"
+                        help="O email do serviço. Opcional"
                     >
                         <FormControl
                             id="email"
@@ -205,13 +233,16 @@ const cancel = () => {
                             name="email"
                             autocomplete="email"
                             :disabled="!update"
+                            :placeholder="
+                                form.email.length === 0 ? 'Não definido' : ''
+                            "
                         />
                     </FormField>
                     <FormField
-                        label="Nº de Telefone"
+                        label="Nº Telefone"
                         class="w-full md:w-2/4 mb-4 sm:mb-0"
                         label-for="phone"
-                        help="O número de telefone. Opicional"
+                        help="O número de telefone do serviço. Opcional"
                     >
                         <FormControl
                             id="phone"
@@ -220,15 +251,18 @@ const cancel = () => {
                             name="phone"
                             autocomplete="phone"
                             :disabled="!update"
+                            :placeholder="
+                                form.phone.length === 0 ? 'Não definido' : ''
+                            "
                         />
                     </FormField>
                 </FormField>
                 <FormField flex>
                     <FormField
                         label="Horário de Funcionamento"
-                        class="w-full md:w-2/4 mb-4 sm:mb-0"
+                        class="w-full md:w-3/4 mb-4 sm:mb-0"
                         aria-placeholder="Ex: 08:00 - 20:00"
-                        help="O horário de funcionamento. Obrigatório"
+                        help="O horário de funcionamento. Ex: 8-12-14-20. Obrigatório."
                         label-for="schedule"
                     >
                         <FormControl
@@ -238,13 +272,14 @@ const cancel = () => {
                             name="schedule"
                             autocomplete="schedule"
                             :disabled="!update"
+                            required
                         />
                     </FormField>
                     <FormField
                         label="Limite de Pedidos (Hora)"
-                        class="w-full md:w-2/4 mb-4 sm:mb-0"
+                        class="w-full md:w-1/4 mb-4 sm:mb-0"
                         label-for="limit"
-                        help="O limite de pedidos por hora. Opicional"
+                        help="O limite de pedidos por hora. Opcional"
                     >
                         <FormControl
                             id="limit"
@@ -254,6 +289,9 @@ const cancel = () => {
                             autocomplete="limit"
                             type="number"
                             :disabled="!update"
+                            :placeholder="
+                                form.limit.length === 0 ? 'Não definido' : ''
+                            "
                         />
                     </FormField>
                 </FormField>
@@ -265,7 +303,7 @@ const cancel = () => {
                         label="Ocupação"
                         class="w-full md:w-2/4 mb-4 sm:mb-0"
                         label-for="occupation"
-                        help="Ocupação do serviço. Opicional"
+                        help="A ocupação do serviço. Opcional"
                     >
                         <FormControl
                             id="occupation"
@@ -274,13 +312,18 @@ const cancel = () => {
                             name="occupation"
                             autocomplete="occupation"
                             :disabled="!update"
+                            :placeholder="
+                                form.occupation.length === 0
+                                    ? 'Não definida'
+                                    : ''
+                            "
                         />
                     </FormField>
                     <FormField
                         label="Localização"
                         class="w-full md:w-2/4 mb-4 sm:mb-0"
                         label-for="location"
-                        help="Localização do serviço. Opicional"
+                        help="A localização do serviço. Opcional"
                     >
                         <FormControl
                             id="location"
@@ -289,6 +332,9 @@ const cancel = () => {
                             name="location"
                             autocomplete="location"
                             :disabled="!update"
+                            :placeholder="
+                                form.location.length === 0 ? 'Não definida' : ''
+                            "
                         />
                     </FormField>
                 </FormField>
@@ -296,7 +342,7 @@ const cancel = () => {
                 <FormField
                     label="Descrição"
                     label-for="description"
-                    help="A descrição. Obrigatória"
+                    help="A descrição do serviço. Obrigatória"
                 >
                     <FormControl
                         id="description"
@@ -306,26 +352,29 @@ const cancel = () => {
                         autocomplete="description"
                         type="textarea"
                         :disabled="!update"
+                        required
                     />
                 </FormField>
                 <FormField
-                    label="Descrição em Inglês"
+                    label="Descrição (Inglês)"
                     label-for="descriptionEN"
-                    help="A descrição em Inglês. Obrigatória"
+                    help="A descrição do serviço em inglês. Obrigatória"
                 >
                     <FormControl
-                        id="description"
+                        id="descriptionEN"
                         v-model="form.descriptionEN"
                         :icon="mdiTextBox"
                         name="descriptionEN"
                         autocomplete="descriptionEN"
                         type="textarea"
                         :disabled="!update"
+                        required
                     />
                 </FormField>
                 <FormField
+                    v-if="service?.type == 'R' || service?.type == 'B'"
                     label="Menu"
-                    help="Menu do Serviço em PDF. Opcional"
+                    help="Menu do serviço em PDF. Obrigatório"
                     label-for="menu"
                 >
                     <FormControl
@@ -336,6 +385,7 @@ const cancel = () => {
                         type="file"
                         accept="application/pdf"
                         :disabled="!update"
+                        required
                     />
                 </FormField>
                 <template #footer>
@@ -369,12 +419,22 @@ const cancel = () => {
             </CardBox>
             <SectionTitleLine
                 v-if="hasItems"
-                :icon="mdiCube"
-                title="Objetos do Serviço"
+                :icon="mdiBookOpenPageVariant"
+                :title="
+                    service?.id == 2
+                        ? 'Menu de Objetos'
+                        : service?.id == 3
+                        ? 'Menu de Alimentos'
+                        : 'Menu do Serviço'
+                "
                 class="mt-2"
             />
-            <CardBox v-if="hasItems">
-                <TableItems :service-id="service?.id" />
+            <CardBox class="mb-6" has-table>
+                <TableItems v-if="hasItems" :service-id="service?.id" />
+                <CardBoxComponentEmpty
+                    v-else
+                    message="Sem objetos associados..."
+                />
             </CardBox>
         </SectionMain>
     </LayoutAuthenticated>
