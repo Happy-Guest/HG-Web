@@ -449,9 +449,11 @@ const onFileChange = (e) => {
                         required
                     />
                 </FormField>
-                <FormField flex>
+                <FormField
+                    v-if="service?.type == 'R' || service?.type == 'B'"
+                    flex
+                >
                     <FormField
-                        v-if="service?.type == 'R' || service?.type == 'B'"
                         label="Menu"
                         help="Menu do serviço em PDF. Obrigatório"
                         label-for="menu"

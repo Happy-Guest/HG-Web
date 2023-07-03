@@ -54,6 +54,19 @@ export const useItemStore = defineStore("item", () => {
         return await loadItems(page, filter, order);
     }
 
+    async function deleteItem(itemId, data) {
+        try {
+            let response = await axios.delete("items/" + itemId, {
+                data: {
+                    password: data,
+                },
+            });
+            return response;
+        } catch (error) {
+            return error.response;
+        }
+    }
+
     function clearStore() {
         items.value = [];
         lastPage.value = null;
@@ -70,6 +83,7 @@ export const useItemStore = defineStore("item", () => {
         orderTable,
         getItem,
         getItems,
+        deleteItem,
         clearStore,
     };
 });

@@ -57,8 +57,16 @@ const isSuccessNotifActive = ref(false);
 const isErrorNotifActive = ref(false);
 const isModalDeleteActive = ref(false);
 
+async function getUsers() {
+    users.value = await userStore.getUsers(
+        currentPage.value + 1,
+        props.filter,
+        props.order
+    );
+}
+
 watch(currentPageHuman, async () => {
-    users.value = await userStore.getUsers(currentPage.value + 1, props.filter);
+    await getUsers();
 });
 
 watch(
@@ -72,14 +80,18 @@ watch(
 
 onMounted(async () => {
     if (userStore.updateTable != true) {
-        users.value = await userStore.getUsers(1, props.filter, props.order);
+        await getUsers();
     }
 });
 
 async function reloadTable() {
     userStore.clearStore();
     setTimeout(async () => {
-        users.value = await userStore.getUsers(1, props.filter, props.order);
+        await getUsers();
+        if (users.value.length == 0 && currentPage.value > 0) {
+            currentPage.value--;
+            await reloadTable();
+        }
     }, 200);
 }
 

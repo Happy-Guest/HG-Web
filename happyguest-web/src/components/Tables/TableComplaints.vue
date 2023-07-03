@@ -55,13 +55,17 @@ const selectedAnswer = ref(null);
 const notifText = ref("");
 const resErrors = ref([]);
 
-watch(currentPageHuman, async () => {
+async function getComplaints() {
     complaints.value = await complaintStore.getComplaints(
         currentPage.value + 1,
         props.userId,
         props.filter,
         props.order
     );
+}
+
+watch(currentPageHuman, async () => {
+    await getComplaints();
 });
 
 watch(
@@ -78,24 +82,18 @@ onMounted(async () => {
         complaintStore.updateTable != true &&
         props.userId == complaintStore.user
     ) {
-        complaints.value = await complaintStore.getComplaints(
-            1,
-            props.userId,
-            props.filter,
-            props.order
-        );
+        await getComplaints();
     }
 });
 
 async function reloadTable() {
     complaintStore.clearStore();
     setTimeout(async () => {
-        complaints.value = await complaintStore.getComplaints(
-            1,
-            props.userId,
-            props.filter,
-            props.order
-        );
+        await getComplaints();
+        if (complaints.value.length == 0 && currentPage.value > 0) {
+            currentPage.value--;
+            await reloadTable();
+        }
     }, 200);
 }
 

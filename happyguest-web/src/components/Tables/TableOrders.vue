@@ -36,39 +36,39 @@ const numPages = computed(() => orderStore.lastPage);
 
 const currentPageHuman = computed(() => currentPage.value + 1);
 
+async function getOrders() {
+    orders.value = await orderStore.getOrders(
+        currentPage.value + 1,
+        props.filter,
+        props.orderFilter
+    );
+}
+
 onMounted(async () => {
     if (orderStore.updateTable != true) {
-        orders.value = await orderStore.getOrders(
-            1,
-            props.filter,
-            props.orderFilter
-        );
+        await getOrders();
     }
 });
 
 async function reloadTable() {
     orderStore.clearStore();
     setTimeout(async () => {
-        orders.value = await orderStore.getOrders(
-            1,
-            props.filter,
-            props.orderFilter
-        );
+        await getOrders();
     }, 200);
 }
 
 watchEffect(async () => {
     if (orderStore.updateTable) {
         await reloadTable();
+        if (orders.value.length == 0 && currentPage.value > 0) {
+            currentPage.value--;
+            await reloadTable();
+        }
     }
 });
 
 watch(currentPageHuman, async () => {
-    orders.value = await orderStore.getOrders(
-        currentPage.value + 1,
-        props.filter,
-        props.orderFilter
-    );
+    await getOrders();
 });
 
 watch(

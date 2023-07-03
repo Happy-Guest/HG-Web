@@ -50,11 +50,16 @@ const selectedView = ref(null);
 const notifText = ref("");
 const resErrors = ref([]);
 
-watch(currentPageHuman, async () => {
+async function getCheckouts() {
     checkouts.value = await checkoutStore.getCheckouts(
         currentPage.value + 1,
-        props.filter
+        props.filter,
+        props.order
     );
+}
+
+watch(currentPageHuman, async () => {
+    await getCheckouts();
 });
 
 watch(
@@ -83,22 +88,18 @@ watch(
 
 onMounted(async () => {
     if (checkoutStore.updateTable != true) {
-        checkouts.value = await checkoutStore.getCheckouts(
-            1,
-            props.filter,
-            props.order
-        );
+        await getCheckouts();
     }
 });
 
 async function reloadTable() {
     checkoutStore.clearStore();
     setTimeout(async () => {
-        checkouts.value = await checkoutStore.getCheckouts(
-            1,
-            props.filter,
-            props.order
-        );
+        await getCheckouts();
+        if (checkouts.value.length == 0 && currentPage.value > 0) {
+            currentPage.value--;
+            await reloadTable();
+        }
     }, 200);
 }
 

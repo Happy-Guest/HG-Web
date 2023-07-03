@@ -50,12 +50,16 @@ const resErrors = ref([]);
 const selected = ref(null);
 const selectedView = ref(null);
 
-watch(currentPageHuman, async () => {
+async function getReviews() {
     reviews.value = await reviewStore.getReviews(
         currentPage.value + 1,
         props.filter,
         props.order
     );
+}
+
+watch(currentPageHuman, async () => {
+    await getReviews();
 });
 
 watch(
@@ -69,22 +73,18 @@ watch(
 
 onMounted(async () => {
     if (reviewStore.updateTable != true) {
-        reviews.value = await reviewStore.getReviews(
-            1,
-            props.filter,
-            props.order
-        );
+        await getReviews();
     }
 });
 
 async function reloadTable() {
     reviewStore.clearStore();
     setTimeout(async () => {
-        reviews.value = await reviewStore.getReviews(
-            1,
-            props.filter,
-            props.order
-        );
+        await getReviews();
+        if (reviews.value.length == 0 && currentPage.value > 0) {
+            currentPage.value--;
+            await reloadTable();
+        }
     }, 200);
 }
 

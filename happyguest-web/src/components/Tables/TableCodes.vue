@@ -56,12 +56,16 @@ const selectedUsed = ref(null);
 const selectedCode = ref(null);
 const selectedId = ref(null);
 
-watch(currentPageHuman, async () => {
+async function getCodes() {
     codes.value = await codeStore.getCodes(
         currentPage.value + 1,
         props.filter,
         props.order
     );
+}
+
+watch(currentPageHuman, async () => {
+    await getCodes();
 });
 
 watch(
@@ -84,14 +88,18 @@ watch(
 
 onMounted(async () => {
     if (codeStore.updateTable != true) {
-        codes.value = await codeStore.getCodes(1, props.filter, props.order);
+        await getCodes();
     }
 });
 
 async function reloadTable() {
     codeStore.clearStore();
     setTimeout(async () => {
-        codes.value = await codeStore.getCodes(1, props.filter, props.order);
+        await getCodes();
+        if (codes.value.length == 0 && currentPage.value > 0) {
+            currentPage.value--;
+            await reloadTable();
+        }
     }, 200);
 }
 
