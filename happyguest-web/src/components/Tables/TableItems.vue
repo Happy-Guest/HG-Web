@@ -1,7 +1,6 @@
 <script setup>
 import { computed, ref, watch, onMounted, watchEffect } from "vue";
 import {
-    mdiEye,
     mdiFoodCroissant,
     mdiFood,
     mdiFoodTurkey,
@@ -12,6 +11,9 @@ import {
     mdiBed,
     mdiPaperRoll,
     mdiHamburger,
+    mdiTrashCan,
+    mdiRename,
+    mdiLayersRemove,
 } from "@mdi/js";
 import BaseLevel from "@/components/Bases/BaseLevel.vue";
 import BaseButtons from "@/components/Bases/BaseButtons.vue";
@@ -25,6 +27,11 @@ const itemStore = useItemStore();
 const authStore = useAuthStore();
 
 const serviceStore = useServiceStore();
+
+const selected = ref(null);
+const isModalActive = ref(false);
+const isModalDeleteActive = ref(false);
+const isModalDissociateActive = ref(false);
 
 const props = defineProps({
     serviceId: {
@@ -326,7 +333,38 @@ const pagesList = computed(() => {
                     class="before:hidden lg:w-1 whitespace-nowrap place-content-center"
                 >
                     <BaseButtons type="justify-start lg:justify-end" no-wrap>
-                        <BaseButton color="info" :icon="mdiEye" />
+                        <BaseButton
+                            color="warning"
+                            title="Editar"
+                            :icon="mdiRename"
+                            small
+                            @click="
+                                isModalActive = true;
+                                selected = item.id;
+                            "
+                        />
+                        <BaseButton
+                            v-if="props.serviceId == null"
+                            color="danger"
+                            title="Remover"
+                            :icon="mdiTrashCan"
+                            small
+                            @click="
+                                isModalDeleteActive = true;
+                                selected = item.id;
+                            "
+                        />
+                        <BaseButton
+                            v-else
+                            color="danger"
+                            title="Desassociar"
+                            :icon="mdiLayersRemove"
+                            small
+                            @click="
+                                isModalDissociateActive = true;
+                                selected = item.id;
+                            "
+                        />
                     </BaseButtons>
                 </td>
             </tr>

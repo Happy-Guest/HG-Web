@@ -21,7 +21,11 @@ export const useServiceStore = defineStore("service", () => {
 
     async function editService(id, data) {
         try {
-            let response = await axios.patch("services/" + id, data);
+            let response = await axios.patch("services/" + id, data, {
+                headers: {
+                    "Content-Type": "multipart/form-data",
+                },
+            });
             return response;
         } catch (error) {
             return error;

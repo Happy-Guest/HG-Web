@@ -7,6 +7,7 @@ import {
     mdiTrashCan,
     mdiCheckCircle,
     mdiAccountSupervisor,
+    mdiCancel,
 } from "@mdi/js";
 import BaseLevel from "@/components/Bases/BaseLevel.vue";
 import BaseButtons from "@/components/Bases/BaseButtons.vue";
@@ -313,8 +314,13 @@ const submitDelete = (password) => {
                         <BaseButton
                             color="info"
                             title="Clientes Associados"
-                            :icon="mdiAccountSupervisor"
+                            :icon="
+                                code.used == '1'
+                                    ? mdiAccountSupervisor
+                                    : mdiCancel
+                            "
                             small
+                            :disabled="code.used == '0'"
                             @click="
                                 isModalUsersActive = true;
                                 selectedClients = code.id;

@@ -23,6 +23,8 @@ import {
     mdiOrderNumericDescending,
     mdiOrderNumericAscending,
     mdiFilterMultiple,
+    mdiTagPlus,
+    mdiEye,
 } from "@mdi/js";
 import LayoutAuthenticated from "@/layouts/LayoutAuthenticated.vue";
 import SectionMain from "@/components/Sections/SectionMain.vue";
@@ -80,6 +82,7 @@ const form = ref({
     description: "",
     descriptionEN: "",
     menu_url: null,
+    menu: null,
 });
 
 onMounted(() => {
@@ -227,6 +230,10 @@ watchEffect(() => {
         );
     }
 });
+
+const onFileChange = (e) => {
+    form.value.menu = e.target.files[0];
+};
 </script>
 
 <template>
@@ -442,22 +449,48 @@ watchEffect(() => {
                         required
                     />
                 </FormField>
-                <FormField
-                    v-if="service?.type == 'R' || service?.type == 'B'"
-                    label="Menu"
-                    help="Menu do serviço em PDF. Obrigatório"
-                    label-for="menu"
-                >
-                    <FormControl
-                        id="menu"
-                        v-model="form.menu_url"
-                        :icon="mdiFile"
-                        name="menu"
-                        type="file"
-                        accept="application/pdf"
-                        :disabled="!update"
-                        required
-                    />
+                <FormField flex>
+                    <FormField
+                        v-if="service?.type == 'R' || service?.type == 'B'"
+                        label="Menu"
+                        help="Menu do serviço em PDF. Obrigatório"
+                        label-for="menu"
+                        class="w-10/12 md:w-11/12 mb-4 sm:mb-0"
+                    >
+                        <FormControl
+                            id="menu"
+                            v-model="form.menu"
+                            :icon="mdiFile"
+                            name="menu"
+                            type="file"
+                            accept="application/pdf"
+                            :disabled="!update"
+                            required
+                            @change="onFileChange"
+                        />
+                    </FormField>
+                    <BaseButtons class="w-1/12" type="justify-center" no-wrap>
+                        <BaseButton
+                            :color="
+                                form.menu_url == null || form.menu_url == ''
+                                    ? 'danger'
+                                    : 'info'
+                            "
+                            :icon="mdiEye"
+                            :title="
+                                form.menu_url == null || form.menu_url == ''
+                                    ? 'Não Existe Menu Atual'
+                                    : 'Ver Menu Atual'
+                            "
+                            class="w-10 h-10 flex-initial mt-3"
+                            outline
+                            rounded-full
+                            :disabled="
+                                form.menu_url == null || form.menu_url == ''
+                            "
+                            @click="open(form.menu_url)"
+                        />
+                    </BaseButtons>
                 </FormField>
                 <template #footer>
                     <div class="relative">
@@ -530,10 +563,25 @@ watchEffect(() => {
                             "
                             :icon="mdiFilterMultiple"
                         />
+                        <BaseButtons class="justify-center">
+                            <BaseButton
+                                :icon="mdiTagPlus"
+                                label="Associar"
+                                class="mt-2 lg:mt-0"
+                                color="success"
+                                rounded-full
+                                small
+                                @click="isModalAssociateCreate = true"
+                            />
+                        </BaseButtons>
                     </div>
                 </div>
             </SectionTitleLine>
-            <CardBox class="mb-6" has-table>
+            <CardBox
+                v-if="service?.id == 2 || service?.id == 3"
+                class="mb-6"
+                has-table
+            >
                 <TableItems
                     v-if="hasItems"
                     :service-id="service?.id"
