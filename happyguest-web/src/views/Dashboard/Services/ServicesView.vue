@@ -20,6 +20,9 @@ import {
     mdiSilverwareForkKnife,
     mdiSpa,
     mdiWeightLifter,
+    mdiOrderNumericDescending,
+    mdiOrderNumericAscending,
+    mdiFilterMultiple,
 } from "@mdi/js";
 import LayoutAuthenticated from "@/layouts/LayoutAuthenticated.vue";
 import SectionMain from "@/components/Sections/SectionMain.vue";
@@ -33,17 +36,37 @@ import BaseButtons from "@/components/Bases/BaseButtons.vue";
 import CardBoxComponentEmpty from "@/components/CardBoxs/CardBoxComponentEmpty.vue";
 import NotificationBar from "@/components/Others/NotificationBar.vue";
 import FormValidationErrors from "@/components/Forms/FormValidationErrors.vue";
-import { onMounted, ref, watch } from "vue";
+import { onMounted, ref, watch, watchEffect } from "vue";
 import { useServiceStore } from "@/stores/service";
 import { useRouter } from "vue-router";
 import TableItems from "@/components/Tables/TableItems.vue";
 
 const router = useRouter();
 
-const serviveStore = useServiceStore();
+const serviceStore = useServiceStore();
 const hasItems = ref(false);
 const update = ref(false);
 const service = ref([]);
+
+const selectOptionsFilter = [
+    { value: "ALL", label: "Todos" },
+    { value: "room", label: "Quarto" },
+    { value: "bathroom", label: "Casa Banho" },
+    { value: "drink", label: "Bebidas" },
+    { value: "breakfast", label: "P. Almoço" },
+    { value: "lunch", label: "Almoço" },
+    { value: "dinner", label: "Jantar" },
+    { value: "snack", label: "Lanches" },
+    { value: "other", label: "Outros" },
+];
+
+const selectOptionsOrder = [
+    { value: "DESC", label: "Descendente" },
+    { value: "ASC", label: "Ascendente" },
+];
+
+const filter = ref(selectOptionsFilter[0]);
+const order = ref(selectOptionsOrder[0]);
 
 const form = ref({
     email: "",
@@ -58,7 +81,7 @@ const form = ref({
 });
 
 onMounted(() => {
-    serviveStore
+    serviceStore
         .getService(router.currentRoute.value.params?.id)
         .then((response) => {
             fillForm(response);
@@ -69,7 +92,7 @@ watch(
     () => router.currentRoute.value.params?.id,
     () => {
         update.value = false;
-        serviveStore
+        serviceStore
             .getService(router.currentRoute.value.params?.id)
             .then((response) => {
                 fillForm(response);
@@ -99,7 +122,7 @@ const isSuccessNotifActive = ref(false);
 const isErrorNotifActive = ref(false);
 
 const editService = () => {
-    serviveStore
+    serviceStore
         .editService(router.currentRoute.value.params?.id, {
             email: form.value.email,
             phone: form.value.phone,
@@ -125,7 +148,7 @@ const editService = () => {
             }
         })
         .catch(() => {
-            notifText.value = "Ocorreu um erro ao atualiar o serviço.";
+            notifText.value = "Ocorreu um erro ao atualizar o serviço.";
             isErrorNotifActive.value = true;
             setTimeout(function () {
                 isErrorNotifActive.value = false;
@@ -156,6 +179,39 @@ function serviceIcon() {
             return mdiNewspaperVariant;
     }
 }
+
+watch(filter, async (value) => {
+    if (value.value != serviceStore.filterTableItems) {
+        hasItems.value = await serviceStore.getItemsService(
+            router.currentRoute.value.params?.id,
+            0,
+            value.value
+        );
+        setTimeout(() => {
+            serviceStore.filterTableItems = value.value;
+        }, 200);
+    }
+});
+
+watch(order, (value) => {
+    serviceStore.orderTableItems = value.value;
+});
+
+watchEffect(() => {
+    if (serviceStore.filterTableItems) {
+        filter.value = selectOptionsFilter.find(
+            (option) => option.value === serviceStore.filterTableItems
+        );
+    }
+});
+
+watchEffect(() => {
+    if (serviceStore.orderTableItems) {
+        order.value = selectOptionsOrder.find(
+            (option) => option.value === serviceStore.orderTableItems
+        );
+    }
+});
 </script>
 
 <template>
@@ -414,6 +470,10 @@ function serviceIcon() {
                                 @click="cancel()"
                             />
                         </BaseButtons>
+                        <span
+                            class="static text-zinc-500 right-0 bottom-0 mb-4 text-center sm:text-right sm:absolute"
+                            >Última Atualização: {{ service?.updated_at }}</span
+                        >
                     </div>
                 </template>
             </CardBox>
@@ -428,9 +488,39 @@ function serviceIcon() {
                         : 'Menu do Serviço'
                 "
                 class="mt-2"
-            />
+            >
+                <div class="flex mr-0 sm:mr-12 lg:mr-8">
+                    <div class="flex flex-col lg:flex-row">
+                        <b class="my-auto mr-4">Ordenar:</b>
+                        <FormControl
+                            id="order"
+                            v-model="order"
+                            class="w-48 mr-0 lg:mr-4 mb-2 lg:mb-0"
+                            :options="selectOptionsOrder"
+                            :icon="
+                                order.value === 'DESC'
+                                    ? mdiOrderNumericDescending
+                                    : mdiOrderNumericAscending
+                            "
+                        />
+                        <b class="my-auto mr-4">Filtrar:</b>
+                        <FormControl
+                            id="filter"
+                            v-model="filter"
+                            class="w-48 mr-0 lg:mr-4 mb-2 lg:mb-0"
+                            :options="selectOptionsFilter"
+                            :icon="mdiFilterMultiple"
+                        />
+                    </div>
+                </div>
+            </SectionTitleLine>
             <CardBox class="mb-6" has-table>
-                <TableItems v-if="hasItems" :service-id="service?.id" />
+                <TableItems
+                    v-if="hasItems"
+                    :service-id="service?.id"
+                    :filter="filter.value"
+                    :order="order.value"
+                />
                 <CardBoxComponentEmpty
                     v-else
                     message="Sem objetos associados..."

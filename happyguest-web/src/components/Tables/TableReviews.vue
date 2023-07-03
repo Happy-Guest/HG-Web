@@ -53,7 +53,8 @@ const selectedView = ref(null);
 watch(currentPageHuman, async () => {
     reviews.value = await reviewStore.getReviews(
         currentPage.value + 1,
-        props.filter
+        props.filter,
+        props.order
     );
 });
 

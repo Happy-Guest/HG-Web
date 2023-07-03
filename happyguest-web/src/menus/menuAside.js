@@ -80,9 +80,6 @@ export default [
                 icon: mdiFood,
             },
             {
-                isDivider: true,
-            },
-            {
                 to: "/service/1",
                 label: "Limpeza",
                 icon: mdiVacuum,

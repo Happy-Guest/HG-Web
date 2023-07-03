@@ -1,5 +1,5 @@
 <script setup>
-import { computed, ref, watch, onMounted } from "vue";
+import { computed, ref, watch, onMounted, watchEffect } from "vue";
 import {
     mdiEye,
     mdiFoodCroissant,
@@ -35,6 +35,14 @@ const props = defineProps({
         type: Boolean,
         default: false,
     },
+    filter: {
+        type: String,
+        default: "ALL",
+    },
+    order: {
+        type: String,
+        default: "DESC",
+    },
 });
 
 const currentPage = ref(0);
@@ -46,13 +54,57 @@ const numPages = computed(() => {
         return itemStore.lastPage;
     }
 });
+
 const currentPageHuman = computed(() => currentPage.value + 1);
 
 onMounted(async () => {
-    if (props.serviceId != null) {
-        items.value = await serviceStore.getItemsService(props.serviceId, 1);
-    } else {
-        items.value = await itemStore.getItems(1);
+    if (itemStore.updateTable != true) {
+        if (props.serviceId != null) {
+            items.value = await serviceStore.getItemsService(
+                props.serviceId,
+                1,
+                props.filter,
+                props.order
+            );
+        } else {
+            items.value = await itemStore.getItems(
+                1,
+                props.filter,
+                props.order
+            );
+        }
+    }
+});
+
+async function reloadTable() {
+    itemStore.clearStore();
+    setTimeout(async () => {
+        if (props.serviceId != null) {
+            items.value = await serviceStore.getItemsService(
+                props.serviceId,
+                1,
+                props.filter,
+                props.order
+            );
+        } else {
+            items.value = await itemStore.getItems(
+                1,
+                props.filter,
+                props.order
+            );
+        }
+    }, 200);
+}
+
+watchEffect(async () => {
+    if (itemStore.updateTable) {
+        await reloadTable();
+    }
+});
+
+watchEffect(async () => {
+    if (serviceStore.updateTableItems) {
+        await reloadTable();
     }
 });
 
@@ -60,12 +112,32 @@ watch(currentPageHuman, async () => {
     if (props.serviceId != null) {
         items.value = await serviceStore.getItemsService(
             props.serviceId,
-            currentPage.value + 1
+            currentPage.value + 1,
+            props.filter,
+            props.order
         );
     } else {
-        items.value = await itemStore.getItems(currentPage.value + 1);
+        items.value = await itemStore.getItems(
+            currentPage.value + 1,
+            props.filter,
+            props.order
+        );
     }
 });
+
+watch(
+    () => props.filter,
+    async () => {
+        await reloadTable();
+    }
+);
+
+watch(
+    () => props.order,
+    async () => {
+        await reloadTable();
+    }
+);
 
 watch(
     () => props.serviceId,
@@ -74,7 +146,9 @@ watch(
         setTimeout(async () => {
             items.value = await serviceStore.getItemsService(
                 props.serviceId,
-                1
+                1,
+                props.filter,
+                props.order
             );
         }, 500);
     }
@@ -150,7 +224,7 @@ const pagesList = computed(() => {
                     <PillTag
                         v-if="item.type == 'F'"
                         class="justify-center"
-                        label="Comida"
+                        label="Alimento"
                         color="warning"
                         :icon="mdiFood"
                     />

@@ -6,6 +6,9 @@ export const useServiceStore = defineStore("service", () => {
     const items = ref([]);
     const lastPage = ref();
     const pagesItems = ref([]);
+    const updateTableItems = ref(false);
+    const filterTableItems = ref(null);
+    const orderTableItems = ref(null);
 
     async function getService(id) {
         try {
@@ -25,10 +28,14 @@ export const useServiceStore = defineStore("service", () => {
         }
     }
 
-    async function loadItemsService(idService, page) {
+    async function loadItemsService(idService, page, filter, order) {
         let response;
         if (page == 0) {
-            response = await axios.get("services/" + idService + "/items");
+            response = await axios.get("services/" + idService + "/items", {
+                params: {
+                    filter: filter,
+                },
+            });
             lastPage.value = response.data.meta.last_page;
             if (response.data.meta.total == 0) {
                 return false;
@@ -37,6 +44,8 @@ export const useServiceStore = defineStore("service", () => {
         } else {
             response = await axios.get("services/" + idService + "/items", {
                 params: {
+                    filter: filter,
+                    order: order,
                     page: page,
                 },
             });
@@ -47,23 +56,27 @@ export const useServiceStore = defineStore("service", () => {
         }
     }
 
-    async function getItemsService(idService, page) {
+    async function getItemsService(idService, page, filter, order) {
         if (pagesItems.value.includes(page)) {
             return items.value[pagesItems.value.indexOf(page)];
         }
-        return await loadItemsService(idService, page);
+        return await loadItemsService(idService, page, filter, order);
     }
 
     function clearStore() {
         items.value = [];
         lastPage.value = null;
         pagesItems.value = [];
+        updateTableItems.value = false;
     }
 
     return {
         items,
         lastPage,
         pagesItems,
+        updateTableItems,
+        filterTableItems,
+        orderTableItems,
         getService,
         editService,
         getItemsService,
