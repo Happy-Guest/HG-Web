@@ -153,6 +153,15 @@ const routes = [
         name: "items",
         component: () => import("@/views/Dashboard/Services/ItemsView.vue"),
     },
+    {
+        meta: {
+            title: "Pedidos",
+            middleware: [auth, manager],
+        },
+        path: "/orders",
+        name: "orders",
+        component: () => import("@/views/Dashboard/Services/OrdersView.vue"),
+    },
 
     // Not Found
 

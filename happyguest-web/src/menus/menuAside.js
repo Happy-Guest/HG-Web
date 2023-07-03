@@ -103,7 +103,7 @@ export default [
     },
     {
         middleware: ["A", "M"],
-        //to: "/checkouts",
+        to: "/orders",
         label: "Pedidos",
         icon: mdiReceiptClock,
     },
