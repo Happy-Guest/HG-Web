@@ -48,10 +48,15 @@ const hasItems = ref(false);
 const update = ref(false);
 const service = ref([]);
 
-const selectOptionsFilter = [
+const selectOptionsFilterObjects = [
     { value: "ALL", label: "Todos" },
     { value: "room", label: "Quarto" },
     { value: "bathroom", label: "Casa Banho" },
+    { value: "other", label: "Outros" },
+];
+
+const selectOptionsFilterFood = [
+    { value: "ALL", label: "Todos" },
     { value: "drink", label: "Bebidas" },
     { value: "breakfast", label: "P. Almoço" },
     { value: "lunch", label: "Almoço" },
@@ -64,9 +69,6 @@ const selectOptionsOrder = [
     { value: "DESC", label: "Descendente" },
     { value: "ASC", label: "Ascendente" },
 ];
-
-const filter = ref(selectOptionsFilter[0]);
-const order = ref(selectOptionsOrder[0]);
 
 const form = ref({
     email: "",
@@ -104,12 +106,12 @@ const fillForm = (response) => {
     service.value = null;
     hasItems.value = false;
     service.value = response;
-    form.value.email = response.email;
-    form.value.phone = response.phone;
+    form.value.email = response.email ?? "";
+    form.value.phone = response.phone ?? "";
     form.value.schedule = response.schedule;
-    form.value.occupation = response.occupation;
-    form.value.location = response.location;
-    form.value.limit = response.limit;
+    form.value.occupation = response.occupation ?? "";
+    form.value.location = response.location ?? "";
+    form.value.limit = response.limit ?? "";
     form.value.description = response.description;
     form.value.descriptionEN = response.descriptionEN;
     form.value.menu_url = response.menu_url;
@@ -180,6 +182,13 @@ function serviceIcon() {
     }
 }
 
+const filter = ref(
+    service.value?.type == "F"
+        ? selectOptionsFilterFood[0]
+        : selectOptionsFilterObjects[0]
+);
+const order = ref(selectOptionsOrder[0]);
+
 watch(filter, async (value) => {
     if (value.value != serviceStore.filterTableItems) {
         hasItems.value = await serviceStore.getItemsService(
@@ -199,9 +208,15 @@ watch(order, (value) => {
 
 watchEffect(() => {
     if (serviceStore.filterTableItems) {
-        filter.value = selectOptionsFilter.find(
-            (option) => option.value === serviceStore.filterTableItems
-        );
+        if (service.value?.type == "F") {
+            filter.value = selectOptionsFilterFood.find(
+                (option) => option.value === serviceStore.filterTableItems
+            );
+        } else {
+            filter.value = selectOptionsFilterObjects.find(
+                (option) => option.value === serviceStore.filterTableItems
+            );
+        }
     }
 });
 
@@ -508,7 +523,11 @@ watchEffect(() => {
                             id="filter"
                             v-model="filter"
                             class="w-48 mr-0 lg:mr-4 mb-2 lg:mb-0"
-                            :options="selectOptionsFilter"
+                            :options="
+                                service?.type == 'F'
+                                    ? selectOptionsFilterFood
+                                    : selectOptionsFilterObjects
+                            "
                             :icon="mdiFilterMultiple"
                         />
                     </div>
