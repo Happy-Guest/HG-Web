@@ -54,6 +54,15 @@ export const useOrderStore = defineStore("order", () => {
         return await loadOrders(page, filter, order);
     }
 
+    async function registerOrder(order) {
+        try {
+            let response = await axios.post("orders", order);
+            return response;
+        } catch (error) {
+            return error.response;
+        }
+    }
+
     function clearStore() {
         orders.value = [];
         lastPage.value = null;
@@ -71,5 +80,6 @@ export const useOrderStore = defineStore("order", () => {
         getOrder,
         getOrders,
         clearStore,
+        registerOrder,
     };
 });

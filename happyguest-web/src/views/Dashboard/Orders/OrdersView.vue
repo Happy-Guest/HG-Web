@@ -4,7 +4,7 @@ import {
     mdiOrderNumericDescending,
     mdiOrderNumericAscending,
     mdiFilterMultiple,
-    mdiPlusBoxMultiple,
+    mdiFilePlus,
 } from "@mdi/js";
 import LayoutAuthenticated from "@/layouts/LayoutAuthenticated.vue";
 import SectionMain from "@/components/Sections/SectionMain.vue";
@@ -13,7 +13,6 @@ import CardBoxComponentEmpty from "@/components/CardBoxs/CardBoxComponentEmpty.v
 import TableOrders from "@/components/Tables/TableOrders.vue";
 import FormControl from "@/components/Forms/FormControl.vue";
 import CardBox from "@/components/CardBoxs/CardBox.vue";
-import CardBoxRegisterOrder from "@/components/CardBoxsCustom/CardBoxRegisterOrder.vue";
 import BaseButton from "@/components/Bases/BaseButton.vue";
 import BaseButtons from "@/components/Bases/BaseButtons.vue";
 import { onMounted, ref, watchEffect, watch } from "vue";
@@ -22,10 +21,6 @@ import { useOrderStore } from "@/stores/order";
 const orderStore = useOrderStore();
 
 const hasOrders = ref(false);
-
-const newOrder = ref(null);
-
-const isModalActiveCreate = ref(false);
 
 const selectOptionsFilter = [
     { value: "ALL", label: "Todos" },
@@ -84,11 +79,6 @@ watchEffect(() => {
 
 <template>
     <LayoutAuthenticated>
-        <CardBoxRegisterOrder
-            :active="isModalActiveCreate"
-            @update:active="isModalActiveCreate = $event"
-            @updated="newOrder = $event"
-        />
         <SectionMain>
             <SectionTitleLine :icon="mdiBookClock" :title="'Pedidos'" main>
                 <div class="flex mr-0 sm:mr-12 lg:mr-8">
@@ -115,13 +105,13 @@ watchEffect(() => {
                         />
                         <BaseButtons class="justify-center">
                             <BaseButton
-                                :icon="mdiPlusBoxMultiple"
-                                label="Criar"
+                                :icon="mdiFilePlus"
+                                :to="{ name: 'orderRegister' }"
+                                label="Registar"
                                 class="mt-2 lg:mt-0"
                                 color="success"
                                 rounded-full
                                 small
-                                @click="isModalActiveCreate = true"
                             />
                         </BaseButtons>
                     </div>

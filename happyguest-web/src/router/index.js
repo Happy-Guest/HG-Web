@@ -160,7 +160,16 @@ const routes = [
         },
         path: "/orders",
         name: "orders",
-        component: () => import("@/views/Dashboard/Services/OrdersView.vue"),
+        component: () => import("@/views/Dashboard/Orders/OrdersView.vue"),
+    },
+    {
+        meta: {
+            title: "Pedido",
+            middleware: [auth, manager],
+        },
+        path: "/pedido",
+        name: "orderRegister",
+        component: () => import("@/views/Dashboard/Orders/OrderView.vue"),
     },
 
     // Not Found
