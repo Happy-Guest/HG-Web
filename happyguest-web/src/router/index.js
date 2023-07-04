@@ -171,6 +171,33 @@ const routes = [
         name: "orderRegister",
         component: () => import("@/views/Dashboard/Orders/OrderView.vue"),
     },
+    {
+        meta: {
+            title: "Pedido",
+            middleware: [auth, manager],
+        },
+        path: "/pedido/:id",
+        name: "orderView",
+        component: () => import("@/views/Dashboard/Orders/OrderView.vue"),
+    },
+    {
+        meta: {
+            title: "Reservas",
+            middleware: [auth, manager],
+        },
+        path: "/reservas",
+        name: "reserves",
+        component: () => import("@/views/Dashboard/Reserves/ReservesView.vue"),
+    },
+    {
+        meta: {
+            title: "Reserva",
+            middleware: [auth, manager],
+        },
+        path: "/reserva",
+        name: "reservesRegister",
+        component: () => import("@/views/Dashboard/Reserves/ReserveView.vue"),
+    },
 
     // Not Found
 

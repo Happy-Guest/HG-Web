@@ -1,6 +1,6 @@
 <script setup>
 import {
-    mdiBookClock,
+    mdiReceiptClock,
     mdiOrderNumericDescending,
     mdiOrderNumericAscending,
     mdiFilterMultiple,
@@ -10,28 +10,25 @@ import LayoutAuthenticated from "@/layouts/LayoutAuthenticated.vue";
 import SectionMain from "@/components/Sections/SectionMain.vue";
 import SectionTitleLine from "@/components/Sections/SectionTitleLine.vue";
 import CardBoxComponentEmpty from "@/components/CardBoxs/CardBoxComponentEmpty.vue";
-import TableOrders from "@/components/Tables/TableOrders.vue";
+import TableReserves from "@/components/Tables/TableReserves.vue";
 import FormControl from "@/components/Forms/FormControl.vue";
 import CardBox from "@/components/CardBoxs/CardBox.vue";
 import BaseButton from "@/components/Bases/BaseButton.vue";
 import BaseButtons from "@/components/Bases/BaseButtons.vue";
 import { onMounted, ref, watchEffect, watch } from "vue";
-import { useOrderStore } from "@/stores/order";
+import { useReserveStore } from "@/stores/reserve";
 
-const orderStore = useOrderStore();
+const reserveStore = useReserveStore();
 
-const hasOrders = ref(false);
+const hasReserves = ref(false);
 
 const selectOptionsFilter = [
     { value: "ALL", label: "Todos" },
-    { value: "OC", label: "Limpezas" },
-    { value: "OB", label: "P. Objetos" },
-    { value: "OF", label: "P. Alimentos" },
-    { value: "O", label: "Outros" },
+    { value: "OR", label: "Restaurante" },
+    { value: "O", label: "Outras" },
     { value: "P", label: "Pendentes" },
+    { value: "A", label: "Aceites" },
     { value: "R", label: "Rejeitados" },
-    { value: "W", label: "A Preparar" },
-    { value: "DL", label: "Entregues" },
     { value: "C", label: "Cancelados" },
     { value: "D", label: "Eliminados" },
 ];
@@ -45,34 +42,34 @@ const filter = ref(selectOptionsFilter[0]);
 const order = ref(selectOptionsOrder[0]);
 
 onMounted(async () => {
-    hasOrders.value = await orderStore.getOrders(0, filter.value.value);
+    hasReserves.value = await reserveStore.getReserves(0, filter.value.value);
 });
 
 watch(filter, async (value) => {
-    if (value.value != orderStore.filterTable) {
-        hasOrders.value = await orderStore.getOrders(0, value.value);
+    if (value.value != reserveStore.filterTable) {
+        hasReserves.value = await reserveStore.getReserves(0, value.value);
         setTimeout(() => {
-            orderStore.filterTable = value.value;
+            reserveStore.filterTable = value.value;
         }, 200);
     }
 });
 
 watch(order, (value) => {
-    orderStore.orderTable = value.value;
+    reserveStore.orderTable = value.value;
 });
 
 watchEffect(() => {
-    if (orderStore.filterTable) {
+    if (reserveStore.filterTable) {
         filter.value = selectOptionsFilter.find(
-            (option) => option.value === orderStore.filterTable
+            (option) => option.value === reserveStore.filterTable
         );
     }
 });
 
 watchEffect(() => {
-    if (orderStore.orderTable) {
+    if (reserveStore.orderTable) {
         order.value = selectOptionsOrder.find(
-            (option) => option.value === orderStore.orderTable
+            (option) => option.value === reserveStore.orderTable
         );
     }
 });
@@ -81,7 +78,7 @@ watchEffect(() => {
 <template>
     <LayoutAuthenticated>
         <SectionMain>
-            <SectionTitleLine :icon="mdiBookClock" :title="'Pedidos'" main>
+            <SectionTitleLine :icon="mdiReceiptClock" :title="'Reservas'" main>
                 <div class="flex mr-0 sm:mr-12 lg:mr-8">
                     <div class="flex flex-col lg:flex-row">
                         <b class="my-auto mr-4">Ordenar:</b>
@@ -107,7 +104,6 @@ watchEffect(() => {
                         <BaseButtons class="justify-center">
                             <BaseButton
                                 :icon="mdiFilePlus"
-                                :to="{ name: 'orderRegister' }"
                                 label="Registar"
                                 class="mt-2 lg:mt-0"
                                 color="success"
@@ -119,14 +115,14 @@ watchEffect(() => {
                 </div>
             </SectionTitleLine>
             <CardBox class="mb-6" has-table>
-                <TableOrders
-                    v-if="hasOrders"
+                <TableReserves
+                    v-if="hasReserves"
                     :filter="filter.value"
-                    :order-filter="order.value"
+                    :order="order.value"
                 />
                 <CardBoxComponentEmpty
                     v-else
-                    message="Sem pedidos registados..."
+                    message="Sem reservas registadas..."
                 />
             </CardBox>
         </SectionMain>

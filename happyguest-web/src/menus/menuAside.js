@@ -109,7 +109,7 @@ export default [
     },
     {
         middleware: ["A", "M"],
-        //to: "/checkouts",
+        to: "/reservas",
         label: "Reservas",
         icon: mdiReceiptClock,
     },

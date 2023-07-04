@@ -3,14 +3,11 @@ import { computed, ref, watch, onMounted, watchEffect } from "vue";
 import {
     mdiPackageCheck,
     mdiClockTimeTwoOutline,
-    mdiCog,
     mdiCheck,
     mdiClose,
     mdiTrashCan,
     mdiRename,
-    mdiVacuum,
-    mdiFood,
-    mdiPaperRoll,
+    mdiSilverwareForkKnife,
     mdiNewspaperVariant,
     mdiEye,
 } from "@mdi/js";
@@ -18,12 +15,12 @@ import BaseLevel from "@/components/Bases/BaseLevel.vue";
 import BaseButtons from "@/components/Bases/BaseButtons.vue";
 import BaseButton from "@/components/Bases/BaseButton.vue";
 import PillTag from "@/components/PillTags/PillTag.vue";
-import { useOrderStore } from "@/stores/order";
+import { useReserveStore } from "@/stores/reserve";
 import { useRouter } from "vue-router";
 
 const router = useRouter();
 
-const orderStore = useOrderStore();
+const reserveStore = useReserveStore();
 
 const selected = ref(null);
 
@@ -32,43 +29,43 @@ const props = defineProps({
         type: String,
         default: "ALL",
     },
-    orderFilter: {
+    order: {
         type: String,
         default: "DESC",
     },
 });
 
 const currentPage = ref(0);
-const orders = ref([]);
-const numPages = computed(() => orderStore.lastPage);
+const reserves = ref([]);
+const numPages = computed(() => reserveStore.lastPage);
 
 const currentPageHuman = computed(() => currentPage.value + 1);
 
-async function getOrders() {
-    orders.value = await orderStore.getOrders(
+async function getReserves() {
+    reserves.value = await reserveStore.getReserves(
         currentPage.value + 1,
         props.filter,
-        props.orderFilter
+        props.order
     );
 }
 
 onMounted(async () => {
-    if (orderStore.updateTable != true) {
-        await getOrders();
+    if (reserveStore.updateTable != true) {
+        await getReserves();
     }
 });
 
 async function reloadTable() {
-    orderStore.clearStore();
+    reserveStore.clearStore();
     setTimeout(async () => {
-        await getOrders();
+        await getReserves();
     }, 200);
 }
 
 watchEffect(async () => {
-    if (orderStore.updateTable) {
+    if (reserveStore.updateTable) {
         await reloadTable();
-        if (orders.value.length == 0 && currentPage.value > 0) {
+        if (reserves.value.length == 0 && currentPage.value > 0) {
             currentPage.value--;
             await reloadTable();
         }
@@ -76,11 +73,11 @@ watchEffect(async () => {
 });
 
 watch(currentPageHuman, async () => {
-    await getOrders();
+    await getReserves();
 });
 
 watch(
-    () => props.orderFilter,
+    () => props.order,
     async () => {
         await reloadTable();
     }
@@ -118,80 +115,64 @@ const pagesList = computed(() => {
             <tr>
                 <th>ID:</th>
                 <th>Cliente:</th>
-                <th>Quarto:</th>
                 <th>Serviço:</th>
+                <th>Nº Pessoas:</th>
                 <th>Estado:</th>
                 <th>Horário:</th>
                 <th />
             </tr>
         </thead>
         <tbody>
-            <tr v-for="order in orders" :key="order.id">
+            <tr v-for="reserve in reserves" :key="reserve.id">
                 <td
                     data-label="ID"
                     class="text-center text-gray-500 dark:text-slate-400 font-semibold"
                 >
-                    {{ order.id }}
+                    {{ reserve.id }}
                 </td>
                 <td data-label="Cliente">
-                    {{ order.user }}
+                    {{ reserve.user }}
                 </td>
-                <td data-label="Quarto" class="text-center font-semibold">
-                    <PillTag
-                        class="justify-center ml-2 font-semibold"
-                        :label="order.room"
-                        color="info"
-                    />
-                </td>
+
                 <td data-label="Serviço" class="text-center font-semibold">
                     <PillTag
                         class="justify-center"
-                        :label="order.service.name"
+                        :label="reserve.service.name"
                         :color="
-                            order.service.type == 'C'
-                                ? 'contrast'
-                                : order.service.type == 'F'
-                                ? 'warning'
-                                : order.service.type == 'B'
-                                ? 'success'
-                                : 'info'
+                            reserve.service.type == 'R' ? 'success' : 'info'
                         "
                         :icon="
-                            order.service.type == 'C'
-                                ? mdiVacuum
-                                : order.service.type == 'F'
-                                ? mdiFood
-                                : order.service.type == 'B'
-                                ? mdiPaperRoll
+                            reserve.service.type == 'C'
+                                ? mdiSilverwareForkKnife
                                 : mdiNewspaperVariant
                         "
                         outline
                     />
                 </td>
+                <td data-label="Nº Pessoas" class="text-center font-semibold">
+                    <PillTag
+                        class="justify-center ml-2 font-semibold"
+                        :label="reserve.nr_people.toString()"
+                        color="info"
+                    />
+                </td>
                 <td data-label="Estado" class="text-center">
                     <PillTag
-                        v-if="order.status == 'P'"
+                        v-if="reserve.status == 'P'"
                         class="justify-center"
                         label="Pendente"
                         color="info"
                         :icon="mdiClockTimeTwoOutline"
                     />
                     <PillTag
-                        v-else-if="order.status == 'W'"
+                        v-else-if="reserve.status == 'A'"
                         class="justify-center"
-                        label="A preparar"
-                        color="warning"
-                        :icon="mdiCog"
-                    />
-                    <PillTag
-                        v-else-if="order.status == 'DL'"
-                        class="justify-center"
-                        label="Entregue"
+                        label="Aceite"
                         color="success"
                         :icon="mdiPackageCheck"
                     />
                     <PillTag
-                        v-else-if="order.status == 'R'"
+                        v-else-if="reserve.status == 'R'"
                         class="justify-center"
                         label="Rejeitado"
                         color="danger"
@@ -209,7 +190,7 @@ const pagesList = computed(() => {
                     data-label="Horário"
                     class="text-center text-gray-500 dark:text-slate-400 font-semibold"
                 >
-                    {{ order.time }}
+                    {{ reserve.time }}
                 </td>
                 <td
                     class="before:hidden lg:w-1 whitespace-nowrap place-content-center"
@@ -217,13 +198,13 @@ const pagesList = computed(() => {
                     <BaseButtons type="justify-start lg:justify-end" no-wrap>
                         <BaseButton
                             color="info"
-                            title="Ver Pedido"
+                            title="Ver Reserva"
                             :icon="mdiEye"
                             small
                             @click="
                                 router.push({
-                                    name: 'orderView',
-                                    params: { id: order.id },
+                                    name: 'reserveView',
+                                    params: { id: reserve.id },
                                 })
                             "
                         />
@@ -234,7 +215,7 @@ const pagesList = computed(() => {
                             small
                             @click="
                                 isModalActive = true;
-                                selected = order.id;
+                                selected = reserve.id;
                             "
                         />
                         <BaseButton
@@ -244,7 +225,7 @@ const pagesList = computed(() => {
                             small
                             @click="
                                 isModalDeleteActive = true;
-                                selected = order.id;
+                                selected = reserve.id;
                             "
                         />
                     </BaseButtons>

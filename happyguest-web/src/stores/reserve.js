@@ -1,28 +1,28 @@
 import { inject, ref } from "vue";
 import { defineStore } from "pinia";
 
-export const useOrderStore = defineStore("order", () => {
+export const useReserveStore = defineStore("reserve", () => {
     const axios = inject("axios");
-    const orders = ref([]);
+    const reserves = ref([]);
     const lastPage = ref();
-    const pagesOrders = ref([]);
+    const pagesReserves = ref([]);
     const updateTable = ref(false);
     const filterTable = ref(null);
     const orderTable = ref(null);
 
-    async function getOrder(id) {
+    async function getReserve(id) {
         try {
-            let response = await axios.get("orders/" + id);
+            let response = await axios.get("reserves/" + id);
             return response.data.data;
         } catch (error) {
             return error;
         }
     }
 
-    async function loadOrders(page, filter, order) {
+    async function loadReserves(page, filter, order) {
         let response;
         if (page == 0) {
-            response = await axios.get("orders/", {
+            response = await axios.get("reserves/", {
                 params: {
                     filter: filter,
                 },
@@ -33,7 +33,7 @@ export const useOrderStore = defineStore("order", () => {
             }
             return true;
         } else {
-            response = await axios.get("orders/", {
+            response = await axios.get("reserves/", {
                 params: {
                     filter: filter,
                     order: order,
@@ -41,22 +41,22 @@ export const useOrderStore = defineStore("order", () => {
                 },
             });
             lastPage.value = response.data.meta.last_page;
-            orders.value.push(response.data.data);
-            pagesOrders.value.push(page);
-            return orders.value[pagesOrders.value.indexOf(page)];
+            reserves.value.push(response.data.data);
+            pagesReserves.value.push(page);
+            return reserves.value[pagesReserves.value.indexOf(page)];
         }
     }
 
-    async function getOrders(page, filter, order) {
-        if (pagesOrders.value.includes(page)) {
-            return orders.value[pagesOrders.value.indexOf(page)];
+    async function getReserves(page, filter, order) {
+        if (pagesReserves.value.includes(page)) {
+            return reserves.value[pagesReserves.value.indexOf(page)];
         }
-        return await loadOrders(page, filter, order);
+        return await loadReserves(page, filter, order);
     }
 
-    async function registerOrder(order) {
+    async function registerReserve(reserve) {
         try {
-            let response = await axios.post("orders", order);
+            let response = await axios.post("reserves", reserve);
             return response;
         } catch (error) {
             return error.response;
@@ -64,22 +64,22 @@ export const useOrderStore = defineStore("order", () => {
     }
 
     function clearStore() {
-        orders.value = [];
+        reserves.value = [];
         lastPage.value = null;
-        pagesOrders.value = [];
+        pagesReserves.value = [];
         updateTable.value = false;
     }
 
     return {
-        orders,
+        reserves,
         lastPage,
-        pagesOrders,
+        pagesReserves,
         updateTable,
         filterTable,
         orderTable,
-        getOrder,
-        getOrders,
+        getReserve,
+        getReserves,
         clearStore,
-        registerOrder,
+        registerReserve,
     };
 });
