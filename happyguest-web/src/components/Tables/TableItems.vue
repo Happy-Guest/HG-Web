@@ -13,9 +13,12 @@ import {
     mdiHamburger,
     mdiTrashCan,
     mdiRename,
-    mdiLayersRemove,
+    mdiBookRemove,
     mdiCheckCircle,
     mdiAlertCircle,
+    mdiBookPlus,
+    mdiCheck,
+    mdiClose,
 } from "@mdi/js";
 import BaseLevel from "@/components/Bases/BaseLevel.vue";
 import BaseButtons from "@/components/Bases/BaseButtons.vue";
@@ -33,6 +36,7 @@ const authStore = useAuthStore();
 const serviceStore = useServiceStore();
 
 const selected = ref(null);
+const selectedService = ref(null);
 const notifText = ref("");
 const resErrors = ref([]);
 
@@ -41,16 +45,13 @@ const isErrorNotifActive = ref(false);
 
 const isModalActive = ref(false);
 const isModalDeleteActive = ref(false);
+const isModalAssociateActive = ref(false);
 const isModalDissociateActive = ref(false);
 
 const props = defineProps({
     serviceId: {
         type: Number,
         default: null,
-    },
-    nameEN: {
-        type: Boolean,
-        default: false,
     },
     filter: {
         type: String,
@@ -108,6 +109,7 @@ watch(
 
 async function reloadTable() {
     itemStore.clearStore();
+    serviceStore.clearStore();
     setTimeout(async () => {
         await getItems();
         if (items.value.length == 0 && currentPage.value > 0) {
@@ -200,6 +202,64 @@ const submitDelete = (password) => {
             }, 5000);
         });
 };
+
+const submitAssociate = (item) => {
+    itemStore
+        .associateItem(
+            item == null ? selected.value : item,
+            selectedService.value
+        )
+        .then((response) => {
+            notifText.value = response.data.message;
+            if (response.status === 200) {
+                isModalAssociateActive.value = false;
+                isSuccessNotifActive.value = true;
+                if (item == null) {
+                    serviceStore.updateTableItems = true;
+                }
+                setTimeout(function () {
+                    isSuccessNotifActive.value = false;
+                }, 5000);
+            } else {
+                resErrors.value = response.data.message;
+            }
+        })
+        .catch(() => {
+            notifText.value = "Ocorreu um erro ao associar o item.";
+            isErrorNotifActive.value = true;
+            setTimeout(function () {
+                isErrorNotifActive.value = false;
+            }, 5000);
+        });
+};
+
+const submitDissociate = () => {
+    itemStore
+        .dissociateItem(selected.value, selectedService.value)
+        .then((response) => {
+            notifText.value = response.data.message;
+            if (response.status === 200) {
+                isModalDissociateActive.value = false;
+                items.value = items.value.filter(
+                    (code) => code.id != selected.value
+                );
+                serviceStore.updateTableItems = true;
+                isSuccessNotifActive.value = true;
+                setTimeout(function () {
+                    isSuccessNotifActive.value = false;
+                }, 5000);
+            } else {
+                resErrors.value = response.data.message;
+            }
+        })
+        .catch(() => {
+            notifText.value = "Ocorreu um erro ao desassociar o item.";
+            isErrorNotifActive.value = true;
+            setTimeout(function () {
+                isErrorNotifActive.value = false;
+            }, 5000);
+        });
+};
 </script>
 
 <template>
@@ -220,6 +280,43 @@ const submitDelete = (password) => {
         <b>{{ notifText }}</b>
     </NotificationBar>
     <CardBoxModal
+        v-model="isModalAssociateActive"
+        :errors="resErrors"
+        :title="selectedService == 2 ? 'Associar Objeto' : 'Associar Alimento'"
+        button="success"
+        :icon-title="mdiBookPlus"
+        has-cancel
+        has-close
+        @confirm="submitAssociate"
+    >
+        <p v-if="selectedService == 2">
+            Tem a certeza que <b>deseja adicionar</b> o objeto do menu?
+        </p>
+        <p v-else>
+            Tem a certeza que <b>deseja adicionar</b> o alimento do menu?
+        </p>
+    </CardBoxModal>
+    <CardBoxModal
+        v-model="isModalDissociateActive"
+        :errors="resErrors"
+        :title="
+            selectedService == 2 ? 'Desassociar Objeto' : 'Desassociar Alimento'
+        "
+        button="warning"
+        :icon-title="mdiBookRemove"
+        has-cancel
+        has-close
+        @confirm="submitDissociate"
+    >
+        <p v-if="selectedService == 2">
+            Tem a certeza que <b>deseja remover</b> o objeto do menu?
+        </p>
+        <p v-else>
+            Tem a certeza que <b>deseja remover</b> o alimento do menu?
+        </p>
+        <p>Poderá associar novamente o item ao serviço mais tarde.</p>
+    </CardBoxModal>
+    <CardBoxModal
         v-model="isModalDeleteActive"
         :errors="resErrors"
         title="Remover Item"
@@ -237,7 +334,6 @@ const submitDelete = (password) => {
             <tr>
                 <th>ID:</th>
                 <th>Nome:</th>
-                <th v-if="nameEN">Nome (Inglês):</th>
                 <th v-if="props.serviceId == null">Tipo:</th>
                 <th>Categoria:</th>
                 <th>Stock:</th>
@@ -249,6 +345,7 @@ const submitDelete = (password) => {
                 >
                     Preço:
                 </th>
+                <th>Ativo:</th>
                 <th />
             </tr>
         </thead>
@@ -260,25 +357,18 @@ const submitDelete = (password) => {
                 >
                     {{ item.id }}
                 </td>
-                <td>
+                <td data-label="Nome">
                     {{
-                        !nameEN
-                            ? item.name.length > 50
-                                ? item.name.substring(0, 50) + "..."
-                                : item.name
-                            : item.name.length > 25
-                            ? item.name.substring(0, 25) + "..."
+                        item.name.length > 50
+                            ? item.name.substring(0, 50) + "..."
                             : item.name
                     }}
                 </td>
-                <td v-if="nameEN" class="text-gray-500 dark:text-slate-400">
-                    {{
-                        item.nameEN.length > 25
-                            ? item.nameEN.substring(0, 25) + "..."
-                            : item.nameEN
-                    }}
-                </td>
-                <td v-if="props.serviceId == null" class="text-center">
+                <td
+                    v-if="props.serviceId == null"
+                    class="text-center"
+                    data-label="Tipo"
+                >
                     <PillTag
                         v-if="item.type == 'F'"
                         class="justify-center"
@@ -294,7 +384,7 @@ const submitDelete = (password) => {
                         :icon="mdiPaperRoll"
                     />
                 </td>
-                <td class="text-center">
+                <td class="text-center" data-label="Categoria">
                     <PillTag
                         v-if="item.category == 'drink'"
                         class="justify-center"
@@ -313,7 +403,7 @@ const submitDelete = (password) => {
                     />
                     <PillTag
                         v-else-if="item.category == 'breakfast'"
-                        class="justify-center"
+                        class="justify-center w-32"
                         label="P. Almoço"
                         color="info"
                         :icon="mdiFoodCroissant"
@@ -361,8 +451,13 @@ const submitDelete = (password) => {
                     />
                 </td>
                 <td
-                    class="text-center text-gray-500 dark:text-slate-400"
-                    :class="item.stock ? 'font-semibold' : ''"
+                    class="text-center"
+                    :class="
+                        item.stock
+                            ? 'font-semibold text-blue-500'
+                            : 'text-gray-500 dark:text-slate-400'
+                    "
+                    data-label="Stock"
                 >
                     {{ item.stock ? item.stock : "N/A" }}
                 </td>
@@ -377,15 +472,58 @@ const submitDelete = (password) => {
                             ? 'text-green-500 font-semibold'
                             : 'text-gray-500 dark:text-slate-400'
                     "
+                    data-label="Preço"
                 >
                     {{ item.price ? item.price + "€" : "N/A" }}
+                </td>
+                <td data-label="Ativo" class="text-center">
+                    <PillTag
+                        v-if="item.active == '1'"
+                        class="justify-center"
+                        label="Sim"
+                        color="success"
+                        :icon="mdiCheck"
+                        outline
+                    />
+                    <PillTag
+                        v-else
+                        class="justify-center"
+                        label="Não"
+                        color="warning"
+                        :icon="mdiClose"
+                        outline
+                    />
                 </td>
                 <td
                     class="before:hidden lg:w-1 whitespace-nowrap place-content-center"
                 >
                     <BaseButtons type="justify-start lg:justify-end" no-wrap>
                         <BaseButton
+                            v-if="item.active == '0'"
+                            color="success"
+                            title="Adicionar ao Menu"
+                            :icon="mdiBookPlus"
+                            small
+                            @click="
+                                isModalAssociateActive = true;
+                                selected = item.id;
+                                selectedService = item.type == 'O' ? 2 : 3;
+                            "
+                        />
+                        <BaseButton
+                            v-else
                             color="warning"
+                            title="Remover do Menu"
+                            :icon="mdiBookRemove"
+                            small
+                            @click="
+                                isModalDissociateActive = true;
+                                selected = item.id;
+                                selectedService = item.type == 'O' ? 2 : 3;
+                            "
+                        />
+                        <BaseButton
+                            color="info"
                             title="Editar"
                             :icon="mdiRename"
                             small
@@ -402,17 +540,6 @@ const submitDelete = (password) => {
                             small
                             @click="
                                 isModalDeleteActive = true;
-                                selected = item.id;
-                            "
-                        />
-                        <BaseButton
-                            v-else
-                            color="danger"
-                            title="Desassociar"
-                            :icon="mdiLayersRemove"
-                            small
-                            @click="
-                                isModalDissociateActive = true;
                                 selected = item.id;
                             "
                         />

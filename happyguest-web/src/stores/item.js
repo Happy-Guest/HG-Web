@@ -67,6 +67,28 @@ export const useItemStore = defineStore("item", () => {
         }
     }
 
+    async function associateItem(itemId, serviceId) {
+        try {
+            let response = await axios.post(
+                "items/" + itemId + "/service/" + serviceId + "/associate"
+            );
+            return response;
+        } catch (error) {
+            return error.response;
+        }
+    }
+
+    async function dissociateItem(itemId, serviceId) {
+        try {
+            let response = await axios.delete(
+                "items/" + itemId + "/service/" + serviceId + "/disassociate"
+            );
+            return response;
+        } catch (error) {
+            return error.response;
+        }
+    }
+
     function clearStore() {
         items.value = [];
         lastPage.value = null;
@@ -84,6 +106,8 @@ export const useItemStore = defineStore("item", () => {
         getItem,
         getItems,
         deleteItem,
+        associateItem,
+        dissociateItem,
         clearStore,
     };
 });

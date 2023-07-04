@@ -127,7 +127,7 @@ const pagesList = computed(() => {
                 </td>
                 <td
                     data-label="Cliente"
-                    class="text-center text-gray-500 dark:text-slate-400 font-semibold"
+                    class="text-center"
                 >
                     {{ order.user }}
                 </td>

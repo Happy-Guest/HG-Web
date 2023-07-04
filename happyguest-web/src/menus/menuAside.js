@@ -105,12 +105,12 @@ export default [
         middleware: ["A", "M"],
         to: "/orders",
         label: "Pedidos",
-        icon: mdiReceiptClock,
+        icon: mdiBookClock,
     },
     {
         middleware: ["A", "M"],
         //to: "/checkouts",
         label: "Reservas",
-        icon: mdiBookClock,
+        icon: mdiReceiptClock,
     },
 ];

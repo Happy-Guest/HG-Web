@@ -23,7 +23,7 @@ import {
     mdiOrderNumericDescending,
     mdiOrderNumericAscending,
     mdiFilterMultiple,
-    mdiTagPlus,
+    mdiBookPlus,
     mdiEye,
 } from "@mdi/js";
 import LayoutAuthenticated from "@/layouts/LayoutAuthenticated.vue";
@@ -567,8 +567,8 @@ const onFileChange = (e) => {
                         />
                         <BaseButtons class="justify-center">
                             <BaseButton
-                                :icon="mdiTagPlus"
-                                label="Associar"
+                                :icon="mdiBookPlus"
+                                label="Adicionar"
                                 class="mt-2 lg:mt-0"
                                 color="success"
                                 rounded-full

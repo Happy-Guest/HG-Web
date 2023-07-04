@@ -1,6 +1,6 @@
 <script setup>
 import {
-    mdiReceiptClock,
+    mdiBookClock,
     mdiOrderNumericDescending,
     mdiOrderNumericAscending,
     mdiFilterMultiple,
@@ -17,7 +17,7 @@ import { useOrderStore } from "@/stores/order";
 
 const orderStore = useOrderStore();
 
-const hasorders = ref(false);
+const hasOrders = ref(false);
 
 const selectOptionsFilter = [
     { value: "ALL", label: "Todos" },
@@ -26,7 +26,7 @@ const selectOptionsFilter = [
     { value: "W", label: "A Preparar" },
     { value: "DL", label: "Entregues" },
     { value: "C", label: "Cancelados" },
-    { value: "D", label: "Apagados" },
+    { value: "D", label: "Eliminados" },
 ];
 
 const selectOptionsOrder = [
@@ -38,12 +38,12 @@ const filter = ref(selectOptionsFilter[0]);
 const order = ref(selectOptionsOrder[0]);
 
 onMounted(async () => {
-    hasorders.value = await orderStore.getOrders(0, filter.value.value);
+    hasOrders.value = await orderStore.getOrders(0, filter.value.value);
 });
 
 watch(filter, async (value) => {
     if (value.value != orderStore.filterTable) {
-        hasorders.value = await orderStore.getOrders(0, value.value);
+        hasOrders.value = await orderStore.getOrders(0, value.value);
         setTimeout(() => {
             orderStore.filterTable = value.value;
         }, 200);
@@ -74,7 +74,7 @@ watchEffect(() => {
 <template>
     <LayoutAuthenticated>
         <SectionMain>
-            <SectionTitleLine :icon="mdiReceiptClock" :title="'Pedidos'" main>
+            <SectionTitleLine :icon="mdiBookClock" :title="'Pedidos'" main>
                 <div class="flex mr-0 sm:mr-12 lg:mr-8">
                     <div class="flex flex-col lg:flex-row">
                         <b class="my-auto mr-4">Ordenar:</b>
@@ -102,7 +102,7 @@ watchEffect(() => {
             </SectionTitleLine>
             <CardBox class="mb-6" has-table>
                 <TableOrders
-                    v-if="hasorders"
+                    v-if="hasOrders"
                     :filter="filter.value"
                     :order-filter="order.value"
                 />

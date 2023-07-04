@@ -20,7 +20,7 @@ import { useItemStore } from "@/stores/item";
 
 const itemStore = useItemStore();
 
-const hasitems = ref(false);
+const hasItems = ref(false);
 //const newItem = ref(null);
 
 const isModalActiveCreate = ref(false);
@@ -49,12 +49,12 @@ const filter = ref(selectOptionsFilter[0]);
 const order = ref(selectOptionsOrder[0]);
 
 onMounted(async () => {
-    hasitems.value = await itemStore.getItems(0, filter.value.value);
+    hasItems.value = await itemStore.getItems(0, filter.value.value);
 });
 
 watch(filter, async (value) => {
     if (value.value != itemStore.filterTable) {
-        hasitems.value = await itemStore.getItems(0, value.value);
+        hasItems.value = await itemStore.getItems(0, value.value);
         setTimeout(() => {
             itemStore.filterTable = value.value;
         }, 200);
@@ -133,8 +133,7 @@ watchEffect(() => {
             </SectionTitleLine>
             <CardBox class="mb-6" has-table>
                 <TableItems
-                    v-if="hasitems"
-                    :name-e-n="true"
+                    v-if="hasItems"
                     :filter="filter.value"
                     :order="order.value"
                 />
