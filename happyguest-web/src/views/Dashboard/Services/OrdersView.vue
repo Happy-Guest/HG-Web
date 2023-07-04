@@ -21,6 +21,9 @@ const hasOrders = ref(false);
 
 const selectOptionsFilter = [
     { value: "ALL", label: "Todos" },
+    { value: "OC", label: "Limpezas" },
+    { value: "OB", label: "P. Objetos" },
+    { value: "OF", label: "P. Alimentos" },
     { value: "P", label: "Pendentes" },
     { value: "R", label: "Rejeitados" },
     { value: "W", label: "A Preparar" },

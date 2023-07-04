@@ -8,6 +8,10 @@ import {
     mdiClose,
     mdiTrashCan,
     mdiRename,
+    mdiVacuum,
+    mdiFood,
+    mdiPaperRoll,
+    mdiNewspaperVariant,
 } from "@mdi/js";
 import BaseLevel from "@/components/Bases/BaseLevel.vue";
 import BaseButtons from "@/components/Bases/BaseButtons.vue";
@@ -110,8 +114,8 @@ const pagesList = computed(() => {
             <tr>
                 <th>ID:</th>
                 <th>Cliente:</th>
-                <th>Serviço:</th>
                 <th>Quarto:</th>
+                <th>Serviço:</th>
                 <th>Estado:</th>
                 <th>Horário:</th>
                 <th />
@@ -125,23 +129,40 @@ const pagesList = computed(() => {
                 >
                     {{ order.id }}
                 </td>
-                <td
-                    data-label="Cliente"
-                    class="text-center"
-                >
+                <td data-label="Cliente">
                     {{ order.user }}
                 </td>
-                <td
-                    data-label="Serviço"
-                    class="text-center text-gray-500 dark:text-slate-400 font-semibold"
-                >
-                    {{ order.service }}
+                <td data-label="Quarto" class="text-center font-semibold">
+                    <PillTag
+                        class="justify-center ml-2 font-semibold"
+                        :label="order.room"
+                        color="info"
+                    />
                 </td>
-                <td
-                    data-label="Quarto"
-                    class="text-center text-gray-500 dark:text-slate-400 font-semibold"
-                >
-                    {{ order.room }}
+                <td data-label="Serviço" class="text-center font-semibold">
+                    <PillTag
+                        class="justify-center"
+                        :label="order.service.name"
+                        :color="
+                            order.service.type == 'C'
+                                ? 'contrast'
+                                : order.service.type == 'F'
+                                ? 'warning'
+                                : order.service.type == 'B'
+                                ? 'success'
+                                : 'info'
+                        "
+                        :icon="
+                            order.service.type == 'C'
+                                ? mdiVacuum
+                                : order.service.type == 'F'
+                                ? mdiFood
+                                : order.service.type == 'B'
+                                ? mdiPaperRoll
+                                : mdiNewspaperVariant
+                        "
+                        outline
+                    />
                 </td>
                 <td data-label="Estado" class="text-center">
                     <PillTag
@@ -171,13 +192,12 @@ const pagesList = computed(() => {
                         label="Rejeitado"
                         color="danger"
                         :icon="mdiCheck"
-                        outline
                     />
                     <PillTag
                         v-else
                         class="justify-center"
                         label="Cancelado"
-                        color="danger"
+                        color="contrast"
                         :icon="mdiClose"
                     />
                 </td>

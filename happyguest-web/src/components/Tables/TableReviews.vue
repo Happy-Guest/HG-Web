@@ -195,7 +195,7 @@ const submitDelete = (password) => {
         <thead>
             <tr>
                 <th>ID:</th>
-                <th>ID Cliente:</th>
+                <th>Cliente:</th>
                 <th>Estrelas:</th>
                 <th>Autorização:</th>
                 <th>Partilhada:</th>
