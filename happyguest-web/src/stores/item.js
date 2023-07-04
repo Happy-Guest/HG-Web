@@ -54,6 +54,15 @@ export const useItemStore = defineStore("item", () => {
         return await loadItems(page, filter, order);
     }
 
+    async function updateItem(id, data) {
+        try {
+            let response = await axios.patch("items/" + id, data);
+            return response;
+        } catch (error) {
+            return error.response;
+        }
+    }
+
     async function deleteItem(itemId, data) {
         try {
             let response = await axios.delete("items/" + itemId, {
@@ -61,6 +70,15 @@ export const useItemStore = defineStore("item", () => {
                     password: data,
                 },
             });
+            return response;
+        } catch (error) {
+            return error.response;
+        }
+    }
+
+    async function registerItem(item) {
+        try {
+            let response = await axios.post("items", item);
             return response;
         } catch (error) {
             return error.response;
@@ -105,7 +123,9 @@ export const useItemStore = defineStore("item", () => {
         orderTable,
         getItem,
         getItems,
+        updateItem,
         deleteItem,
+        registerItem,
         associateItem,
         dissociateItem,
         clearStore,

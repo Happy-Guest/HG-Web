@@ -169,6 +169,7 @@ watch(
                         id="client"
                         v-model="form.user.id"
                         :icon="mdiAccount"
+                        type="number"
                         class="w-10/12 flex flex-initial"
                         name="Client"
                         required

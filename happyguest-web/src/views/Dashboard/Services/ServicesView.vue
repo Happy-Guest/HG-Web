@@ -266,11 +266,11 @@ const onFileChange = (e) => {
                     <FormField
                         label="Nome do Serviço"
                         class="w-full md:w-2/4 mb-4 sm:mb-0"
-                        label-for="name"
+                        label-for="nameService"
                         help="O nome do serviço. Obrigatório."
                     >
                         <FormControl
-                            id="name"
+                            id="nameService"
                             :model-value="service?.name"
                             :icon="mdiText"
                             name="name"
@@ -282,11 +282,11 @@ const onFileChange = (e) => {
                     <FormField
                         label="Nome do Serviço (Inglês)"
                         class="w-full md:w-2/4 mb-4 sm:mb-0"
-                        label-for="nameEN"
+                        label-for="nameServiceEN"
                         help="O nome do serviço em inglês. Obrigatório."
                     >
                         <FormControl
-                            id="nameEN"
+                            id="nameServiceEN"
                             :model-value="service?.nameEN"
                             :icon="mdiText"
                             name="nameEN"

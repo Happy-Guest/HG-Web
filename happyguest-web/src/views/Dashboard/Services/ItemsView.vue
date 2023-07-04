@@ -4,7 +4,7 @@ import {
     mdiOrderNumericDescending,
     mdiOrderNumericAscending,
     mdiFilterMultiple,
-    mdiPlusBoxMultiple,
+    mdiFilePlus,
 } from "@mdi/js";
 import LayoutAuthenticated from "@/layouts/LayoutAuthenticated.vue";
 import SectionMain from "@/components/Sections/SectionMain.vue";
@@ -13,6 +13,7 @@ import CardBoxComponentEmpty from "@/components/CardBoxs/CardBoxComponentEmpty.v
 import TableItems from "@/components/Tables/TableItems.vue";
 import FormControl from "@/components/Forms/FormControl.vue";
 import CardBox from "@/components/CardBoxs/CardBox.vue";
+import CardBoxItem from "@/components/CardBoxsCustom/CardBoxItem.vue";
 import BaseButton from "@/components/Bases/BaseButton.vue";
 import BaseButtons from "@/components/Bases/BaseButtons.vue";
 import { onMounted, ref, watchEffect, watch } from "vue";
@@ -21,7 +22,7 @@ import { useItemStore } from "@/stores/item";
 const itemStore = useItemStore();
 
 const hasItems = ref(false);
-//const newItem = ref(null);
+const newItem = ref(null);
 
 const isModalActiveCreate = ref(false);
 
@@ -84,11 +85,11 @@ watchEffect(() => {
 
 <template>
     <LayoutAuthenticated>
-        <!-- <CardBoxItem
+        <CardBoxItem
             :active="isModalActiveCreate"
             @update:active="isModalActiveCreate = $event"
             @updated="newItem = $event"
-        /> -->
+        />
         <SectionMain>
             <SectionTitleLine
                 :icon="mdiBookOpenPageVariant"
@@ -119,7 +120,7 @@ watchEffect(() => {
                         />
                         <BaseButtons class="justify-center">
                             <BaseButton
-                                :icon="mdiPlusBoxMultiple"
+                                :icon="mdiFilePlus"
                                 label="Criar"
                                 class="mt-2 lg:mt-0"
                                 color="success"
@@ -134,6 +135,7 @@ watchEffect(() => {
             <CardBox class="mb-6" has-table>
                 <TableItems
                     v-if="hasItems"
+                    :new-item="newItem"
                     :filter="filter.value"
                     :order="order.value"
                 />

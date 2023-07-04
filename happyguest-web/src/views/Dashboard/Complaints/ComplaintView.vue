@@ -428,6 +428,7 @@ watch(
                             v-model="form.user.id"
                             :icon="mdiAccount"
                             name="Client"
+                            type="number"
                             :disabled="selected ? true : false || anonymous"
                             :required="anonymous ? false : true"
                             :class="

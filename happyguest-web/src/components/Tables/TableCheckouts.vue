@@ -140,6 +140,7 @@ const pagesList = computed(() => {
     }
     return pagesList[parseInt(currentPage.value / 10)];
 });
+
 const validateCheckout = async () => {
     await checkoutStore.validateCheckout(selectedView.value);
     isModalValidateActive.value = false;

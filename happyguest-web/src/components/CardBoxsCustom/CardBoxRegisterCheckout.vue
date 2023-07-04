@@ -167,6 +167,7 @@ watch(
                     <FormControl
                         id="client"
                         v-model="form.user.id"
+                        type="number"
                         :icon="mdiAccount"
                         class="w-10/12 flex flex-initial"
                         name="Client"

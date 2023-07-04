@@ -25,6 +25,7 @@ import BaseButtons from "@/components/Bases/BaseButtons.vue";
 import BaseButton from "@/components/Bases/BaseButton.vue";
 import NotificationBar from "@/components/Others/NotificationBar.vue";
 import CardBoxModal from "@/components/CardBoxs/CardBoxModal.vue";
+import CardBoxItem from "@/components/CardBoxsCustom/CardBoxItem.vue";
 import PillTag from "@/components/PillTags/PillTag.vue";
 import { useServiceStore } from "@/stores/service";
 import { useItemStore } from "@/stores/item";
@@ -60,6 +61,10 @@ const props = defineProps({
     order: {
         type: String,
         default: "DESC",
+    },
+    newItem: {
+        type: Boolean,
+        default: false,
     },
 });
 
@@ -99,6 +104,15 @@ onMounted(async () => {
 });
 
 watch(
+    () => props.newItem,
+    (value) => {
+        if (value) {
+            updateModal(null, value);
+        }
+    }
+);
+
+watch(
     () => isModalDeleteActive.value,
     (value) => {
         if (value) {
@@ -106,6 +120,26 @@ watch(
         }
     }
 );
+
+function updateModal(resItem, newItem) {
+    isSuccessNotifActive.value = true;
+    isModalActive.value = false;
+    itemStore.updateTable = true;
+    if (newItem) {
+        notifText.value = "Item criado com sucesso!";
+    } else {
+        items.value = items.value.map((item) => {
+            if (item.id == resItem.id) {
+                item = resItem;
+            }
+            return item;
+        });
+        notifText.value = "Item atualizado com sucesso!";
+    }
+    setTimeout(() => {
+        isSuccessNotifActive.value = false;
+    }, 5000);
+}
 
 async function reloadTable() {
     itemStore.clearStore();
@@ -329,6 +363,12 @@ const submitDissociate = () => {
     >
         <p>Tem a certeza que <b>deseja remover</b> o item?</p>
     </CardBoxModal>
+    <CardBoxItem
+        :selected="selected"
+        :active="isModalActive"
+        @update:active="isModalActive = $event"
+        @updated="updateModal($event)"
+    />
     <table class="w-full">
         <thead>
             <tr>
