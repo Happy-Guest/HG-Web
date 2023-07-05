@@ -76,6 +76,15 @@ export const useOrderStore = defineStore("order", () => {
         }
     }
 
+    async function updateStatus(id, data) {
+        try {
+            const response = await axios.patch("orders/" + id, data);
+            return response;
+        } catch (error) {
+            return error;
+        }
+    }
+
     function clearStore() {
         orders.value = [];
         lastPage.value = null;
@@ -95,5 +104,6 @@ export const useOrderStore = defineStore("order", () => {
         clearStore,
         registerOrder,
         deleteOrder,
+        updateStatus,
     };
 });

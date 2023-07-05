@@ -8,16 +8,17 @@ import {
     mdiTextBox,
     mdiPackageCheck,
     mdiListStatus,
+    mdiCog,
 } from "@mdi/js";
 import CardBoxModal from "@/components/CardBoxs/CardBoxModal.vue";
 import FormControl from "@/components/Forms/FormControl.vue";
 import FormField from "@/components/Forms/FormField.vue";
-import { useReserveStore } from "@/stores/reserve";
+import { useOrderStore } from "@/stores/order";
 import PillTag from "../PillTags/PillTag.vue";
 import BaseDivider from "../Bases/BaseDivider.vue";
 
-const reserveStore = useReserveStore();
-const reserve = ref([]);
+const orderStore = useOrderStore();
+const order = ref([]);
 
 const isModalActive = ref(false);
 
@@ -42,11 +43,11 @@ watch(
     () => props.selected,
     (value) => {
         resErrors.value = [];
-        reserveStore.getReserve(value).then((response) => {
-            reserve.value = response;
-            form.value.comment = reserve.value.comment;
+        orderStore.getOrder(value).then((response) => {
+            order.value = response;
+            form.value.comment = order.value.comment;
             form.value.status = selectStatus.find(
-                (status) => status.value == reserve.value.status
+                (status) => status.value == order.value.status
             );
         });
     }
@@ -59,21 +60,22 @@ const form = ref({
 
 const selectStatus = [
     { id: 0, label: "Pendente", value: "P", icon: mdiClockTimeTwoOutline },
-    { id: 1, label: "Aceite", value: "A", icon: mdiPackageCheck },
-    { id: 2, label: "Rejeitada", value: "R", icon: mdiCheck },
-    { id: 3, label: "Cancelada", value: "C", icon: mdiClose },
+    { id: 1, label: "A preparar", value: "W", icon: mdiCog },
+    { id: 2, label: "Entregue", value: "DL", icon: mdiPackageCheck },
+    { id: 3, label: "Rejeitada", value: "R", icon: mdiCheck },
+    { id: 4, label: "Cancelada", value: "C", icon: mdiClose },
 ];
 
 const updateStatus = () => {
-    reserveStore
-        .updateStatus(reserve.value.id, {
+    orderStore
+        .updateStatus(order.value.id, {
             comment: form.value.comment,
             status: form.value.status.value,
         })
         .then((response) => {
             if (response.status == 200) {
-                reserve.value.status = response.data.reserve.status;
-                reserve.value.response = response.data.reserve.comment;
+                order.value.status = response.data.order.status;
+                order.value.response = response.data.order.comment;
                 emit("updated", true);
                 emit("update:active", false);
             } else {
@@ -86,7 +88,7 @@ const updateStatus = () => {
 <template>
     <CardBoxModal
         v-model="isModalActive"
-        :title="'Atualizar Estado Reserva ➯ ' + reserve?.id"
+        :title="'Atualizar Estado Pedido ➯ ' + order?.id"
         :icon-title="mdiListStatus"
         :button-label="'Atualizar'"
         button="warning"
@@ -100,37 +102,49 @@ const updateStatus = () => {
         <div class="mb-5">
             <div class="flex justify-between">
                 <div>
-                    <p><b>Cliente: </b>{{ reserve.user?.name }}</p>
-                    <p><b>Serviço: </b>{{ reserve.service?.name }}</p>
-                    <p><b>Nº Pessoas: </b>{{ reserve?.nr_people }}</p>
-                    <p><b>Horário: </b>{{ reserve?.time }}</p>
+                    <p><b>Cliente: </b>{{ order.user?.name }}</p>
+                    <p><b>Serviço: </b>{{ order.service?.name }}</p>
+                    <p><b>Quarto: </b>{{ order?.room }}</p>
+                    <p v-if="order.service?.type == 'F'">
+                        <b>Alimentos: </b>{{ order?.items }}
+                    </p>
+                    <p v-else-if="order.service?.type == 'B'">
+                        <b>Objetos: </b>{{ order?.items }}
+                    </p>
                 </div>
                 <div class="my-auto mr-4">
                     <PillTag
-                        v-if="reserve.status == 'P'"
+                        v-if="order.status == 'P'"
                         class="justify-center"
                         label="Pendente"
                         color="info"
                         :icon="mdiClockTimeTwoOutline"
                     />
                     <PillTag
-                        v-else-if="reserve.status == 'A'"
+                        v-else-if="order.status == 'W'"
                         class="justify-center"
-                        label="Aceite"
+                        label="A preparar"
+                        color="warning"
+                        :icon="mdiCog"
+                    />
+                    <PillTag
+                        v-else-if="order.status == 'DL'"
+                        class="justify-center"
+                        label="Entregue"
                         color="success"
                         :icon="mdiPackageCheck"
                     />
                     <PillTag
-                        v-else-if="reserve.status == 'R'"
+                        v-else-if="order.status == 'R'"
                         class="justify-center"
-                        label="Rejeitada"
+                        label="Rejeitado"
                         color="danger"
                         :icon="mdiCheck"
                     />
                     <PillTag
                         v-else
                         class="justify-center"
-                        label="Cancelada"
+                        label="Cancelado"
                         color="contrast"
                         :icon="mdiClose"
                     />
@@ -142,7 +156,7 @@ const updateStatus = () => {
 
         <FormField
             label="Estado"
-            help="Selecione o estado da reserva. Obrigatório."
+            help="Selecione o estado do pedido. Obrigatório."
             label-for="status"
         >
             <FormControl

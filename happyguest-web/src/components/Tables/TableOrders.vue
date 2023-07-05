@@ -22,6 +22,7 @@ import BaseButton from "@/components/Bases/BaseButton.vue";
 import PillTag from "@/components/PillTags/PillTag.vue";
 import CardBoxModal from "../CardBoxs/CardBoxModal.vue";
 import NotificationBar from "@/components/Others/NotificationBar.vue";
+import CardBoxStatusOrder from "../CardBoxsCustom/CardBoxStatusOrder.vue";
 import { useOrderStore } from "@/stores/order";
 import { useRouter } from "vue-router";
 
@@ -37,6 +38,8 @@ const currentPage = ref(0);
 const orders = ref([]);
 const numPages = computed(() => orderStore.lastPage);
 const currentPageHuman = computed(() => currentPage.value + 1);
+const isModalActive = ref(false);
+const selectedUpdate = ref(null);
 
 const props = defineProps({
     filter: {
@@ -184,6 +187,12 @@ const submitDelete = (password) => {
     >
         <p>Tem a certeza que <b>deseja remover</b> o pedido?</p>
     </CardBoxModal>
+    <CardBoxStatusOrder
+        :selected="selectedUpdate"
+        :active="isModalActive"
+        @update:active="isModalActive = $event"
+        @updated="orderStore.updateTable = $event"
+    />
     <table class="w-full">
         <thead>
             <tr>
@@ -305,7 +314,7 @@ const submitDelete = (password) => {
                             small
                             @click="
                                 isModalActive = true;
-                                selected = order.id;
+                                selectedUpdate = order.id;
                             "
                         />
                         <BaseButton
