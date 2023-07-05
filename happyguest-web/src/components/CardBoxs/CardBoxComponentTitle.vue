@@ -14,7 +14,7 @@ defineProps({
 </script>
 
 <template>
-    <div class="flex items-center justify-between mb-3">
+    <div class="flex items-center justify-between mb-5">
         <div class="flex items-center">
             <BaseIcon
                 v-if="icon"

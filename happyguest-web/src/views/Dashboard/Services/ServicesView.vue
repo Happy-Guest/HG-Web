@@ -36,10 +36,12 @@ import BaseButtons from "@/components/Bases/BaseButtons.vue";
 import CardBoxComponentEmpty from "@/components/CardBoxs/CardBoxComponentEmpty.vue";
 import NotificationBarInCard from "@/components/Others/NotificationBarInCard.vue";
 import FormValidationErrors from "@/components/Forms/FormValidationErrors.vue";
+import TableItems from "@/components/Tables/TableItems.vue";
+import CardBoxItem from "@/components/CardBoxsCustom/CardBoxItem.vue";
+import CardBoxAssociateItem from "@/components/CardBoxsCustom/CardBoxAssociateItem.vue";
 import { onMounted, ref, watch, watchEffect } from "vue";
 import { useServiceStore } from "@/stores/service";
 import { useRouter } from "vue-router";
-import TableItems from "@/components/Tables/TableItems.vue";
 const serverUrl = import.meta.env.VITE_SERVER_URL;
 
 const router = useRouter();
@@ -49,6 +51,9 @@ const hasItems = ref(false);
 const update = ref(false);
 const service = ref([]);
 const statusService = ref(false);
+
+const isModalActiveCreate = ref(false);
+const isModalAssociateCreate = ref(false);
 
 const selectOptionsFilterObjects = [
     { value: "ALL", label: "Todos" },
@@ -245,6 +250,14 @@ function open(menu_url) {
 
 <template>
     <LayoutAuthenticated>
+        <CardBoxItem
+            :active="isModalActiveCreate"
+            @update:active="isModalActiveCreate = $event"
+        />
+        <CardBoxAssociateItem
+            :active="isModalAssociateCreate"
+            @update:active="isModalAssociateCreate = $event"
+        />
         <SectionMain>
             <SectionTitleLine
                 :icon="serviceIcon(service?.id)"

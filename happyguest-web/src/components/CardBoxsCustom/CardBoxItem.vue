@@ -132,6 +132,13 @@ const registerItem = async () => {
                 emit("update:active", false);
                 emit("updated", true);
                 clearForm();
+                if (form.value.associate) {
+                    itemStore.associateItem(
+                        response.data.item.id,
+                        response.data.item.type == "O" ? 2 : 3
+                    );
+                }
+                resErrors.value = [];
             } else {
                 resErrors.value = response.data.errors;
             }
@@ -183,7 +190,7 @@ const updateItem = async () => {
         has-close
         :errors="resErrors"
         @cancel="emit('update:active', false)"
-        @confirm="props.selected ? updateItem() : registerItem()"
+        @confirm="props.selected != -1 ? updateItem() : registerItem()"
     >
         <FormField flex>
             <FormField
@@ -309,7 +316,7 @@ const updateItem = async () => {
                 v-model="form.associate"
                 class="mt-6 ml-4"
                 name="sample-checkbox"
-                :options="{ true: 'Adicionar ao Menu' }"
+                :options="{ true: 'Adicionar ao Menu Atual' }"
             />
         </FormField>
     </CardBoxModal>
