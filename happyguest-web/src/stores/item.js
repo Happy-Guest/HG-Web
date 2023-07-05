@@ -85,11 +85,21 @@ export const useItemStore = defineStore("item", () => {
         }
     }
 
-    async function associateItem(itemId, serviceId) {
+    async function associateItem(itemId, serviceId, data) {
         try {
-            let response = await axios.post(
-                "items/" + itemId + "/service/" + serviceId + "/associate"
-            );
+            let response;
+            if (itemId == null) {
+                response = await axios.post(
+                    "items/0/service/" + serviceId + "/associate",
+                    {
+                        items: data,
+                    }
+                );
+            } else {
+                response = await axios.post(
+                    "items/" + itemId + "/service/" + serviceId + "/associate"
+                );
+            }
             return response;
         } catch (error) {
             return error.response;

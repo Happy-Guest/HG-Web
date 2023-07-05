@@ -101,7 +101,7 @@ const registerCheckout = async () => {
                 emit("updated", true);
                 clear();
             } else if (response.status == 401) {
-                resErrors.value = response.data.message;
+                resErrors.value.push([response.data.message]);
             } else {
                 resErrors.value = response.data.errors;
             }

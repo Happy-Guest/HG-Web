@@ -7,6 +7,7 @@ import {
     mdiCursorText,
     mdiBookOpenPageVariant,
     mdiCancel,
+    mdiReload,
 } from "@mdi/js";
 import CardBoxModal from "@/components/CardBoxs/CardBoxModal.vue";
 import BaseButton from "@/components/Bases/BaseButton.vue";
@@ -24,8 +25,9 @@ const serviceId = ref();
 
 const isModalActive = ref(false);
 
-const resMessage = ref("");
+const notifText = ref("");
 const resErrors = ref([]);
+const resMessage = ref("");
 
 const props = defineProps({
     serviceId: {
@@ -108,6 +110,25 @@ function addItem() {
         itemName.value = "";
     }
 }
+
+function registerServiceItems() {
+    if (form.value.items.length) {
+        itemStore
+            .associateItem(null, serviceId.value, form.value.items)
+            .then((response) => {
+                notifText.value = response.data.message;
+                if (response.status === 200) {
+                    emit("updated");
+                    emit("update:active", false);
+                } else {
+                    resErrors.value.push([response.data.message]);
+                }
+            })
+            .catch(() => {
+                notifText.value = "Ocorreu um erro ao associar os itens.";
+            });
+    }
+}
 </script>
 
 <template>
@@ -144,7 +165,7 @@ function addItem() {
                 />
                 <BaseButtons>
                     <BaseButton
-                        color="info"
+                        color="success"
                         class="w-10 h-10 my-auto flex-initial mb-4"
                         :icon="!validItem ? mdiCancel : mdiBookPlus"
                         small
@@ -174,11 +195,13 @@ function addItem() {
         <FormField
             label="Item(s) Selecionado(s)"
             help="Os itens selecionados para o serviço. Obrigatório."
-            class="w-full"
+            class="w-full mb-4 sm:mb-0"
             label-for="items"
+            flex
         >
             <FormControl
                 id="items"
+                class="w-11/12 flex flex-initial"
                 :model-value="form.items.join(', ')"
                 :icon="mdiBookOpenPageVariant"
                 :placeholder="
@@ -186,7 +209,21 @@ function addItem() {
                 "
                 name="items"
                 disabled
+                required
             />
+            <BaseButtons>
+                <BaseButton
+                    color="danger"
+                    class="w-10 h-10 my-auto flex-initial mb-4"
+                    :icon="!form.items.length > 0 ? mdiCancel : mdiReload"
+                    small
+                    outline
+                    rounded-full
+                    title="Adicionar Item"
+                    :disabled="!form.items.length"
+                    @click="form.items = []"
+                />
+            </BaseButtons>
         </FormField>
     </CardBoxModal>
 </template>
