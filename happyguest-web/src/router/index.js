@@ -142,7 +142,7 @@ const routes = [
         },
         path: "/service/:id",
         name: "services",
-        component: () => import("@/views/Dashboard/Services/ServicesView.vue"),
+        component: () => import("@/views/Dashboard/ServicesView.vue"),
     },
     {
         meta: {
@@ -151,7 +151,7 @@ const routes = [
         },
         path: "/items",
         name: "items",
-        component: () => import("@/views/Dashboard/Services/ItemsView.vue"),
+        component: () => import("@/views/Dashboard/ItemsView.vue"),
     },
     {
         meta: {

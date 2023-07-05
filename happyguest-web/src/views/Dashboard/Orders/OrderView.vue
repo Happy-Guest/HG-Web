@@ -32,7 +32,6 @@ import FormField from "@/components/Forms/FormField.vue";
 import BaseButtons from "@/components/Bases/BaseButtons.vue";
 import BaseButton from "@/components/Bases/BaseButton.vue";
 import { useOrderStore } from "@/stores/order";
-import { useServiceStore } from "@/stores/service";
 import { useUserStore } from "@/stores/user";
 import { useRouter } from "vue-router";
 import { useItemStore } from "@/stores/item";
@@ -41,7 +40,6 @@ const itemStore = useItemStore();
 const userStore = useUserStore();
 const router = useRouter();
 const orderStore = useOrderStore();
-const serviceStore = useServiceStore();
 
 const resMessage = ref("");
 const resErrors = ref([]);
@@ -99,12 +97,7 @@ const form = ref({
     time: "",
     status: "P",
     service: selectService[0],
-    items: [
-        {
-            id: "",
-            quantity: "",
-        },
-    ],
+    items: [],
     price: "",
     comment: null,
 });
@@ -172,6 +165,7 @@ const registerOrder = async () => {
             resMessage.value = "Ocorreu um erro ao registar um pedido.";
         });
 };
+
 const rooms = ref([]);
 
 watch(
@@ -201,24 +195,6 @@ watch(
     }
 );
 
-const itemsService = ref([{ value: "", label: "" }]);
-
-watch(
-    () => form.value.service,
-    async (value) => {
-        itemsService.value = [];
-        await serviceStore.getService(value.value).then((response) => {
-            for (let index = 0; index < response.items.length; index++) {
-                const item = response.items[index];
-                itemsService.value[index] = {
-                    value: item.id,
-                    label: item.name,
-                };
-            }
-        });
-    }
-);
-
 const itemId = ref();
 const itemName = ref();
 const itemQuantity = ref();
@@ -228,6 +204,7 @@ watch(
     () => itemId.value,
     (value) => {
         if (value) {
+            itemQuantity.value = "1";
             itemStore
                 .getItem(value)
                 .then((response) => {
@@ -263,7 +240,12 @@ watch(
 );
 
 function addItem() {
-    if (itemId.value && validItem.value) {
+    if (
+        itemId.value != "" &&
+        itemQuantity.value != "" &&
+        validItem.value &&
+        !form.value.items.id.includes(itemId.value)
+    ) {
         form.value.items.push({
             id: itemId.value,
             quantity: itemQuantity.value,
@@ -407,12 +389,18 @@ function addItem() {
                             <BaseButton
                                 color="info"
                                 class="w-10 h-10 my-auto flex-initial mb-4"
-                                :icon="!validItem ? mdiCancel : mdiBookPlus"
+                                :icon="
+                                    !validItem || !itemQuantity
+                                        ? mdiCancel
+                                        : mdiBookPlus
+                                "
                                 small
                                 outline
                                 rounded-full
                                 title="Adicionar Item"
-                                :disabled="!itemId || !validItem"
+                                :disabled="
+                                    !itemId || !validItem || !itemQuantity
+                                "
                                 @click="addItem()"
                             />
                         </BaseButtons>
@@ -446,26 +434,9 @@ function addItem() {
                         />
                     </FormField>
                 </FormField>
-                <FormField
-                    v-if="form.service.value != 1"
-                    label="Item(s) Selecionado(s)"
-                    help="Os itens selecionados para o serviço. Obrigatório."
-                    class="w-full -mt-5"
-                    label-for="items"
-                >
-                    <FormControl
-                        id="items"
-                        :model-value="format()"
-                        :icon="mdiBookOpenPageVariant"
-                        :placeholder="
-                            form.items.length == 0
-                                ? 'Nenhum item selecionado'
-                                : ''
-                        "
-                        name="items"
-                        disabled
-                    />
-                </FormField>
+
+                <!--  TABELA -->
+
                 <FormField
                     label="Horário"
                     help="O horário. Obrigatório."
