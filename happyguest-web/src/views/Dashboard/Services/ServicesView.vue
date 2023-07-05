@@ -448,7 +448,11 @@ function open(menu_url) {
                     />
                 </FormField>
                 <FormField
-                    v-if="service?.type == 'R' || service?.type == 'B' || service?.type == 'F'"
+                    v-if="
+                        service?.type == 'R' ||
+                        service?.type == 'B' ||
+                        service?.type == 'F'
+                    "
                     flex
                 >
                     <FormField

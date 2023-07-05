@@ -81,7 +81,7 @@ onMounted(() => {
                     form.value.user = complaint.value.user;
                 } else {
                     anonymous.value = true;
-                    form.value.user.id = "Sem ID";
+                    form.value.user.id = null;
                     form.value.user.name = "Anónima";
                 }
             });
@@ -94,7 +94,7 @@ watch(
     () => anonymous.value,
     (value) => {
         if (value) {
-            form.value.user.id = "Sem ID";
+            form.value.user.id = null;
             form.value.user.name = "Anónima";
         } else {
             form.value.user.id = "";
@@ -429,6 +429,7 @@ watch(
                             :icon="mdiAccount"
                             name="Client"
                             type="number"
+                            :placeholder="anonymous ? 'Sem ID' : ''"
                             :disabled="selected ? true : false || anonymous"
                             :required="anonymous ? false : true"
                             :class="

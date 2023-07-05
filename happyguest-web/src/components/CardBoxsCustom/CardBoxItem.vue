@@ -21,6 +21,7 @@ import {
 } from "@mdi/js";
 import CardBoxModal from "@/components/CardBoxs/CardBoxModal.vue";
 import FormControl from "@/components/Forms/FormControl.vue";
+import FormCheckRadioGroup from "@/components/Forms/FormCheckRadioGroup.vue";
 import FormField from "@/components/Forms/FormField.vue";
 import { useItemStore } from "@/stores/item";
 import BaseDivider from "../Bases/BaseDivider.vue";
@@ -74,6 +75,7 @@ const form = ref({
     category: "",
     stock: "",
     price: "",
+    associate: false,
 });
 
 function clearForm() {
@@ -301,6 +303,14 @@ const updateItem = async () => {
                     :required="form.type.value === 'F'"
                 />
             </FormField>
+        </FormField>
+        <FormField>
+            <FormCheckRadioGroup
+                v-model="form.associate"
+                class="mt-6 ml-4"
+                name="sample-checkbox"
+                :options="{ true: 'Adicionar ao Menu' }"
+            />
         </FormField>
     </CardBoxModal>
 </template>
