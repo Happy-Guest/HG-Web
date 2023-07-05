@@ -19,6 +19,13 @@ import {
     mdiFoodVariant,
     mdiCursorText,
     mdiTagMultiple,
+    mdiClose,
+    mdiBeer,
+    mdiFoodApple,
+    mdiFoodCroissant,
+    mdiFoodTurkey,
+    mdiHamburger,
+    mdiShower,
 } from "@mdi/js";
 import LayoutAuthenticated from "@/layouts/LayoutAuthenticated.vue";
 import SectionMain from "@/components/Sections/SectionMain.vue";
@@ -30,6 +37,8 @@ import FormControl from "@/components/Forms/FormControl.vue";
 import FormField from "@/components/Forms/FormField.vue";
 import BaseButtons from "@/components/Bases/BaseButtons.vue";
 import BaseButton from "@/components/Bases/BaseButton.vue";
+import PillTag from "@/components/PillTags/PillTag.vue";
+import BaseDivider from "@/components/Bases/BaseDivider.vue";
 import { useOrderStore } from "@/stores/order";
 import { useUserStore } from "@/stores/user";
 import { useRouter } from "vue-router";
@@ -39,13 +48,16 @@ const itemStore = useItemStore();
 const userStore = useUserStore();
 const router = useRouter();
 const orderStore = useOrderStore();
-
 const resMessage = ref("");
 const resErrors = ref([]);
-
 const order = ref([]);
-
 const selected = ref(null);
+const itemName = ref();
+const itemQuantity = ref();
+const itemId = ref();
+const selectedItem = ref(null);
+const validItem = ref(false);
+const rooms = ref([]);
 
 onMounted(() => {
     if (router.currentRoute.value.params?.id) {
@@ -97,7 +109,7 @@ const form = ref({
     status: "P",
     service: selectService[0],
     items: [],
-    price: "",
+    price: 0,
     comment: null,
 });
 
@@ -107,9 +119,8 @@ const clear = () => {
     form.value.room = "";
     form.value.time = "";
     form.value.service = selectService[0];
-    form.value.items.id = "";
-    form.value.items.quantity = "";
-    form.value.price = "";
+    form.value.items = [];
+    form.value.price = 0;
     form.value.comment = null;
     rooms.value = [];
 };
@@ -165,8 +176,6 @@ const registerOrder = async () => {
         });
 };
 
-const rooms = ref([]);
-
 watch(
     () => form.value.user.id,
     (value) => {
@@ -194,11 +203,6 @@ watch(
     }
 );
 
-const itemId = ref();
-const itemName = ref();
-const itemQuantity = ref();
-const validItem = ref(false);
-
 watch(
     () => itemId.value,
     (value) => {
@@ -225,6 +229,7 @@ watch(
                         }
                         validItem.value = true;
                         itemName.value = response.name;
+                        selectedItem.value = response;
                     } else {
                         validItem.value = false;
                         itemName.value = "Item não encontrado!";
@@ -238,20 +243,41 @@ watch(
     }
 );
 
+watch(
+    () => form.value.service.value,
+    () => {
+        itemName.value = "";
+        selectedItem.value = null;
+        form.value.items = [];
+    }
+);
+
 function addItem() {
     if (
-        itemId.value != "" &&
+        selectedItem.value.id != "" &&
         itemQuantity.value != "" &&
         validItem.value &&
-        !form.value.items.id.includes(itemId.value)
+        !form.value.items.some((item) => item.id == selectedItem.value.id)
     ) {
+        const itemPrice = (selectedItem.value.price ?? 0) * itemQuantity.value;
         form.value.items.push({
-            id: itemId.value,
+            id: selectedItem.value.id,
+            name: itemName.value,
+            category: selectedItem.value.category,
             quantity: itemQuantity.value,
+            price: itemPrice,
         });
-        itemId.value = "";
+        form.value.price += itemPrice;
+        selectedItem.value = null;
         itemName.value = "";
+        itemQuantity.value = "";
+        itemId.value = "";
     }
+}
+
+function removeItem(item) {
+    form.value.price -= item.price;
+    form.value.items.splice(form.value.items.indexOf(item), 1);
 }
 </script>
 
@@ -367,79 +393,194 @@ function addItem() {
                         />
                     </FormField>
                 </FormField>
-                <FormField v-if="form.service.value != 1" flex>
-                    <FormField
-                        label="ID Item"
-                        help="O ID do item. Obrigatório."
-                        class="w-full md:w-2/12 mb-4 sm:mb-0"
-                        label-for="item"
-                        no-margin
-                    >
-                        <FormControl
-                            id="item"
-                            v-model="itemId"
-                            :icon="mdiFoodVariant"
-                            name="Item"
-                            type="number"
-                        />
-                    </FormField>
-                    <FormField
-                        label="Quantidade"
-                        help="A quantidade. Obrigatório."
-                        class="w-full md:w-3/12"
-                        label-for="quantity"
-                        flex
-                    >
-                        <FormControl
-                            id="quantity"
-                            v-model="itemQuantity"
-                            class="w-10/12 flex flex-initial"
-                            :icon="mdiTagMultiple"
-                            name="Quantity"
-                            type="number"
-                        />
-                        <BaseButtons>
-                            <BaseButton
-                                color="info"
-                                class="w-10 h-10 my-auto flex-initial mb-4"
-                                :icon="
-                                    !validItem || !itemQuantity
-                                        ? mdiCancel
-                                        : mdiBookPlus
-                                "
-                                small
-                                outline
-                                rounded-full
-                                title="Adicionar Item"
-                                :disabled="
-                                    !itemId || !validItem || !itemQuantity
-                                "
-                                @click="addItem()"
+                <div v-if="form.service.value != 1">
+                    <BaseDivider />
+                    <FormField flex>
+                        <FormField
+                            label="ID Item"
+                            help="O ID do item. Obrigatório."
+                            class="w-full md:w-2/12 mb-4 sm:mb-0"
+                            label-for="item"
+                            no-margin
+                        >
+                            <FormControl
+                                id="item"
+                                v-model="itemId"
+                                :icon="mdiFoodVariant"
+                                name="Item"
+                                type="number"
                             />
-                        </BaseButtons>
+                        </FormField>
+                        <FormField
+                            label="Quantidade"
+                            help="A quantidade. Obrigatório."
+                            class="w-full md:w-3/12"
+                            label-for="quantity"
+                            flex
+                        >
+                            <FormControl
+                                id="quantity"
+                                v-model="itemQuantity"
+                                class="w-10/12 flex flex-initial"
+                                :icon="mdiTagMultiple"
+                                name="Quantity"
+                                type="number"
+                            />
+                            <BaseButtons>
+                                <BaseButton
+                                    color="success"
+                                    class="w-10 h-10 my-auto flex-initial mb-4"
+                                    :icon="
+                                        !validItem || !itemQuantity
+                                            ? mdiCancel
+                                            : mdiBookPlus
+                                    "
+                                    small
+                                    outline
+                                    rounded-full
+                                    title="Adicionar Item"
+                                    :disabled="
+                                        !itemId || !validItem || !itemQuantity
+                                    "
+                                    @click="addItem()"
+                                />
+                            </BaseButtons>
+                        </FormField>
+                        <FormField
+                            label="Nome Item"
+                            help="O nome do item selecionado. Automático."
+                            class="w-full md:w-7/12"
+                            label-for="itemName"
+                        >
+                            <FormControl
+                                id="itemName"
+                                v-model="itemName"
+                                :icon="mdiCursorText"
+                                name="Item"
+                                disabled
+                            />
+                        </FormField>
                     </FormField>
-                    <FormField
-                        label="Nome Item"
-                        help="O nome do item selecionado. Automático."
-                        class="w-full md:w-7/12"
-                        label-for="itemName"
-                    >
-                        <FormControl
-                            id="itemName"
-                            v-model="itemName"
-                            :icon="mdiCursorText"
-                            name="Item"
-                            disabled
-                        />
-                    </FormField>
-                </FormField>
-
-                <!--  TABELA -->
-
+                    <table v-if="form.items.length" class="w-full -mt-5">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Nome</th>
+                                <th>Categoria</th>
+                                <th>Quantidade</th>
+                                <th>Preço</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr
+                                v-for="(item, index) in form.items"
+                                :key="index"
+                            >
+                                <td>{{ item.id }}</td>
+                                <td>{{ item.name }}</td>
+                                <td class="text-center">
+                                    <PillTag
+                                        v-if="item.category == 'drink'"
+                                        class="justify-center"
+                                        label="Bebida"
+                                        color="warning"
+                                        :icon="mdiBeer"
+                                        outline
+                                        small
+                                    />
+                                    <PillTag
+                                        v-else-if="item.category == 'snack'"
+                                        class="justify-center"
+                                        label="Lanche"
+                                        color="success"
+                                        :icon="mdiFoodApple"
+                                        outline
+                                        small
+                                    />
+                                    <PillTag
+                                        v-else-if="item.category == 'breakfast'"
+                                        class="justify-center w-32"
+                                        label="P. Almoço"
+                                        color="info"
+                                        :icon="mdiFoodCroissant"
+                                        outline
+                                        small
+                                    />
+                                    <PillTag
+                                        v-else-if="item.category == 'lunch'"
+                                        class="justify-center"
+                                        label="Almoço"
+                                        color="contrast"
+                                        :icon="mdiFoodTurkey"
+                                        outline
+                                        small
+                                    />
+                                    <PillTag
+                                        v-else-if="item.category == 'dinner'"
+                                        class="justify-center"
+                                        label="Jantar"
+                                        color="danger"
+                                        :icon="mdiHamburger"
+                                        outline
+                                        small
+                                    />
+                                    <PillTag
+                                        v-else-if="item.category == 'room'"
+                                        class="justify-center"
+                                        label="Quarto"
+                                        color="warning"
+                                        :icon="mdiBed"
+                                        outline
+                                        small
+                                    />
+                                    <PillTag
+                                        v-else-if="item.category == 'bathroom'"
+                                        class="justify-center"
+                                        label="Casa Banho"
+                                        color="contrast"
+                                        :icon="mdiShower"
+                                        outline
+                                        small
+                                    />
+                                    <PillTag
+                                        v-else
+                                        class="justify-center"
+                                        label="Outro"
+                                        color="info"
+                                        :icon="mdiFoodVariant"
+                                        outline
+                                        small
+                                    />
+                                </td>
+                                <td class="text-center">{{ item.quantity }}</td>
+                                <td class="text-center">{{ item.price }} €</td>
+                                <td
+                                    class="before:hidden lg:w-1 whitespace-nowrap place-content-center"
+                                >
+                                    <BaseButtons
+                                        type="justify-start lg:justify-end"
+                                        no-wrap
+                                    >
+                                        <BaseButton
+                                            color="danger"
+                                            :icon="mdiClose"
+                                            small
+                                            title="Remover Item"
+                                            @click="removeItem(item)"
+                                        />
+                                    </BaseButtons>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <h1 class="mt-5">Total: {{ form.price }} €</h1>
+                    <BaseDivider />
+                </div>
                 <FormField
                     label="Horário"
                     help="O horário. Obrigatório."
-                    class="w-full"
+                    class="w-full mt-5"
                     label-for="time"
                 >
                     <FormControl
