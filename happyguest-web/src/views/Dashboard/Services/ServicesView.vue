@@ -11,8 +11,6 @@ import {
     mdiFile,
     mdiCancel,
     mdiContentSaveCheck,
-    mdiCheckCircle,
-    mdiAlertCircle,
     mdiBookOpenPageVariant,
     mdiVacuum,
     mdiPaperRoll,
@@ -36,12 +34,13 @@ import BaseDivider from "@/components/Bases/BaseDivider.vue";
 import BaseButton from "@/components/Bases/BaseButton.vue";
 import BaseButtons from "@/components/Bases/BaseButtons.vue";
 import CardBoxComponentEmpty from "@/components/CardBoxs/CardBoxComponentEmpty.vue";
-import NotificationBar from "@/components/Others/NotificationBar.vue";
+import NotificationBarInCard from "@/components/Others/NotificationBarInCard.vue";
 import FormValidationErrors from "@/components/Forms/FormValidationErrors.vue";
 import { onMounted, ref, watch, watchEffect } from "vue";
 import { useServiceStore } from "@/stores/service";
 import { useRouter } from "vue-router";
 import TableItems from "@/components/Tables/TableItems.vue";
+const serverUrl = import.meta.env.VITE_SERVER_URL;
 
 const router = useRouter();
 
@@ -49,6 +48,7 @@ const serviceStore = useServiceStore();
 const hasItems = ref(false);
 const update = ref(false);
 const service = ref([]);
+const statusService = ref(false);
 
 const selectOptionsFilterObjects = [
     { value: "ALL", label: "Todos" },
@@ -123,12 +123,13 @@ const fillForm = (response) => {
 
 const notifText = ref("");
 const resErrors = ref([]);
-const isSuccessNotifActive = ref(false);
-const isErrorNotifActive = ref(false);
 
 const editService = () => {
     serviceStore
         .editService(router.currentRoute.value.params?.id, {
+            name: service.value.name,
+            nameEN: service.value.nameEN,
+            type: service.value.type,
             email: form.value.email,
             phone: form.value.phone,
             schedule: form.value.schedule,
@@ -137,27 +138,25 @@ const editService = () => {
             limit: form.value.limit,
             description: form.value.description,
             descriptionEN: form.value.descriptionEN,
-            menu_url: form.value.menu_url,
+            menu: form.value.menu,
         })
         .then((response) => {
             resErrors.value = [];
             if (response.status === 200) {
                 notifText.value = response.data.message;
                 update.value = false;
-                isSuccessNotifActive.value = true;
-                setTimeout(function () {
-                    isSuccessNotifActive.value = false;
+                statusService.value = true;
+                setTimeout(() => {
+                    statusService.value = false;
                 }, 5000);
             } else {
                 resErrors.value = response.response.data.errors;
+                statusService.value = false;
             }
         })
         .catch(() => {
             notifText.value = "Ocorreu um erro ao atualizar o serviço.";
-            isErrorNotifActive.value = true;
-            setTimeout(function () {
-                isErrorNotifActive.value = false;
-            }, 5000);
+            statusService.value = false;
         });
 };
 
@@ -232,8 +231,16 @@ watchEffect(() => {
 });
 
 const onFileChange = (e) => {
-    form.value.menu = e.target.files[0];
+    if (e.target.files.length > 0) {
+        form.value.menu = e.target.files[0];
+    } else {
+        form.value.menu = null;
+    }
 };
+
+function open(menu_url) {
+    window.open(`${serverUrl}/storage/services/` + menu_url, "_blank");
+}
 </script>
 
 <template>
@@ -244,24 +251,16 @@ const onFileChange = (e) => {
                 :title="service?.name ?? 'Serviço'"
                 main
             />
-            <NotificationBar
-                v-if="isSuccessNotifActive"
-                color="success"
-                :icon="mdiCheckCircle"
-                table
-            >
-                <b>{{ notifText }}</b>
-            </NotificationBar>
-            <NotificationBar
-                v-if="isErrorNotifActive"
-                color="danger"
-                :icon="mdiAlertCircle"
-                table
-            >
-                <b>{{ notifText }}</b>
-            </NotificationBar>
             <CardBox class="mb-6" is-form @submit.prevent="editService">
-                <FormValidationErrors :errors="resErrors" />
+                <FormValidationErrors
+                    v-if="statusService == false"
+                    :errors="resErrors"
+                />
+                <Transition name="fade">
+                    <NotificationBarInCard v-if="statusService" color="success">
+                        <b>{{ notifText }}</b>
+                    </NotificationBarInCard>
+                </Transition>
                 <FormField flex>
                     <FormField
                         label="Nome do Serviço"
@@ -449,7 +448,7 @@ const onFileChange = (e) => {
                     />
                 </FormField>
                 <FormField
-                    v-if="service?.type == 'R' || service?.type == 'B'"
+                    v-if="service?.type == 'R' || service?.type == 'B' || service?.type == 'F'"
                     flex
                 >
                     <FormField
@@ -460,13 +459,14 @@ const onFileChange = (e) => {
                     >
                         <FormControl
                             id="menu"
-                            v-model="form.menu"
                             :icon="mdiFile"
                             name="menu"
                             type="file"
                             accept="application/pdf"
                             :disabled="!update"
-                            required
+                            :required="
+                                form.menu_url == null || form.menu_url == ''
+                            "
                             @change="onFileChange"
                         />
                     </FormField>
@@ -597,3 +597,12 @@ const onFileChange = (e) => {
         </SectionMain>
     </LayoutAuthenticated>
 </template>
+
+<style>
+.fade-leave-active {
+    transition: all 1s ease;
+}
+.fade-leave-to {
+    opacity: 0;
+}
+</style>
