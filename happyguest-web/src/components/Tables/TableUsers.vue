@@ -258,11 +258,11 @@ const submitDelete = (password) => {
         <thead>
             <tr>
                 <th />
-                <th>ID:</th>
-                <th>Nome:</th>
-                <th>Email:</th>
-                <th>Tipo:</th>
-                <th>Estado:</th>
+                <th>ID</th>
+                <th>Nome</th>
+                <th>Email</th>
+                <th>Tipo</th>
+                <th>Estado</th>
                 <th />
             </tr>
         </thead>

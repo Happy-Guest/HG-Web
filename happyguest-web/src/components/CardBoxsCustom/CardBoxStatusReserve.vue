@@ -60,7 +60,7 @@ const form = ref({
 const selectStatus = [
     { id: 0, label: "Pendente", value: "P", icon: mdiClockTimeTwoOutline },
     { id: 1, label: "Aceite", value: "A", icon: mdiPackageCheck },
-    { id: 2, label: "Regeitada", value: "R", icon: mdiCheck },
+    { id: 2, label: "Rejeitada", value: "R", icon: mdiCheck },
     { id: 3, label: "Cancelada", value: "C", icon: mdiClose },
 ];
 
@@ -100,6 +100,7 @@ const updateStatus = () => {
         <div class="mb-5">
             <div class="flex justify-between">
                 <div>
+                    <p><b>Cliente: </b>{{ reserve.user?.name }}</p>
                     <p><b>Serviço: </b>{{ reserve.service?.name }}</p>
                     <p><b>Nº Pessoas: </b>{{ reserve?.nr_people }}</p>
                     <p><b>Horário: </b>{{ reserve?.time }}</p>
@@ -122,14 +123,14 @@ const updateStatus = () => {
                     <PillTag
                         v-else-if="reserve.status == 'R'"
                         class="justify-center"
-                        label="Rejeitado"
+                        label="Rejeitada"
                         color="danger"
                         :icon="mdiCheck"
                     />
                     <PillTag
                         v-else
                         class="justify-center"
-                        label="Cancelado"
+                        label="Cancelada"
                         color="contrast"
                         :icon="mdiClose"
                     />

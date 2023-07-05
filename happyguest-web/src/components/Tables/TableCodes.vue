@@ -253,12 +253,12 @@ const submitDelete = (password) => {
     <table class="w-full">
         <thead>
             <tr>
-                <th>ID:</th>
-                <th>Código:</th>
-                <th>Quarto(s):</th>
-                <th>Entrada:</th>
-                <th>Saída:</th>
-                <th>Estado:</th>
+                <th>ID</th>
+                <th>Código</th>
+                <th>Quarto(s)</th>
+                <th>Entrada</th>
+                <th>Saída</th>
+                <th>Estado</th>
                 <th />
             </tr>
         </thead>

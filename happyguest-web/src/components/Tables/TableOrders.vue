@@ -7,7 +7,7 @@ import {
     mdiCheck,
     mdiClose,
     mdiTrashCan,
-    mdiRename,
+    mdiListStatus,
     mdiVacuum,
     mdiFood,
     mdiPaperRoll,
@@ -187,12 +187,12 @@ const submitDelete = (password) => {
     <table class="w-full">
         <thead>
             <tr>
-                <th>ID:</th>
-                <th>Cliente:</th>
-                <th>Quarto:</th>
-                <th>Serviço:</th>
-                <th>Estado:</th>
-                <th>Horário:</th>
+                <th>ID</th>
+                <th>Cliente</th>
+                <th>Quarto</th>
+                <th>Serviço</th>
+                <th>Estado</th>
+                <th>Horário</th>
                 <th />
             </tr>
         </thead>
@@ -301,7 +301,7 @@ const submitDelete = (password) => {
                         <BaseButton
                             color="warning"
                             title="Alterar estado"
-                            :icon="mdiRename"
+                            :icon="mdiListStatus"
                             small
                             @click="
                                 isModalActive = true;

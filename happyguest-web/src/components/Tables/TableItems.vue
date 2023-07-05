@@ -372,20 +372,20 @@ const submitDissociate = () => {
     <table class="w-full">
         <thead>
             <tr>
-                <th>ID:</th>
-                <th>Nome:</th>
-                <th v-if="props.serviceId == null">Tipo:</th>
-                <th>Categoria:</th>
-                <th>Stock:</th>
+                <th>ID</th>
+                <th>Nome</th>
+                <th v-if="props.serviceId == null">Tipo</th>
+                <th>Categoria</th>
+                <th>Stock</th>
                 <th
                     v-if="
                         authStore.user?.role == 'A' ||
                         authStore.user?.role == 'M'
                     "
                 >
-                    Preço:
+                    Preço
                 </th>
-                <th>Ativo:</th>
+                <th>Ativo</th>
                 <th />
             </tr>
         </thead>

@@ -49,7 +49,11 @@ onMounted(() => {
             .getOrder(router.currentRoute.value.params?.id)
             .then((response) => {
                 order.value = response;
-                form.value.room = order.value.room;
+                rooms.value.push({
+                    value: order.value.room,
+                    label: order.value.room,
+                });
+                form.value.room = rooms.value[0];
                 form.value.time = formatDate(order.value.time, false);
                 form.value.service = selectService.find(
                     (option) => option.value == order.value.service.id
@@ -284,7 +288,7 @@ watch(
                 <FormField>
                     <FormField
                         label="Serviço"
-                        help="O Serviço. Obrigatório."
+                        help="O serviço. Obrigatório."
                         label-for="service"
                         class="w-full mb-4 sm:mb-0"
                     >
@@ -299,7 +303,7 @@ watch(
                     </FormField>
                     <FormField
                         label="Quarto"
-                        help="O Quarto. Obrigatório."
+                        help="O quarto. Obrigatório."
                         label-for="room"
                         class="w-full mb-4 sm:mb-0"
                     >
@@ -320,8 +324,8 @@ watch(
                     :label="form.service.value == 2 ? 'Objetos' : 'Alimentos'"
                     :help="
                         form.service.value == 2
-                            ? 'O(s) Objetos(s). Obrigatório.'
-                            : 'O(s) Alimento(s). Obrigatório.'
+                            ? 'O(s) objetos(s). Obrigatório.'
+                            : 'O(s) alimento(s). Obrigatório.'
                     "
                     label-for="items"
                     class="w-full"
@@ -336,7 +340,7 @@ watch(
                 </FormField>
                 <FormField
                     label="Horário"
-                    help="O Horário. Obrigatório."
+                    help="O horário. Obrigatório."
                     class="w-full"
                     label-for="time"
                 >
@@ -352,7 +356,7 @@ watch(
                 </FormField>
                 <FormField
                     label="Comentário"
-                    help="O Comentário. Opcional."
+                    help="O comentário. Opcional."
                     class="w-full"
                     label-for="comment"
                 >

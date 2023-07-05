@@ -76,7 +76,7 @@ onMounted(() => {
 const selectStatus = [
     { id: 0, label: "Pendente", value: "P", icon: mdiClockTimeTwoOutline },
     { id: 1, label: "Aceite", value: "A", icon: mdiPackageCheck },
-    { id: 2, label: "Regeitada", value: "R", icon: mdiCheck },
+    { id: 2, label: "Rejeitada", value: "R", icon: mdiCheck },
     { id: 3, label: "Cancelada", value: "C", icon: mdiClose },
 ];
 
@@ -293,7 +293,7 @@ watch(
                 <FormField>
                     <FormField
                         label="Serviço"
-                        help="O Serviço. Obrigatório."
+                        help="O serviço. Obrigatório."
                         label-for="service"
                         class="w-full mb-4 sm:mb-0"
                     >
@@ -308,7 +308,7 @@ watch(
                     </FormField>
                     <FormField
                         label="Estado"
-                        help="O estado da reclamação. Obrigatório."
+                        help="O estado da reserva. Obrigatório."
                         label-for="status"
                         no-margin
                     >
@@ -324,7 +324,7 @@ watch(
                 <FormField>
                     <FormField
                         label="Horário"
-                        help="O Horário. Obrigatório."
+                        help="O horário. Obrigatório."
                         class="w-full"
                         label-for="time"
                     >
@@ -340,7 +340,7 @@ watch(
                     </FormField>
                     <FormField
                         label="Número de Pessoas"
-                        help="O Número de Pessoas. Obrigatório."
+                        help="O número de Pessoas. Obrigatório."
                         class="w-full mb-4 sm:mb-0"
                         label-for="nr_people"
                     >
@@ -356,7 +356,7 @@ watch(
                 </FormField>
                 <FormField
                     label="Comentário"
-                    help="O Comentário. Opcional."
+                    help="O comentário. Opcional."
                     class="w-full"
                     label-for="comment"
                 >
