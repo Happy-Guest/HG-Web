@@ -256,6 +256,7 @@ function open(menu_url) {
         />
         <CardBoxAssociateItem
             :active="isModalAssociateCreate"
+            :service-id="service?.id"
             @update:active="isModalAssociateCreate = $event"
         />
         <SectionMain>

@@ -20,6 +20,7 @@ const itemStore = useItemStore();
 const itemId = ref();
 const itemName = ref();
 const validItem = ref(false);
+const serviceId = ref();
 
 const isModalActive = ref(false);
 
@@ -45,13 +46,22 @@ const form = ref({
     items: [],
 });
 
-function clearForm() {
-    form.value = {
-        items: [],
-    };
-}
-
 const emit = defineEmits(["update:active", "updated"]);
+
+watch(
+    () => props.serviceId,
+    (value) => {
+        if (value != serviceId.value) {
+            serviceId.value = value;
+            form.value.items = [];
+            itemId.value = "";
+            itemName.value = "";
+            validItem.value = false;
+            resMessage.value = "";
+            resErrors.value = [];
+        }
+    }
+);
 
 watch(
     () => itemId.value,
@@ -61,8 +71,19 @@ watch(
                 .getItem(value)
                 .then((response) => {
                     if (response.id) {
-                        validItem.value = true;
-                        itemName.value = response.name;
+                        if (props.serviceId == 2 && response.type != "O") {
+                            validItem.value = false;
+                            itemName.value = "Item não é um objeto!";
+                        } else if (
+                            props.serviceId == 3 &&
+                            response.type != "F"
+                        ) {
+                            validItem.value = false;
+                            itemName.value = "Item não é um alimento!";
+                        } else {
+                            validItem.value = true;
+                            itemName.value = response.name;
+                        }
                     } else {
                         validItem.value = false;
                         itemName.value = "Item não encontrado!";
@@ -77,7 +98,11 @@ watch(
 );
 
 function addItem() {
-    if (itemId.value && validItem.value) {
+    if (
+        itemId.value &&
+        validItem.value &&
+        !form.value.items.includes(itemId.value)
+    ) {
         form.value.items.push(itemId.value);
         itemId.value = "";
         itemName.value = "";
@@ -156,6 +181,9 @@ function addItem() {
                 id="items"
                 :model-value="form.items.join(', ')"
                 :icon="mdiBookOpenPageVariant"
+                :placeholder="
+                    form.items.length ? '' : 'Nenhum item selecionado.'
+                "
                 name="items"
                 disabled
             />
