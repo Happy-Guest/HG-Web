@@ -177,7 +177,7 @@ const updateStatus = () => {
                 resMessage.value = response.data.message;
                 statusReserve.value = true;
                 reserve.value.status = response.data.reserve.status;
-                reserve.value.response = response.data.reserve.response;
+                reserve.value.comment = response.data.reserve.comment;
                 reserveStore.updateTable = true;
                 setTimeout(() => {
                     statusReserve.value = null;
@@ -195,7 +195,7 @@ const updateStatus = () => {
 };
 
 const clearStatus = () => {
-    form.value.response = reserve.value.response ?? "Sem Comentário";
+    form.value.comment = reserve.value.comment;
     form.value.status = selectStatus.find(
         (option) => option.value === reserve.value.status
     );

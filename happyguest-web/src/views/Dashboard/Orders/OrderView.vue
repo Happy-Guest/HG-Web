@@ -26,6 +26,11 @@ import {
     mdiFoodTurkey,
     mdiHamburger,
     mdiShower,
+    mdiClockTimeTwoOutline,
+    mdiCog,
+    mdiPackageCheck,
+    mdiCheck,
+    mdiUpdate,
 } from "@mdi/js";
 import LayoutAuthenticated from "@/layouts/LayoutAuthenticated.vue";
 import SectionMain from "@/components/Sections/SectionMain.vue";
@@ -75,6 +80,9 @@ onMounted(() => {
                 form.value.service = selectService.find(
                     (option) => option.value == order.value.service.id
                 );
+                form.value.status = selectStatus.find(
+                    (option) => option.value == order.value.status
+                );
                 form.value.items = order.value.items;
                 form.value.price = order.value.price;
                 form.value.comment = order.value.comment;
@@ -97,6 +105,14 @@ const selectService = [
     { value: "3", label: "Pedido de Alimentos", icon: mdiFood },
 ];
 
+const selectStatus = [
+    { id: 0, label: "Pendente", value: "P", icon: mdiClockTimeTwoOutline },
+    { id: 1, label: "A preparar", value: "W", icon: mdiCog },
+    { id: 2, label: "Entregue", value: "DL", icon: mdiPackageCheck },
+    { id: 3, label: "Rejeitada", value: "R", icon: mdiCheck },
+    { id: 4, label: "Cancelada", value: "C", icon: mdiClose },
+];
+
 const form = ref({
     user: [
         {
@@ -106,7 +122,7 @@ const form = ref({
     ],
     room: "",
     time: "",
-    status: "P",
+    status: selectStatus[0],
     service: selectService[0],
     items: [],
     price: 0,
@@ -279,6 +295,42 @@ function removeItem(item) {
     form.value.price -= item.price;
     form.value.items.splice(form.value.items.indexOf(item), 1);
 }
+
+const clearStatus = () => {
+    form.value.comment = order.value.comment;
+    form.value.status = selectStatus.find(
+        (option) => option.value === order.value.status
+    );
+};
+
+const updateStatus = () => {
+    statusOrder.value = null;
+    orderStore
+        .updateStatus(order.value.id, {
+            comment: form.value.comment,
+            status: form.value.status.value,
+        })
+        .then((response) => {
+            if (response.status == 200) {
+                resMessage.value = response.data.message;
+                statusOrder.value = true;
+                order.value.status = response.data.order.status;
+                order.value.comment = response.data.order.comment;
+                orderStore.updateTable = true;
+                setTimeout(() => {
+                    statusOrder.value = null;
+                }, 5000);
+            } else {
+                statusOrder.value = false;
+                resErrors.value = response.data.errors;
+            }
+        })
+        .catch(() => {
+            statusOrder.value = false;
+            resMessage.value =
+                "Ocorreu um erro ao atualizar o estado do pedido.";
+        });
+};
 </script>
 
 <template>
@@ -393,7 +445,7 @@ function removeItem(item) {
                         />
                     </FormField>
                 </FormField>
-                <div v-if="form.service.value != 1">
+                <div v-if="form.service.value != 1 && !selected">
                     <BaseDivider />
                     <FormField flex>
                         <FormField
@@ -577,21 +629,145 @@ function removeItem(item) {
                     <h1 class="mt-5">Total: {{ form.price }} €</h1>
                     <BaseDivider />
                 </div>
-                <FormField
-                    label="Horário"
-                    help="O horário. Obrigatório."
-                    class="w-full mt-5"
-                    label-for="time"
-                >
-                    <FormControl
-                        id="time"
-                        v-model="form.time"
-                        type="datetime-local"
-                        :icon="mdiCalendarRange"
-                        name="time"
-                        required
-                        :disabled="selected ? true : false"
-                    />
+                <div v-if="selected">
+                    <BaseDivider />
+                    <table class="w-full">
+                        <thead>
+                            <tr>
+                                <th v-if="order.service?.type == 'F'">
+                                    Alimentos
+                                </th>
+                                <th v-else-if="order.service?.type == 'B'">
+                                    Objetos
+                                </th>
+                                <th>Categoria</th>
+                                <th>Quantidade</th>
+                                <th>Preço</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-for="item in order.items" :key="item.id">
+                                <td>{{ item.name }}</td>
+                                <td class="text-center">
+                                    <PillTag
+                                        v-if="item.category == 'drink'"
+                                        class="justify-center"
+                                        label="Bebida"
+                                        color="warning"
+                                        :icon="mdiBeer"
+                                        outline
+                                        small
+                                    />
+                                    <PillTag
+                                        v-else-if="item.category == 'snack'"
+                                        class="justify-center"
+                                        label="Lanche"
+                                        color="success"
+                                        :icon="mdiFoodApple"
+                                        outline
+                                        small
+                                    />
+                                    <PillTag
+                                        v-else-if="item.category == 'breakfast'"
+                                        class="justify-center w-32"
+                                        label="P. Almoço"
+                                        color="info"
+                                        :icon="mdiFoodCroissant"
+                                        outline
+                                        small
+                                    />
+                                    <PillTag
+                                        v-else-if="item.category == 'lunch'"
+                                        class="justify-center"
+                                        label="Almoço"
+                                        color="contrast"
+                                        :icon="mdiFoodTurkey"
+                                        outline
+                                        small
+                                    />
+                                    <PillTag
+                                        v-else-if="item.category == 'dinner'"
+                                        class="justify-center"
+                                        label="Jantar"
+                                        color="danger"
+                                        :icon="mdiHamburger"
+                                        outline
+                                        small
+                                    />
+                                    <PillTag
+                                        v-else-if="item.category == 'room'"
+                                        class="justify-center"
+                                        label="Quarto"
+                                        color="warning"
+                                        :icon="mdiBed"
+                                        outline
+                                        small
+                                    />
+                                    <PillTag
+                                        v-else-if="item.category == 'bathroom'"
+                                        class="justify-center"
+                                        label="Casa Banho"
+                                        color="contrast"
+                                        :icon="mdiShower"
+                                        outline
+                                        small
+                                    />
+                                    <PillTag
+                                        v-else
+                                        class="justify-center"
+                                        label="Outro"
+                                        color="info"
+                                        :icon="mdiFoodVariant"
+                                        outline
+                                        small
+                                    />
+                                </td>
+                                <td class="text-center">
+                                    <b>{{ item.quantity }} </b>
+                                </td>
+                                <td class="text-center">
+                                    <b
+                                        >{{
+                                            (item.price ?? 0) * item.quantity
+                                        }}€
+                                    </b>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <h1 class="mt-5">Total: {{ form.price }} €</h1>
+                    <BaseDivider />
+                </div>
+                <FormField>
+                    <FormField
+                        label="Horário"
+                        help="O horário. Obrigatório."
+                        class="w-full"
+                        label-for="time"
+                    >
+                        <FormControl
+                            id="time"
+                            v-model="form.time"
+                            type="datetime-local"
+                            :icon="mdiCalendarRange"
+                            name="time"
+                            required
+                            :disabled="selected ? true : false"
+                        />
+                    </FormField>
+                    <FormField
+                        label="Estado"
+                        help="O estado do pedido. Obrigatório."
+                        label-for="status"
+                    >
+                        <FormControl
+                            id="status"
+                            v-model="form.status"
+                            :options="selectStatus"
+                            :icon="form.status.icon"
+                            required
+                        />
+                    </FormField>
                 </FormField>
                 <FormField
                     label="Comentário"
@@ -609,7 +785,7 @@ function removeItem(item) {
                 </FormField>
                 <template #footer>
                     <div class="relative">
-                        <BaseButtons>
+                        <BaseButtons v-if="!selected">
                             <BaseButton
                                 type="submit"
                                 color="success"
@@ -622,6 +798,21 @@ function removeItem(item) {
                                 outline
                                 :icon="mdiLockReset"
                                 @click="clear"
+                            />
+                        </BaseButtons>
+                        <BaseButtons v-if="selected">
+                            <BaseButton
+                                color="warning"
+                                label="Atualizar"
+                                :icon="mdiUpdate"
+                                @click="updateStatus"
+                            />
+                            <BaseButton
+                                color="info"
+                                label="Repor"
+                                outline
+                                :icon="mdiLockReset"
+                                @click="clearStatus"
                             />
                         </BaseButtons>
                     </div>
