@@ -167,7 +167,7 @@ const registerOrder = async () => {
             user_id: form.value.user.id,
             room: form.value.room.value,
             time: formatDate(form.value.time, true),
-            status: form.value.status,
+            status: form.value.status.value,
             service_id: form.value.service.value,
             items: form.value.items.length != 0 ? form.value.items : null,
             price: form.value.price,
@@ -626,19 +626,19 @@ const updateStatus = () => {
                             </tr>
                         </tbody>
                     </table>
-                    <h1 class="mt-5">Total: {{ form.price }} €</h1>
+                    <h1 class="mt-5"><b>Total: </b>{{ form.price }} €</h1>
                     <BaseDivider />
                 </div>
-                <div v-if="selected">
+                <div v-if="form.service.value != 1 && selected">
                     <BaseDivider />
                     <table class="w-full">
                         <thead>
                             <tr>
                                 <th v-if="order.service?.type == 'F'">
-                                    Alimentos
+                                    Alimento
                                 </th>
                                 <th v-else-if="order.service?.type == 'B'">
-                                    Objetos
+                                    Objeto
                                 </th>
                                 <th>Categoria</th>
                                 <th>Quantidade</th>
@@ -735,7 +735,7 @@ const updateStatus = () => {
                             </tr>
                         </tbody>
                     </table>
-                    <h1 class="mt-5">Total: {{ form.price }} €</h1>
+                    <h1 class="mt-5"><b>Total: </b>{{ form.price }} €</h1>
                     <BaseDivider />
                 </div>
                 <FormField>

@@ -158,9 +158,9 @@ const updateStatus = () => {
                 <table class="w-full -mt-5">
                     <thead>
                         <tr>
-                            <th v-if="order.service?.type == 'F'">Alimentos</th>
+                            <th v-if="order.service?.type == 'F'">Alimento</th>
                             <th v-else-if="order.service?.type == 'B'">
-                                Objetos
+                                Objeto
                             </th>
                             <th>Categoria</th>
                             <th>Quantidade</th>
