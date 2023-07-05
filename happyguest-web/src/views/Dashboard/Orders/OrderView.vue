@@ -17,7 +17,6 @@ import {
     mdiCancel,
     mdiBookPlus,
     mdiFoodVariant,
-    mdiBookOpenPageVariant,
     mdiCursorText,
     mdiTagMultiple,
 } from "@mdi/js";
@@ -372,17 +371,31 @@ function addItem() {
                     <FormField
                         label="ID Item"
                         help="O ID do item. Obrigatório."
-                        class="w-full md:w-1/3 mb-4 sm:mb-0"
+                        class="w-full md:w-2/12 mb-4 sm:mb-0"
                         label-for="item"
-                        flex
                         no-margin
                     >
                         <FormControl
                             id="item"
                             v-model="itemId"
                             :icon="mdiFoodVariant"
-                            name="Iten"
+                            name="Item"
+                            type="number"
+                        />
+                    </FormField>
+                    <FormField
+                        label="Quantidade"
+                        help="A quantidade. Obrigatório."
+                        class="w-full md:w-3/12"
+                        label-for="quantity"
+                        flex
+                    >
+                        <FormControl
+                            id="quantity"
+                            v-model="itemQuantity"
                             class="w-10/12 flex flex-initial"
+                            :icon="mdiTagMultiple"
+                            name="Quantity"
                             type="number"
                         />
                         <BaseButtons>
@@ -406,23 +419,9 @@ function addItem() {
                         </BaseButtons>
                     </FormField>
                     <FormField
-                        label="Quantidade"
-                        help="A quantidade. Obrigatório."
-                        class="w-full md:w-1/6"
-                        label-for="quantity"
-                    >
-                        <FormControl
-                            id="quantity"
-                            v-model="itemQuantity"
-                            :icon="mdiTagMultiple"
-                            name="Quantity"
-                            type="number"
-                        />
-                    </FormField>
-                    <FormField
                         label="Nome Item"
                         help="O nome do item selecionado. Automático."
-                        class="w-full md:w-2/3"
+                        class="w-full md:w-7/12"
                         label-for="itemName"
                     >
                         <FormControl
