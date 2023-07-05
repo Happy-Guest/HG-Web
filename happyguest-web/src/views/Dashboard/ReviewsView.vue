@@ -4,6 +4,7 @@ import {
     mdiFilterMultiple,
     mdiOrderNumericDescending,
     mdiOrderNumericAscending,
+    mdiFilePlus,
 } from "@mdi/js";
 import LayoutAuthenticated from "@/layouts/LayoutAuthenticated.vue";
 import SectionMain from "@/components/Sections/SectionMain.vue";
@@ -12,12 +13,16 @@ import CardBoxComponentEmpty from "@/components/CardBoxs/CardBoxComponentEmpty.v
 import TableReviews from "@/components/Tables/TableReviews.vue";
 import FormControl from "@/components/Forms/FormControl.vue";
 import CardBox from "@/components/CardBoxs/CardBox.vue";
+import BaseButtons from "@/components/Bases/BaseButtons.vue";
+import BaseButton from "@/components/Bases/BaseButton.vue";
+import CardBoxRegisterReview from "@/components/CardBoxsCustom/CardBoxRegisterReview.vue";
 import { onMounted, ref, watch, watchEffect } from "vue";
 import { useReviewStore } from "@/stores/review";
 
 const reviewStore = useReviewStore();
 
 const hasReviews = ref(false);
+const isModalActiveCreate = ref(false);
 
 const selectOptionsFilter = [
     { value: "ALL", label: "Todas" },
@@ -71,6 +76,11 @@ watchEffect(() => {
 
 <template>
     <LayoutAuthenticated>
+        <CardBoxRegisterReview
+            :active="isModalActiveCreate"
+            @update:active="isModalActiveCreate = $event"
+            @updated="reviewStore.updateTable"
+        />
         <SectionMain>
             <SectionTitleLine
                 :icon="mdiStarShooting"
@@ -95,10 +105,21 @@ watchEffect(() => {
                         <FormControl
                             id="filter"
                             v-model="filter"
-                            class="w-48"
+                            class="w-48 mr-0 lg:mr-4 mb-2 lg:mb-0"
                             :options="selectOptionsFilter"
                             :icon="mdiFilterMultiple"
                         />
+                        <BaseButtons class="justify-center">
+                            <BaseButton
+                                :icon="mdiFilePlus"
+                                label="Registar"
+                                class="mt-2 lg:mt-0"
+                                color="success"
+                                rounded-full
+                                small
+                                @click="isModalActiveCreate = true"
+                            />
+                        </BaseButtons>
                     </div>
                 </div>
             </SectionTitleLine>

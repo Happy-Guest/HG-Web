@@ -90,19 +90,6 @@ onMounted(() => {
     }
 });
 
-watch(
-    () => anonymous.value,
-    (value) => {
-        if (value) {
-            form.value.user.id = null;
-            form.value.user.name = "Anónima";
-        } else {
-            form.value.user.id = "";
-            form.value.user.name = "";
-        }
-    }
-);
-
 const selectOptions = [
     { id: 0, label: "Pendente", value: "P", icon: mdiClockTimeTwoOutline },
     { id: 1, label: "Resolução", value: "S", icon: mdiCog },
@@ -473,6 +460,7 @@ watch(
                         <FormControl
                             id="clientName"
                             v-model="form.user.name"
+                            :placeholder="anonymous ? 'Anónimo' : ''"
                             :icon="mdiAccountCircle"
                             name="Client"
                             disabled

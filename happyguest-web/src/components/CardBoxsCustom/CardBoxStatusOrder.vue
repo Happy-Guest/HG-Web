@@ -9,6 +9,14 @@ import {
     mdiPackageCheck,
     mdiListStatus,
     mdiCog,
+    mdiBeer,
+    mdiFoodApple,
+    mdiFoodCroissant,
+    mdiFoodTurkey,
+    mdiHamburger,
+    mdiBed,
+    mdiShower,
+    mdiFoodVariant,
 } from "@mdi/js";
 import CardBoxModal from "@/components/CardBoxs/CardBoxModal.vue";
 import FormControl from "@/components/Forms/FormControl.vue";
@@ -105,12 +113,7 @@ const updateStatus = () => {
                     <p><b>Cliente: </b>{{ order.user?.name }}</p>
                     <p><b>Serviço: </b>{{ order.service?.name }}</p>
                     <p><b>Quarto: </b>{{ order?.room }}</p>
-                    <p v-if="order.service?.type == 'F'">
-                        <b>Alimentos: </b>{{ order?.items }}
-                    </p>
-                    <p v-else-if="order.service?.type == 'B'">
-                        <b>Objetos: </b>{{ order?.items }}
-                    </p>
+                    <p><b>Horário: </b>{{ order?.time }}</p>
                 </div>
                 <div class="my-auto mr-4">
                     <PillTag
@@ -149,6 +152,103 @@ const updateStatus = () => {
                         :icon="mdiClose"
                     />
                 </div>
+            </div>
+            <div v-if="order?.items?.length != 0">
+                <BaseDivider />
+                <table class="w-full -mt-5">
+                    <thead>
+                        <tr>
+                            <th v-if="order.service?.type == 'F'">Alimentos</th>
+                            <th v-else-if="order.service?.type == 'B'">
+                                Objetos
+                            </th>
+                            <th>Categoria</th>
+                            <th>Quantidade</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="item in order.items" :key="item.id">
+                            <td>{{ item.name }}</td>
+                            <td class="text-center">
+                                <PillTag
+                                    v-if="item.category == 'drink'"
+                                    class="justify-center"
+                                    label="Bebida"
+                                    color="warning"
+                                    :icon="mdiBeer"
+                                    outline
+                                    small
+                                />
+                                <PillTag
+                                    v-else-if="item.category == 'snack'"
+                                    class="justify-center"
+                                    label="Lanche"
+                                    color="success"
+                                    :icon="mdiFoodApple"
+                                    outline
+                                    small
+                                />
+                                <PillTag
+                                    v-else-if="item.category == 'breakfast'"
+                                    class="justify-center w-32"
+                                    label="P. Almoço"
+                                    color="info"
+                                    :icon="mdiFoodCroissant"
+                                    outline
+                                    small
+                                />
+                                <PillTag
+                                    v-else-if="item.category == 'lunch'"
+                                    class="justify-center"
+                                    label="Almoço"
+                                    color="contrast"
+                                    :icon="mdiFoodTurkey"
+                                    outline
+                                    small
+                                />
+                                <PillTag
+                                    v-else-if="item.category == 'dinner'"
+                                    class="justify-center"
+                                    label="Jantar"
+                                    color="danger"
+                                    :icon="mdiHamburger"
+                                    outline
+                                    small
+                                />
+                                <PillTag
+                                    v-else-if="item.category == 'room'"
+                                    class="justify-center"
+                                    label="Quarto"
+                                    color="warning"
+                                    :icon="mdiBed"
+                                    outline
+                                    small
+                                />
+                                <PillTag
+                                    v-else-if="item.category == 'bathroom'"
+                                    class="justify-center"
+                                    label="Casa Banho"
+                                    color="contrast"
+                                    :icon="mdiShower"
+                                    outline
+                                    small
+                                />
+                                <PillTag
+                                    v-else
+                                    class="justify-center"
+                                    label="Outro"
+                                    color="info"
+                                    :icon="mdiFoodVariant"
+                                    outline
+                                    small
+                                />
+                            </td>
+                            <td class="text-center">
+                                <b>{{ item.quantity }} </b>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
         </div>
 

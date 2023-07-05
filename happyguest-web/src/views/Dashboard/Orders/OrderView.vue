@@ -14,6 +14,12 @@ import {
     mdiTextBox,
     mdiFileEye,
     mdiAccountMultiple,
+    mdiCancel,
+    mdiBookPlus,
+    mdiFoodVariant,
+    mdiBookOpenPageVariant,
+    mdiCursorText,
+    mdiTagMultiple,
 } from "@mdi/js";
 import LayoutAuthenticated from "@/layouts/LayoutAuthenticated.vue";
 import SectionMain from "@/components/Sections/SectionMain.vue";
@@ -29,7 +35,9 @@ import { useOrderStore } from "@/stores/order";
 import { useServiceStore } from "@/stores/service";
 import { useUserStore } from "@/stores/user";
 import { useRouter } from "vue-router";
+import { useItemStore } from "@/stores/item";
 
+const itemStore = useItemStore();
 const userStore = useUserStore();
 const router = useRouter();
 const orderStore = useOrderStore();
@@ -91,7 +99,12 @@ const form = ref({
     time: "",
     status: "P",
     service: selectService[0],
-    items: [],
+    items: [
+        {
+            id: "",
+            quantity: "",
+        },
+    ],
     price: "",
     comment: null,
 });
@@ -102,7 +115,7 @@ const clear = () => {
     form.value.room = "";
     form.value.time = "";
     form.value.service = selectService[0];
-    form.value.items.item_id = "";
+    form.value.items.id = "";
     form.value.items.quantity = "";
     form.value.price = "";
     form.value.comment = null;
@@ -205,6 +218,60 @@ watch(
         });
     }
 );
+
+const itemId = ref();
+const itemName = ref();
+const itemQuantity = ref();
+const validItem = ref(false);
+
+watch(
+    () => itemId.value,
+    (value) => {
+        if (value) {
+            itemStore
+                .getItem(value)
+                .then((response) => {
+                    if (response.id) {
+                        if (
+                            form.value.service.value == 2 &&
+                            response.type != "O"
+                        ) {
+                            validItem.value = false;
+                            itemName.value = "Item não encontrado!";
+                            return;
+                        } else if (
+                            form.value.service.value == 3 &&
+                            response.type != "F"
+                        ) {
+                            validItem.value = false;
+                            itemName.value = "Item não encontrado!";
+                            return;
+                        }
+                        validItem.value = true;
+                        itemName.value = response.name;
+                    } else {
+                        validItem.value = false;
+                        itemName.value = "Item não encontrado!";
+                    }
+                })
+                .catch(() => {
+                    validItem.value = false;
+                    itemName.value = "";
+                });
+        }
+    }
+);
+
+function addItem() {
+    if (itemId.value && validItem.value) {
+        form.value.items.push({
+            id: itemId.value,
+            quantity: itemQuantity.value,
+        });
+        itemId.value = "";
+        itemName.value = "";
+    }
+}
 </script>
 
 <template>
@@ -229,7 +296,7 @@ watch(
                 <FormField flex>
                     <FormField
                         label="ID Cliente"
-                        help="O ID do cliente. Opcional"
+                        help="O ID do cliente. Obrigatório."
                         class="w-full md:w-1/3 mb-4 sm:mb-0"
                         label-for="client"
                         flex
@@ -319,23 +386,84 @@ watch(
                         />
                     </FormField>
                 </FormField>
+                <FormField v-if="form.service.value != 1" flex>
+                    <FormField
+                        label="ID Item"
+                        help="O ID do item. Obrigatório."
+                        class="w-full md:w-1/3 mb-4 sm:mb-0"
+                        label-for="item"
+                        flex
+                        no-margin
+                    >
+                        <FormControl
+                            id="item"
+                            v-model="itemId"
+                            :icon="mdiFoodVariant"
+                            name="Iten"
+                            class="w-10/12 flex flex-initial"
+                            type="number"
+                        />
+                        <BaseButtons>
+                            <BaseButton
+                                color="info"
+                                class="w-10 h-10 my-auto flex-initial mb-4"
+                                :icon="!validItem ? mdiCancel : mdiBookPlus"
+                                small
+                                outline
+                                rounded-full
+                                title="Adicionar Item"
+                                :disabled="!itemId || !validItem"
+                                @click="addItem()"
+                            />
+                        </BaseButtons>
+                    </FormField>
+                    <FormField
+                        label="Quantidade"
+                        help="A quantidade. Obrigatório."
+                        class="w-full md:w-1/6"
+                        label-for="quantity"
+                    >
+                        <FormControl
+                            id="quantity"
+                            v-model="itemQuantity"
+                            :icon="mdiTagMultiple"
+                            name="Quantity"
+                            type="number"
+                        />
+                    </FormField>
+                    <FormField
+                        label="Nome Item"
+                        help="O nome do item selecionado. Automático."
+                        class="w-full md:w-2/3"
+                        label-for="itemName"
+                    >
+                        <FormControl
+                            id="itemName"
+                            v-model="itemName"
+                            :icon="mdiCursorText"
+                            name="Item"
+                            disabled
+                        />
+                    </FormField>
+                </FormField>
                 <FormField
                     v-if="form.service.value != 1"
-                    :label="form.service.value == 2 ? 'Objetos' : 'Alimentos'"
-                    :help="
-                        form.service.value == 2
-                            ? 'O(s) objetos(s). Obrigatório.'
-                            : 'O(s) alimento(s). Obrigatório.'
-                    "
+                    label="Item(s) Selecionado(s)"
+                    help="Os itens selecionados para o serviço. Obrigatório."
+                    class="w-full -mt-5"
                     label-for="items"
-                    class="w-full"
                 >
                     <FormControl
                         id="items"
-                        v-model="form.items"
-                        :options="itemsService"
-                        required
-                        :disabled="selected ? true : false"
+                        :model-value="format()"
+                        :icon="mdiBookOpenPageVariant"
+                        :placeholder="
+                            form.items.length == 0
+                                ? 'Nenhum item selecionado'
+                                : ''
+                        "
+                        name="items"
+                        disabled
                     />
                 </FormField>
                 <FormField

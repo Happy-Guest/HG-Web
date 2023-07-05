@@ -30,6 +30,7 @@ import FormControl from "@/components/Forms/FormControl.vue";
 import FormField from "@/components/Forms/FormField.vue";
 import BaseButtons from "@/components/Bases/BaseButtons.vue";
 import BaseButton from "@/components/Bases/BaseButton.vue";
+import FormCheckRadio from "@/components/Forms/FormCheckRadio.vue";
 import { useReserveStore } from "@/stores/reserve";
 import { useUserStore } from "@/stores/user";
 import { useRouter } from "vue-router";
@@ -37,6 +38,7 @@ import { useRouter } from "vue-router";
 const userStore = useUserStore();
 const router = useRouter();
 const reserveStore = useReserveStore();
+const regUser = ref(false);
 
 const resMessage = ref("");
 const resErrors = ref([]);
@@ -61,11 +63,12 @@ onMounted(() => {
                     (option) => option.value === reserve.value.status
                 );
                 selected.value = router.currentRoute.value.params.id;
-                if (reserve.value.user) {
+                if (reserve.value.user.id != null) {
+                    regUser.value = false;
                     form.value.user = reserve.value.user;
                 } else {
-                    form.value.user.id = "Sem ID";
-                    form.value.user.name = "Anónima";
+                    regUser.value = true;
+                    form.value.user_name = reserve.value.user.name;
                 }
             });
     } else {
@@ -89,10 +92,11 @@ const selectService = [
 const form = ref({
     user: [
         {
-            id: "",
+            id: null,
             name: "",
         },
     ],
+    user_name: null,
     nr_people: "",
     time: "",
     status: selectStatus[0],
@@ -103,6 +107,7 @@ const form = ref({
 const clear = () => {
     form.value.user.id = "";
     form.value.user.name = "";
+    form.value.user_name = "";
     form.value.nr_people = "";
     form.value.time = "";
     form.value.service = selectService[0];
@@ -134,6 +139,7 @@ const registerReserve = async () => {
     reserveStore
         .registerReserve({
             user_id: form.value.user.id,
+            user_name: form.value.user_name,
             nr_people: form.value.nr_people,
             time: formatDate(form.value.time, true),
             status: form.value.status.value,
@@ -220,6 +226,16 @@ watch(
                 :icon="selected ? mdiFileEye : mdiFilePlus"
                 main
             >
+                <FormCheckRadio
+                    v-model="regUser"
+                    class="font-semibold mr-8"
+                    name="regUser-switch"
+                    type="switch"
+                    label="Utilizador Não Registado"
+                    input-value="registerUser"
+                    :disabled="selected ? true : false"
+                    :class="selected ? 'cursor-not-allowed opacity-80' : ''"
+                />
             </SectionTitleLine>
             <CardBox is-form class="my-auto" @submit.prevent="registerReserve">
                 <FormValidationErrors
@@ -231,7 +247,7 @@ watch(
                         <b>{{ resMessage }}</b>
                     </NotificationBarInCard>
                 </Transition>
-                <FormField flex>
+                <FormField v-if="!regUser" flex>
                     <FormField
                         label="ID Cliente"
                         help="O ID do cliente. Opcional"
@@ -289,6 +305,22 @@ watch(
                             disabled
                         />
                     </FormField>
+                </FormField>
+                <FormField
+                    v-else
+                    label="Nome Cliente"
+                    help="O nome do cliente. Obrigatório."
+                    class="w-full"
+                    label-for="clientName"
+                >
+                    <FormControl
+                        id="clientName"
+                        v-model="form.user_name"
+                        :icon="mdiAccountCircle"
+                        name="Client"
+                        :disabled="selected ? true : false"
+                        required
+                    />
                 </FormField>
                 <FormField>
                     <FormField

@@ -68,6 +68,15 @@ export const useReviewStore = defineStore("review", () => {
         }
     }
 
+    async function registerReview(review) {
+        try {
+            let response = await axios.post("reviews", review);
+            return response;
+        } catch (error) {
+            return error.response;
+        }
+    }
+
     function clearStore() {
         reviews.value = [];
         lastPage.value = null;
@@ -87,5 +96,6 @@ export const useReviewStore = defineStore("review", () => {
         getReview,
         deleteReview,
         clearStore,
+        registerReview,
     };
 });
