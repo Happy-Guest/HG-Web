@@ -44,7 +44,9 @@ watch(
         complaintStore.getComplaint(value).then((response) => {
             complaint.value = response;
             form.value.response = complaint.value?.response;
-            form.value.status = selectOptions[0];
+            form.value.status = selectOptions.find(
+                (status) => status.value == complaint.value.status
+            );
         });
     }
 );

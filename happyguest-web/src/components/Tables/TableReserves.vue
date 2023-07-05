@@ -6,23 +6,37 @@ import {
     mdiCheck,
     mdiClose,
     mdiTrashCan,
-    mdiRename,
+    mdiListStatus,
     mdiSilverwareForkKnife,
     mdiNewspaperVariant,
     mdiEye,
+    mdiCheckCircle,
+    mdiAlertCircle,
 } from "@mdi/js";
 import BaseLevel from "@/components/Bases/BaseLevel.vue";
 import BaseButtons from "@/components/Bases/BaseButtons.vue";
 import BaseButton from "@/components/Bases/BaseButton.vue";
 import PillTag from "@/components/PillTags/PillTag.vue";
+import CardBoxStatusReserve from "../CardBoxsCustom/CardBoxStatusReserve.vue";
+import CardBoxModal from "../CardBoxs/CardBoxModal.vue";
+import NotificationBar from "@/components/Others/NotificationBar.vue";
 import { useReserveStore } from "@/stores/reserve";
 import { useRouter } from "vue-router";
 
 const router = useRouter();
-
 const reserveStore = useReserveStore();
-
 const selected = ref(null);
+const isModalActive = ref(false);
+const isModalDeleteActive = ref(false);
+const selectedUpdate = ref(null);
+const notifText = ref("");
+const resErrors = ref([]);
+const isSuccessNotifActive = ref(false);
+const isErrorNotifActive = ref(false);
+const currentPage = ref(0);
+const reserves = ref([]);
+const numPages = computed(() => reserveStore.lastPage);
+const currentPageHuman = computed(() => currentPage.value + 1);
 
 const props = defineProps({
     filter: {
@@ -34,12 +48,6 @@ const props = defineProps({
         default: "DESC",
     },
 });
-
-const currentPage = ref(0);
-const reserves = ref([]);
-const numPages = computed(() => reserveStore.lastPage);
-
-const currentPageHuman = computed(() => currentPage.value + 1);
 
 async function getReserves() {
     reserves.value = await reserveStore.getReserves(
@@ -107,9 +115,81 @@ const pagesList = computed(() => {
     }
     return pagesList[parseInt(currentPage.value / 10)];
 });
+
+watch(
+    () => isModalDeleteActive.value,
+    (value) => {
+        if (value) {
+            resErrors.value = [];
+        }
+    }
+);
+
+const submitDelete = (password) => {
+    reserveStore
+        .deleteReserve(selected.value, password)
+        .then((response) => {
+            notifText.value = response.data.message;
+            if (response.status === 200) {
+                isModalDeleteActive.value = false;
+                reserves.value = reserves.value.filter(
+                    (reserve) => reserve.id != selected.value
+                );
+                reserveStore.updateTable = true;
+                isSuccessNotifActive.value = true;
+                setTimeout(function () {
+                    isSuccessNotifActive.value = false;
+                }, 5000);
+            } else {
+                resErrors.value = response.data.errors;
+            }
+        })
+        .catch(() => {
+            notifText.value = "Ocorreu um erro ao remover a reserva.";
+            isErrorNotifActive.value = true;
+            setTimeout(function () {
+                isErrorNotifActive.value = false;
+            }, 5000);
+        });
+};
 </script>
 
 <template>
+    <NotificationBar
+        v-if="isSuccessNotifActive"
+        color="success"
+        :icon="mdiCheckCircle"
+        table
+    >
+        <b>{{ notifText }}</b>
+    </NotificationBar>
+    <NotificationBar
+        v-if="isErrorNotifActive"
+        color="danger"
+        :icon="mdiAlertCircle"
+        table
+    >
+        <b>{{ notifText }}</b>
+    </NotificationBar>
+    <CardBoxModal
+        v-model="isModalDeleteActive"
+        :errors="resErrors"
+        title="Remover Reserva"
+        button="danger"
+        :icon-title="mdiTrashCan"
+        has-cancel
+        has-close
+        has-password
+        @confirm="submitDelete"
+    >
+        <p>Tem a certeza que <b>deseja remover</b> a reserva?</p>
+    </CardBoxModal>
+    <CardBoxStatusReserve
+        :selected="selectedUpdate"
+        :active="isModalActive"
+        @update:active="isModalActive = $event"
+        @updated="reserveStore.updateTable = $event"
+    />
     <table class="w-full">
         <thead>
             <tr>
@@ -142,7 +222,7 @@ const pagesList = computed(() => {
                             reserve.service.type == 'R' ? 'success' : 'info'
                         "
                         :icon="
-                            reserve.service.type == 'C'
+                            reserve.service.type == 'R'
                                 ? mdiSilverwareForkKnife
                                 : mdiNewspaperVariant
                         "
@@ -211,11 +291,11 @@ const pagesList = computed(() => {
                         <BaseButton
                             color="warning"
                             title="Alterar estado"
-                            :icon="mdiRename"
+                            :icon="mdiListStatus"
                             small
                             @click="
                                 isModalActive = true;
-                                selected = reserve.id;
+                                selectedUpdate = reserve.id;
                             "
                         />
                         <BaseButton

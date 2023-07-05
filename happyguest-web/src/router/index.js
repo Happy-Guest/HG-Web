@@ -195,7 +195,16 @@ const routes = [
             middleware: [auth, manager],
         },
         path: "/reserva",
-        name: "reservesRegister",
+        name: "reserveRegister",
+        component: () => import("@/views/Dashboard/Reserves/ReserveView.vue"),
+    },
+    {
+        meta: {
+            title: "Reserva",
+            middleware: [auth, manager],
+        },
+        path: "/reserva/:id",
+        name: "reserveView",
         component: () => import("@/views/Dashboard/Reserves/ReserveView.vue"),
     },
 

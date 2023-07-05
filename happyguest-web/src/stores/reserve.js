@@ -63,6 +63,28 @@ export const useReserveStore = defineStore("reserve", () => {
         }
     }
 
+    async function updateStatus(id, data) {
+        try {
+            const response = await axios.patch("reserves/" + id, data);
+            return response;
+        } catch (error) {
+            return error;
+        }
+    }
+
+    async function deleteReserve(id, data) {
+        try {
+            let response = await axios.delete("reserves/" + id, {
+                data: {
+                    password: data,
+                },
+            });
+            return response;
+        } catch (error) {
+            return error.response;
+        }
+    }
+
     function clearStore() {
         reserves.value = [];
         lastPage.value = null;
@@ -81,5 +103,7 @@ export const useReserveStore = defineStore("reserve", () => {
         getReserves,
         clearStore,
         registerReserve,
+        updateStatus,
+        deleteReserve,
     };
 });

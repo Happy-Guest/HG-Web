@@ -104,6 +104,7 @@ watchEffect(() => {
                         <BaseButtons class="justify-center">
                             <BaseButton
                                 :icon="mdiFilePlus"
+                                :to="{ name: 'reserveRegister' }"
                                 label="Registar"
                                 class="mt-2 lg:mt-0"
                                 color="success"

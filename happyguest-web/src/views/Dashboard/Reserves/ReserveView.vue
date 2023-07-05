@@ -6,14 +6,19 @@ import {
     mdiAccount,
     mdiAccountCircle,
     mdiFilePlus,
-    mdiVacuum,
-    mdiFood,
-    mdiPaperRoll,
+    mdiSilverwareForkKnife,
+    mdiSpa,
+    mdiWeightLifter,
     mdiLockReset,
-    mdiBed,
     mdiTextBox,
+    mdiAccountGroup,
     mdiFileEye,
     mdiAccountMultiple,
+    mdiClockTimeTwoOutline,
+    mdiPackageCheck,
+    mdiCheck,
+    mdiClose,
+    mdiUpdate,
 } from "@mdi/js";
 import LayoutAuthenticated from "@/layouts/LayoutAuthenticated.vue";
 import SectionMain from "@/components/Sections/SectionMain.vue";
@@ -25,41 +30,39 @@ import FormControl from "@/components/Forms/FormControl.vue";
 import FormField from "@/components/Forms/FormField.vue";
 import BaseButtons from "@/components/Bases/BaseButtons.vue";
 import BaseButton from "@/components/Bases/BaseButton.vue";
-import { useOrderStore } from "@/stores/order";
-import { useServiceStore } from "@/stores/service";
+import { useReserveStore } from "@/stores/reserve";
 import { useUserStore } from "@/stores/user";
 import { useRouter } from "vue-router";
 
 const userStore = useUserStore();
 const router = useRouter();
-const orderStore = useOrderStore();
-const serviceStore = useServiceStore();
+const reserveStore = useReserveStore();
 
 const resMessage = ref("");
 const resErrors = ref([]);
 
-const order = ref([]);
-
 const selected = ref(null);
+const reserve = ref([]);
 
 onMounted(() => {
     if (router.currentRoute.value.params?.id) {
         resErrors.value = [];
-        orderStore
-            .getOrder(router.currentRoute.value.params?.id)
+        reserveStore
+            .getReserve(router.currentRoute.value.params?.id)
             .then((response) => {
-                order.value = response;
-                form.value.room = order.value.room;
-                form.value.time = formatDate(order.value.time, false);
+                reserve.value = response;
+                form.value.nr_people = reserve.value.nr_people;
+                form.value.time = formatDate(reserve.value.time, false);
                 form.value.service = selectService.find(
-                    (option) => option.value == order.value.service.id
+                    (option) => option.value == reserve.value.service.id
                 );
-                form.value.items = order.value.items;
-                form.value.price = order.value.price;
-                form.value.comment = order.value.comment;
+                form.value.comment = reserve.value.comment;
+                form.value.status = selectStatus.find(
+                    (option) => option.value === reserve.value.status
+                );
                 selected.value = router.currentRoute.value.params.id;
-                if (order.value.user) {
-                    form.value.user = order.value.user;
+                if (reserve.value.user) {
+                    form.value.user = reserve.value.user;
                 } else {
                     form.value.user.id = "Sem ID";
                     form.value.user.name = "Anónima";
@@ -70,10 +73,17 @@ onMounted(() => {
     }
 });
 
+const selectStatus = [
+    { id: 0, label: "Pendente", value: "P", icon: mdiClockTimeTwoOutline },
+    { id: 1, label: "Aceite", value: "A", icon: mdiPackageCheck },
+    { id: 2, label: "Regeitada", value: "R", icon: mdiCheck },
+    { id: 3, label: "Cancelada", value: "C", icon: mdiClose },
+];
+
 const selectService = [
-    { value: "1", label: "Limpeza de Quarto", icon: mdiVacuum },
-    { value: "2", label: "Pedido de Objetos", icon: mdiPaperRoll },
-    { value: "3", label: "Pedido de Alimentos", icon: mdiFood },
+    { value: "4", label: "Reservar Mesa", icon: mdiSilverwareForkKnife },
+    { value: "5", label: "Spa", icon: mdiSpa },
+    { value: "6", label: "Ginásio", icon: mdiWeightLifter },
 ];
 
 const form = ref({
@@ -83,26 +93,21 @@ const form = ref({
             name: "",
         },
     ],
-    room: "",
+    nr_people: "",
     time: "",
-    status: "P",
+    status: selectStatus[0],
     service: selectService[0],
-    items: [],
-    price: "",
     comment: null,
 });
 
 const clear = () => {
     form.value.user.id = "";
     form.value.user.name = "";
-    form.value.room = "";
+    form.value.nr_people = "";
     form.value.time = "";
     form.value.service = selectService[0];
-    form.value.items.item_id = "";
-    form.value.items.quantity = "";
-    form.value.price = "";
+    form.value.status = selectStatus[0];
     form.value.comment = null;
-    rooms.value = [];
 };
 
 const formatDate = (date, api) => {
@@ -123,39 +128,72 @@ const formatDate = (date, api) => {
     }
 };
 
-const statusOrder = ref(false);
+const statusReserve = ref(false);
 
-const registerOrder = async () => {
-    orderStore
-        .registerOrder({
+const registerReserve = async () => {
+    reserveStore
+        .registerReserve({
             user_id: form.value.user.id,
-            room: form.value.room.value,
+            nr_people: form.value.nr_people,
             time: formatDate(form.value.time, true),
-            status: form.value.status,
+            status: form.value.status.value,
             service_id: form.value.service.value,
-            items: form.value.items.length != 0 ? form.value.items : null,
-            price: form.value.price,
             comment: form.value.comment,
         })
         .then((response) => {
             resMessage.value = response.data.message;
             if (response.status == 201) {
                 resMessage.value = response.data.message;
-                statusOrder.value = true;
-                orderStore.updateTable = true;
+                statusReserve.value = true;
+                reserveStore.updateTable = true;
                 setTimeout(() => {
-                    router.push({ name: "orders" });
+                    router.push({ name: "reserves" });
                 }, 5000);
             } else {
-                statusOrder.value = false;
+                statusReserve.value = false;
                 resErrors.value = response.data.errors;
             }
         })
         .catch(() => {
-            resMessage.value = "Ocorreu um erro ao registar um pedido.";
+            resMessage.value = "Ocorreu um erro ao registar uma reserva.";
         });
 };
-const rooms = ref([]);
+
+const updateStatus = () => {
+    statusReserve.value = null;
+    reserveStore
+        .updateStatus(reserve.value.id, {
+            comment: form.value.comment,
+            status: form.value.status.value,
+        })
+        .then((response) => {
+            if (response.status == 200) {
+                resMessage.value = response.data.message;
+                statusReserve.value = true;
+                reserve.value.status = response.data.reserve.status;
+                reserve.value.response = response.data.reserve.response;
+                reserveStore.updateTable = true;
+                setTimeout(() => {
+                    statusReserve.value = null;
+                }, 5000);
+            } else {
+                statusReserve.value = false;
+                resErrors.value = response.data.errors;
+            }
+        })
+        .catch(() => {
+            statusReserve.value = false;
+            resMessage.value =
+                "Ocorreu um erro ao atualizar o estado da reserva.";
+        });
+};
+
+const clearStatus = () => {
+    form.value.response = reserve.value.response ?? "Sem Comentário";
+    form.value.status = selectStatus.find(
+        (option) => option.value === reserve.value.status
+    );
+};
 
 watch(
     () => form.value.user.id,
@@ -167,38 +205,7 @@ watch(
                 else if (response.id) form.value.user.name = response.name;
                 else form.value.user.name = "Utilizador não encontrado!";
             });
-            rooms.value = [];
-            userStore.getCodeByUser(value).then((response) => {
-                for (let index = 0; index < response.length; index++) {
-                    const code = response[index].code;
-                    for (let index = 0; index < code.rooms.length; index++) {
-                        const room = code.rooms[index];
-                        rooms.value.push({
-                            value: room,
-                            label: room,
-                        });
-                    }
-                }
-            });
         }
-    }
-);
-
-const itemsService = ref([{ value: "", label: "" }]);
-
-watch(
-    () => form.value.service,
-    async (value) => {
-        itemsService.value = [];
-        await serviceStore.getService(value.value).then((response) => {
-            for (let index = 0; index < response.items.length; index++) {
-                const item = response.items[index];
-                itemsService.value[index] = {
-                    value: item.id,
-                    label: item.name,
-                };
-            }
-        });
     }
 );
 </script>
@@ -207,18 +214,20 @@ watch(
     <LayoutAuthenticated>
         <SectionMain>
             <SectionTitleLine
-                :title="selected ? 'Pedido ➯ ' + order?.id : 'Registar Pedido'"
+                :title="
+                    selected ? 'Reserva ➯ ' + reserve?.id : 'Registar Reserva'
+                "
                 :icon="selected ? mdiFileEye : mdiFilePlus"
                 main
             >
             </SectionTitleLine>
-            <CardBox is-form class="my-auto" @submit.prevent="registerOrder">
+            <CardBox is-form class="my-auto" @submit.prevent="registerReserve">
                 <FormValidationErrors
-                    v-if="statusOrder == false"
+                    v-if="statusReserve == false"
                     :errors="resErrors"
                 />
                 <Transition name="fade">
-                    <NotificationBarInCard v-if="statusOrder" color="success">
+                    <NotificationBarInCard v-if="statusReserve" color="success">
                         <b>{{ resMessage }}</b>
                     </NotificationBarInCard>
                 </Transition>
@@ -294,61 +303,56 @@ watch(
                             :options="selectService"
                             :icon="form.service.icon"
                             required
+                            disabled
+                        />
+                    </FormField>
+                    <FormField
+                        label="Estado"
+                        help="O estado da reclamação. Obrigatório."
+                        label-for="status"
+                        no-margin
+                    >
+                        <FormControl
+                            id="status"
+                            v-model="form.status"
+                            :options="selectStatus"
+                            :icon="form.status.icon"
+                            required
+                        />
+                    </FormField>
+                </FormField>
+                <FormField>
+                    <FormField
+                        label="Horário"
+                        help="O Horário. Obrigatório."
+                        class="w-full"
+                        label-for="time"
+                    >
+                        <FormControl
+                            id="time"
+                            v-model="form.time"
+                            type="datetime-local"
+                            :icon="mdiCalendarRange"
+                            name="time"
+                            required
                             :disabled="selected ? true : false"
                         />
                     </FormField>
                     <FormField
-                        label="Quarto"
-                        help="O Quarto. Obrigatório."
-                        label-for="room"
+                        label="Número de Pessoas"
+                        help="O Número de Pessoas. Obrigatório."
                         class="w-full mb-4 sm:mb-0"
+                        label-for="nr_people"
                     >
                         <FormControl
-                            id="room"
-                            v-model="form.room"
-                            :options="rooms"
-                            :icon="mdiBed"
-                            required
-                            :disabled="
-                                rooms.length == 0 || selected ? true : false
-                            "
+                            id="nr_people"
+                            v-model="form.nr_people"
+                            type="number"
+                            :icon="mdiAccountGroup"
+                            name="nr_people"
+                            :disabled="selected ? true : false"
                         />
                     </FormField>
-                </FormField>
-                <FormField
-                    v-if="form.service.value != 1"
-                    :label="form.service.value == 2 ? 'Objetos' : 'Alimentos'"
-                    :help="
-                        form.service.value == 2
-                            ? 'O(s) Objetos(s). Obrigatório.'
-                            : 'O(s) Alimento(s). Obrigatório.'
-                    "
-                    label-for="items"
-                    class="w-full"
-                >
-                    <FormControl
-                        id="items"
-                        v-model="form.items"
-                        :options="itemsService"
-                        required
-                        :disabled="selected ? true : false"
-                    />
-                </FormField>
-                <FormField
-                    label="Horário"
-                    help="O Horário. Obrigatório."
-                    class="w-full"
-                    label-for="time"
-                >
-                    <FormControl
-                        id="time"
-                        v-model="form.time"
-                        type="datetime-local"
-                        :icon="mdiCalendarRange"
-                        name="time"
-                        required
-                        :disabled="selected ? true : false"
-                    />
                 </FormField>
                 <FormField
                     label="Comentário"
@@ -366,7 +370,7 @@ watch(
                 </FormField>
                 <template #footer>
                     <div class="relative">
-                        <BaseButtons>
+                        <BaseButtons v-if="!selected">
                             <BaseButton
                                 type="submit"
                                 color="success"
@@ -379,6 +383,21 @@ watch(
                                 outline
                                 :icon="mdiLockReset"
                                 @click="clear"
+                            />
+                        </BaseButtons>
+                        <BaseButtons v-if="selected">
+                            <BaseButton
+                                color="warning"
+                                label="Atualizar"
+                                :icon="mdiUpdate"
+                                @click="updateStatus"
+                            />
+                            <BaseButton
+                                color="info"
+                                label="Repor"
+                                outline
+                                :icon="mdiLockReset"
+                                @click="clearStatus"
                             />
                         </BaseButtons>
                     </div>

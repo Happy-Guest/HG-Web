@@ -13,19 +13,30 @@ import {
     mdiPaperRoll,
     mdiNewspaperVariant,
     mdiEye,
+    mdiCheckCircle,
+    mdiAlertCircle,
 } from "@mdi/js";
 import BaseLevel from "@/components/Bases/BaseLevel.vue";
 import BaseButtons from "@/components/Bases/BaseButtons.vue";
 import BaseButton from "@/components/Bases/BaseButton.vue";
 import PillTag from "@/components/PillTags/PillTag.vue";
+import CardBoxModal from "../CardBoxs/CardBoxModal.vue";
+import NotificationBar from "@/components/Others/NotificationBar.vue";
 import { useOrderStore } from "@/stores/order";
 import { useRouter } from "vue-router";
 
 const router = useRouter();
-
 const orderStore = useOrderStore();
-
 const selected = ref(null);
+const notifText = ref("");
+const resErrors = ref([]);
+const isSuccessNotifActive = ref(false);
+const isErrorNotifActive = ref(false);
+const isModalDeleteActive = ref(false);
+const currentPage = ref(0);
+const orders = ref([]);
+const numPages = computed(() => orderStore.lastPage);
+const currentPageHuman = computed(() => currentPage.value + 1);
 
 const props = defineProps({
     filter: {
@@ -37,12 +48,6 @@ const props = defineProps({
         default: "DESC",
     },
 });
-
-const currentPage = ref(0);
-const orders = ref([]);
-const numPages = computed(() => orderStore.lastPage);
-
-const currentPageHuman = computed(() => currentPage.value + 1);
 
 async function getOrders() {
     orders.value = await orderStore.getOrders(
@@ -110,9 +115,75 @@ const pagesList = computed(() => {
     }
     return pagesList[parseInt(currentPage.value / 10)];
 });
+
+watch(
+    () => isModalDeleteActive.value,
+    (value) => {
+        if (value) {
+            resErrors.value = [];
+        }
+    }
+);
+
+const submitDelete = (password) => {
+    orderStore
+        .deleteOrder(selected.value, password)
+        .then((response) => {
+            notifText.value = response.data.message;
+            if (response.status === 200) {
+                isModalDeleteActive.value = false;
+                orders.value = orders.value.filter(
+                    (order) => order.id != selected.value
+                );
+                orderStore.updateTable = true;
+                isSuccessNotifActive.value = true;
+                setTimeout(function () {
+                    isSuccessNotifActive.value = false;
+                }, 5000);
+            } else {
+                resErrors.value = response.data.errors;
+            }
+        })
+        .catch(() => {
+            notifText.value = "Ocorreu um erro ao remover o pedido.";
+            isErrorNotifActive.value = true;
+            setTimeout(function () {
+                isErrorNotifActive.value = false;
+            }, 5000);
+        });
+};
 </script>
 
 <template>
+    <NotificationBar
+        v-if="isSuccessNotifActive"
+        color="success"
+        :icon="mdiCheckCircle"
+        table
+    >
+        <b>{{ notifText }}</b>
+    </NotificationBar>
+    <NotificationBar
+        v-if="isErrorNotifActive"
+        color="danger"
+        :icon="mdiAlertCircle"
+        table
+    >
+        <b>{{ notifText }}</b>
+    </NotificationBar>
+    <CardBoxModal
+        v-model="isModalDeleteActive"
+        :errors="resErrors"
+        title="Remover Pedido"
+        button="danger"
+        :icon-title="mdiTrashCan"
+        has-cancel
+        has-close
+        has-password
+        @confirm="submitDelete"
+    >
+        <p>Tem a certeza que <b>deseja remover</b> o pedido?</p>
+    </CardBoxModal>
     <table class="w-full">
         <thead>
             <tr>

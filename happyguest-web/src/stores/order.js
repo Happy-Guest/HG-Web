@@ -63,6 +63,19 @@ export const useOrderStore = defineStore("order", () => {
         }
     }
 
+    async function deleteOrder(id, data) {
+        try {
+            let response = await axios.delete("orders/" + id, {
+                data: {
+                    password: data,
+                },
+            });
+            return response;
+        } catch (error) {
+            return error.response;
+        }
+    }
+
     function clearStore() {
         orders.value = [];
         lastPage.value = null;
@@ -81,5 +94,6 @@ export const useOrderStore = defineStore("order", () => {
         getOrders,
         clearStore,
         registerOrder,
+        deleteOrder,
     };
 });
