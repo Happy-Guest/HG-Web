@@ -233,14 +233,14 @@ watch(
                             response.type != "O"
                         ) {
                             validItem.value = false;
-                            itemName.value = "Item não encontrado!";
+                            itemName.value = "Item não é um objeto!";
                             return;
                         } else if (
                             form.value.service.value == 3 &&
                             response.type != "F"
                         ) {
                             validItem.value = false;
-                            itemName.value = "Item não encontrado!";
+                            itemName.value = "Item não é um alimento!";
                             return;
                         }
                         validItem.value = true;
