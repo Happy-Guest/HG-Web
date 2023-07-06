@@ -325,7 +325,7 @@ watch(
                 <FormField>
                     <FormField
                         label="Serviço"
-                        help="O serviço. Obrigatório."
+                        help="O tipo de serviço. Obrigatório."
                         label-for="service"
                         class="w-full mb-4 sm:mb-0"
                     >
@@ -356,8 +356,8 @@ watch(
                 <FormField>
                     <FormField
                         label="Horário"
-                        help="O horário. Obrigatório."
-                        class="w-full"
+                        help="O horário da reserva. Obrigatório."
+                        class="w-full mb-4 sm:mb-0"
                         label-for="time"
                     >
                         <FormControl
@@ -372,7 +372,7 @@ watch(
                     </FormField>
                     <FormField
                         label="Número de Pessoas"
-                        help="O número de Pessoas. Obrigatório."
+                        help="O número de pessoas da reserva. Obrigatório."
                         class="w-full mb-4 sm:mb-0"
                         label-for="nr_people"
                     >
@@ -388,7 +388,7 @@ watch(
                 </FormField>
                 <FormField
                     label="Comentário"
-                    help="O comentário. Opcional."
+                    help="O comentário da reserva. Opcional."
                     class="w-full"
                     label-for="comment"
                 >

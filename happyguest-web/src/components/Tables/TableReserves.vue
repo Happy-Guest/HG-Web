@@ -258,14 +258,14 @@ const submitDelete = (password) => {
                     <PillTag
                         v-else-if="reserve.status == 'R'"
                         class="justify-center"
-                        label="Rejeitado"
+                        label="Rejeitada"
                         color="danger"
                         :icon="mdiCheck"
                     />
                     <PillTag
                         v-else
                         class="justify-center"
-                        label="Cancelado"
+                        label="Cancelada"
                         color="contrast"
                         :icon="mdiClose"
                     />

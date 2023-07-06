@@ -127,10 +127,12 @@ watch(
             userStore.getCodeByUser(value).then((response) => {
                 if (response[0]) {
                     for (let i = 0; i < response.length; i++) {
-                        selectCode.value.push({
-                            value: response[i].code.id,
-                            label: response[i].code.code,
-                        });
+                        if (response[i].code.validated == 0) {
+                            selectCode.value.push({
+                                value: response[i].code.id,
+                                label: response[i].code.code,
+                            });
+                        }
                     }
                     form.value.code = selectCode.value[0];
                 }

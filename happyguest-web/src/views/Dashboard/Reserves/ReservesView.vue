@@ -23,14 +23,14 @@ const reserveStore = useReserveStore();
 const hasReserves = ref(true);
 
 const selectOptionsFilter = [
-    { value: "ALL", label: "Todos" },
+    { value: "ALL", label: "Todas" },
     { value: "OR", label: "Restaurante" },
     { value: "O", label: "Outras" },
     { value: "P", label: "Pendentes" },
     { value: "A", label: "Aceites" },
-    { value: "R", label: "Rejeitados" },
-    { value: "C", label: "Cancelados" },
-    { value: "D", label: "Eliminados" },
+    { value: "R", label: "Rejeitadas" },
+    { value: "C", label: "Canceladas" },
+    { value: "D", label: "Eliminadas" },
 ];
 
 const selectOptionsOrder = [

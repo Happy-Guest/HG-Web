@@ -107,10 +107,10 @@ const selectService = [
 
 const selectStatus = [
     { id: 0, label: "Pendente", value: "P", icon: mdiClockTimeTwoOutline },
-    { id: 1, label: "A preparar", value: "W", icon: mdiCog },
+    { id: 1, label: "A Preparar", value: "W", icon: mdiCog },
     { id: 2, label: "Entregue", value: "DL", icon: mdiPackageCheck },
-    { id: 3, label: "Rejeitada", value: "R", icon: mdiCheck },
-    { id: 4, label: "Cancelada", value: "C", icon: mdiClose },
+    { id: 3, label: "Rejeitado", value: "R", icon: mdiCheck },
+    { id: 4, label: "Cancelado", value: "C", icon: mdiClose },
 ];
 
 const form = ref({
@@ -414,7 +414,7 @@ const updateStatus = () => {
                 <FormField>
                     <FormField
                         label="Serviço"
-                        help="O serviço. Obrigatório."
+                        help="O tipo de serviço. Obrigatório."
                         label-for="service"
                         class="w-full mb-4 sm:mb-0"
                     >
@@ -429,7 +429,7 @@ const updateStatus = () => {
                     </FormField>
                     <FormField
                         label="Quarto"
-                        help="O quarto. Obrigatório."
+                        help="O quarto para entrega. Obrigatório."
                         label-for="room"
                         class="w-full mb-4 sm:mb-0"
                     >
@@ -529,9 +529,14 @@ const updateStatus = () => {
                                 v-for="(item, index) in form.items"
                                 :key="index"
                             >
-                                <td>{{ item.id }}</td>
-                                <td>{{ item.name }}</td>
-                                <td class="text-center">
+                                <td
+                                    data-label="ID"
+                                    class="text-center text-gray-500 dark:text-slate-400 font-semibold"
+                                >
+                                    {{ item.id }}
+                                </td>
+                                <td data-label="Nome">{{ item.name }}</td>
+                                <td data-label="Categoria" class="text-center">
                                     <PillTag
                                         v-if="item.category == 'drink'"
                                         class="justify-center"
@@ -605,8 +610,18 @@ const updateStatus = () => {
                                         small
                                     />
                                 </td>
-                                <td class="text-center">{{ item.quantity }}</td>
-                                <td class="text-center">{{ item.price }} €</td>
+                                <td
+                                    data-label="Quantidade"
+                                    class="text-center font-semibold"
+                                >
+                                    {{ item.quantity }}
+                                </td>
+                                <td
+                                    data-label="Preço"
+                                    class="text-center text-green-500"
+                                >
+                                    {{ item.price }} €
+                                </td>
                                 <td
                                     class="before:hidden lg:w-1 whitespace-nowrap place-content-center"
                                 >
@@ -735,14 +750,16 @@ const updateStatus = () => {
                             </tr>
                         </tbody>
                     </table>
-                    <h1 class="mt-5"><b>Total: </b>{{ form.price }} €</h1>
+                    <div v-if="order.items.length > 0" class="mt-2 ml-4">
+                        <h1><b>Total: </b>{{ form.price }} €</h1>
+                    </div>
                     <BaseDivider />
                 </div>
                 <FormField>
                     <FormField
                         label="Horário"
-                        help="O horário. Obrigatório."
-                        class="w-full"
+                        help="O horário de entrega. Obrigatório."
+                        class="mb-4 sm:mb-0"
                         label-for="time"
                     >
                         <FormControl
@@ -759,6 +776,7 @@ const updateStatus = () => {
                         label="Estado"
                         help="O estado do pedido. Obrigatório."
                         label-for="status"
+                        class="mb-4 sm:mb-0"
                     >
                         <FormControl
                             id="status"
@@ -771,7 +789,7 @@ const updateStatus = () => {
                 </FormField>
                 <FormField
                     label="Comentário"
-                    help="O comentário. Opcional."
+                    help="O comentário do pedido. Opcional."
                     class="w-full"
                     label-for="comment"
                 >
