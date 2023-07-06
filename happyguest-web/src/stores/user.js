@@ -97,9 +97,15 @@ export const useUserStore = defineStore("user", () => {
         }
     }
 
-    async function getCodeByUser(id) {
+    async function getCodesByUser(id, checkOut) {
         try {
-            let response = await axios.get("users/" + id + "/codes");
+            if (checkOut) {
+                let response = await axios.get(
+                    "users/" + id + "/codes?filter=NC"
+                );
+                return response.data.data;
+            }
+            let response = await axios.get("users/" + id + "/codes?filter=V");
             return response.data.data;
         } catch (error) {
             return error;
@@ -126,7 +132,7 @@ export const useUserStore = defineStore("user", () => {
         updateUser,
         deleteUser,
         changeStateUser,
-        getCodeByUser,
+        getCodesByUser,
         clearStore,
     };
 });

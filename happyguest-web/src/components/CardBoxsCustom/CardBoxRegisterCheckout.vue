@@ -100,7 +100,7 @@ const registerCheckout = async () => {
                 emit("update:active", false);
                 emit("updated", true);
                 clear();
-            } else if (response.status == 401) {
+            } else if (response.status == 401 || response.status == 400) {
                 resErrors.value.push([response.data.message]);
             } else {
                 resErrors.value = response.data.errors;
@@ -124,15 +124,13 @@ watch(
                 else if (response.id) form.value.user.name = response.name;
                 else form.value.user.name = "Utilizador não encontrado!";
             });
-            userStore.getCodeByUser(value).then((response) => {
+            userStore.getCodesByUser(value, true).then((response) => {
                 if (response[0]) {
                     for (let i = 0; i < response.length; i++) {
-                        if (response[i].code.validated == 0) {
-                            selectCode.value.push({
-                                value: response[i].code.id,
-                                label: response[i].code.code,
-                            });
-                        }
+                        selectCode.value.push({
+                            value: response[i].code.id,
+                            label: response[i].code.code,
+                        });
                     }
                     form.value.code = selectCode.value[0];
                 }
@@ -217,6 +215,11 @@ watch(
                     v-model="form.code"
                     :options="selectCode"
                     :icon="mdiBarcode"
+                    :placeholder="
+                        selectCode.length == 0
+                            ? 'Sem códigos'
+                            : 'Selecione um código'
+                    "
                     required
                     :disabled="selectCode.length == 0"
                 />

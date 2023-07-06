@@ -203,7 +203,7 @@ watch(
                 else form.value.user.name = "Utilizador não encontrado!";
             });
             rooms.value = [];
-            userStore.getCodeByUser(value).then((response) => {
+            userStore.getCodesByUser(value).then((response) => {
                 for (let index = 0; index < response.length; index++) {
                     const code = response[index].code;
                     for (let index = 0; index < code.rooms.length; index++) {

@@ -8,6 +8,7 @@ import {
     mdiCheckCircle,
     mdiAccountSupervisor,
     mdiCancel,
+    mdiKey,
 } from "@mdi/js";
 import BaseLevel from "@/components/Bases/BaseLevel.vue";
 import BaseButtons from "@/components/Bases/BaseButtons.vue";
@@ -305,7 +306,21 @@ const submitDelete = (password) => {
                 </td>
                 <td data-label="Estado" class="text-center">
                     <PillTag
-                        v-if="code.used == '1'"
+                        v-if="code.checked_out == '1'"
+                        class="justify-center"
+                        label="Check-Out"
+                        color="contrast"
+                        :icon="mdiKey"
+                    />
+                    <PillTag
+                        v-else-if="code.checked_out == '0'"
+                        class="justify-center"
+                        label="Em Check-Out"
+                        color="warning"
+                        :icon="mdiKey"
+                    />
+                    <PillTag
+                        v-else-if="code.used == '1'"
                         class="justify-center"
                         label="Utilizado"
                         color="success"
