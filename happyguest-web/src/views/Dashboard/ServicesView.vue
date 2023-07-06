@@ -352,7 +352,7 @@ function open(menu_url) {
                     <FormField
                         label="Horário de Funcionamento"
                         class="w-full md:w-3/4 mb-4 sm:mb-0"
-                        help="O horário de funcionamento. Ex: 8:30-12-14-20. Obrigatório."
+                        help="O horário de funcionamento. Ex: 8:30-12:00-14:00-20:15. Obrigatório."
                         label-for="schedule"
                     >
                         <FormControl
