@@ -15,6 +15,7 @@ import {
     mdiWeightLifter,
     mdiBookOpenPageVariant,
     mdiBookClock,
+    mdiHomeAnalytics,
 } from "@mdi/js";
 
 export default [
@@ -112,5 +113,14 @@ export default [
         to: "/reservas",
         label: "Reservas",
         icon: mdiReceiptClock,
+    },
+    {
+        isDivider: true,
+    },
+    {
+        middleware: ["A", "M"],
+        to: "/hotel",
+        label: "Hotel",
+        icon: mdiHomeAnalytics,
     },
 ];

@@ -1,0 +1,295 @@
+<script setup>
+import {
+    mdiLockCheck,
+    mdiTextBox,
+    mdiEmail,
+    mdiPhone,
+    mdiCancel,
+    mdiContentSaveCheck,
+    mdiMapMarker,
+    mdiSitemap,
+    mdiHumanCapacityDecrease,
+    mdiInformationVariant,
+    mdiHuman,
+    mdiHomeAnalytics,
+} from "@mdi/js";
+import LayoutAuthenticated from "@/layouts/LayoutAuthenticated.vue";
+import SectionMain from "@/components/Sections/SectionMain.vue";
+import SectionTitleLine from "@/components/Sections/SectionTitleLine.vue";
+import CardBox from "@/components/CardBoxs/CardBox.vue";
+import FormField from "@/components/Forms/FormField.vue";
+import FormControl from "@/components/Forms/FormControl.vue";
+import BaseDivider from "@/components/Bases/BaseDivider.vue";
+import BaseButton from "@/components/Bases/BaseButton.vue";
+import BaseButtons from "@/components/Bases/BaseButtons.vue";
+import NotificationBarInCard from "@/components/Others/NotificationBarInCard.vue";
+import FormValidationErrors from "@/components/Forms/FormValidationErrors.vue";
+import { onMounted, ref } from "vue";
+import { useInfoStore } from "@/stores/info";
+
+const infoStore = useInfoStore();
+const update = ref(false);
+const hotel = ref([]);
+const statusHotel = ref(false);
+const resErrors = ref([]);
+const notifText = ref("");
+
+const form = ref({
+    email: "",
+    phone: "",
+    address: "",
+    capacity: null,
+    website: null,
+    policies: null,
+    access: null,
+    description: "",
+});
+
+onMounted(() => {
+    infoStore.getHotel().then((response) => {
+        fillForm(response);
+    });
+});
+
+const fillForm = (response) => {
+    hotel.value = response;
+    form.value.email = response.email;
+    form.value.phone = response.phone;
+    form.value.address = response.address;
+    form.value.capacity = response.capacity;
+    form.value.website = response.website;
+    form.value.policies = response.policies;
+    form.value.access = response.access;
+    form.value.description = response.description;
+};
+
+const editHotel = () => {
+    infoStore
+        .updateHotel({
+            email: form.value.email,
+            phone: form.value.phone,
+            address: form.value.address,
+            capacity: form.value.capacity,
+            website: form.value.website,
+            policies: form.value.policies,
+            access: form.value.access,
+            description: form.value.description,
+        })
+        .then((response) => {
+            resErrors.value = [];
+            if (response.status === 200) {
+                notifText.value = response.data.message;
+                update.value = false;
+                statusHotel.value = true;
+                setTimeout(() => {
+                    statusHotel.value = false;
+                }, 5000);
+            } else {
+                resErrors.value = response.response.data.errors;
+                statusHotel.value = false;
+            }
+        })
+        .catch(() => {
+            notifText.value = "Ocorreu um erro ao atualizar o hotel.";
+            statusHotel.value = false;
+        });
+};
+
+const cancel = () => {
+    update.value = false;
+    fillForm(hotel.value);
+};
+</script>
+
+<template>
+    <LayoutAuthenticated>
+        <SectionMain>
+            <SectionTitleLine :icon="mdiHomeAnalytics" title="Hotel" main />
+
+            <CardBox class="mb-6" is-form @submit.prevent="editHotel">
+                <FormValidationErrors
+                    v-if="statusHotel == false"
+                    :errors="resErrors"
+                />
+                <Transition name="fade">
+                    <NotificationBarInCard v-if="statusHotel" color="success">
+                        <b>{{ notifText }}</b>
+                    </NotificationBarInCard>
+                </Transition>
+                <FormField
+                    label="Descrição"
+                    label-for="description"
+                    help="A descrição do serviço. Obrigatória"
+                >
+                    <FormControl
+                        id="description"
+                        v-model="form.description"
+                        :icon="mdiTextBox"
+                        name="description"
+                        :disabled="!update"
+                        autocomplete="description"
+                        type="textarea"
+                        required
+                    />
+                </FormField>
+                <FormField flex>
+                    <FormField
+                        label="Email"
+                        class="w-full md:w-2/4 mb-4 sm:mb-0"
+                        label-for="email"
+                        help="O email do serviço. Obrigatória"
+                    >
+                        <FormControl
+                            id="email"
+                            v-model="form.email"
+                            :icon="mdiEmail"
+                            name="email"
+                            :disabled="!update"
+                            autocomplete="email"
+                            required
+                        />
+                    </FormField>
+                    <FormField
+                        label="Nº Telefone"
+                        class="w-full md:w-2/4 mb-4 sm:mb-0"
+                        label-for="phone"
+                        help="O número de telefone do serviço. Obrigatória"
+                    >
+                        <FormControl
+                            id="phone"
+                            v-model="form.phone"
+                            :icon="mdiPhone"
+                            name="phone"
+                            :disabled="!update"
+                            autocomplete="phone"
+                            required
+                        />
+                    </FormField>
+                </FormField>
+                <FormField flex>
+                    <FormField
+                        label="Morada"
+                        class="w-full md:w-2/4 mb-4 sm:mb-0"
+                        label-for="address"
+                        help="A Morada. Obrigatória"
+                    >
+                        <FormControl
+                            id="address"
+                            v-model="form.address"
+                            :icon="mdiMapMarker"
+                            name="address"
+                            :disabled="!update"
+                            autocomplete="address"
+                            required
+                        />
+                    </FormField>
+                    <FormField
+                        label="Capacidade"
+                        class="w-full md:w-2/4 mb-4 sm:mb-0"
+                        label-for="capacity"
+                        help="A capacidade. Opcional"
+                    >
+                        <FormControl
+                            id="capacity"
+                            v-model="form.capacity"
+                            :icon="mdiHumanCapacityDecrease"
+                            name="capacity"
+                            :disabled="!update"
+                            autocomplete="capacity"
+                            :placeholder="
+                                form.capacity == null ? 'Não definido' : ''
+                            "
+                        />
+                    </FormField>
+                </FormField>
+                <FormField
+                    label="Website"
+                    class="w-full"
+                    label-for="website"
+                    help="O website. Opcional"
+                >
+                    <FormControl
+                        id="website"
+                        v-model="form.website"
+                        :icon="mdiSitemap"
+                        name="website"
+                        :disabled="!update"
+                        autocomplete="website"
+                        :placeholder="
+                            form.website == null ? 'Não definido' : ''
+                        "
+                    />
+                </FormField>
+                <BaseDivider />
+                <FormField
+                    label="Políticas do Hotel"
+                    class="w-full"
+                    label-for="policies"
+                    help="As politicas. Opcional"
+                >
+                    <FormControl
+                        id="policies"
+                        v-model="form.policies"
+                        :icon="mdiInformationVariant"
+                        type="textarea"
+                        name="policies"
+                        :disabled="!update"
+                        autocomplete="policies"
+                        :placeholder="
+                            form.policies == null ? 'Não definido' : ''
+                        "
+                    />
+                </FormField>
+                <FormField
+                    label="Informações de acesso"
+                    class="w-full"
+                    label-for="access"
+                    help="As politicas. Opcional"
+                >
+                    <FormControl
+                        id="access"
+                        v-model="form.access"
+                        :icon="mdiHuman"
+                        type="textarea"
+                        name="access"
+                        :disabled="!update"
+                        autocomplete="access"
+                        :placeholder="form.access == null ? 'Não definido' : ''"
+                    />
+                </FormField>
+                <template #footer>
+                    <div class="relative">
+                        <BaseButtons v-if="update == false">
+                            <BaseButton
+                                color="success"
+                                label="Alterar"
+                                :icon="mdiLockCheck"
+                                @click="update = true"
+                            />
+                        </BaseButtons>
+
+                        <BaseButtons v-if="update == true">
+                            <BaseButton
+                                type="submit"
+                                color="success"
+                                label="Confirmar"
+                                :icon="mdiContentSaveCheck"
+                            />
+                            <BaseButton
+                                color="info"
+                                label="Cancelar"
+                                outline
+                                :icon="mdiCancel"
+                                @click="cancel()"
+                            />
+                        </BaseButtons>
+                        <span
+                            class="static text-zinc-500 right-0 bottom-0 mb-4 text-center sm:text-right sm:absolute"
+                            >Última Atualização: {{ hotel?.updated_at }}</span
+                        >
+                    </div>
+                </template>
+            </CardBox>
+        </SectionMain>
+    </LayoutAuthenticated>
+</template>

@@ -207,7 +207,15 @@ const routes = [
         name: "reserveView",
         component: () => import("@/views/Dashboard/Reserves/ReserveView.vue"),
     },
-
+    {
+        meta: {
+            title: "Hotel",
+            middleware: [auth, manager],
+        },
+        path: "/hotel",
+        name: "hotel",
+        component: () => import("@/views/Dashboard/HotelView.vue"),
+    },
     // Not Found
 
     {
