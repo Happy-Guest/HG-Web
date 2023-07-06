@@ -15,12 +15,12 @@ import FormControl from "@/components/Forms/FormControl.vue";
 import CardBox from "@/components/CardBoxs/CardBox.vue";
 import BaseButton from "@/components/Bases/BaseButton.vue";
 import BaseButtons from "@/components/Bases/BaseButtons.vue";
-import { onMounted, ref, watchEffect, watch } from "vue";
+import { ref, watchEffect, watch } from "vue";
 import { useReserveStore } from "@/stores/reserve";
 
 const reserveStore = useReserveStore();
 
-const hasReserves = ref(false);
+const hasReserves = ref(true);
 
 const selectOptionsFilter = [
     { value: "ALL", label: "Todos" },
@@ -41,21 +41,17 @@ const selectOptionsOrder = [
 const filter = ref(selectOptionsFilter[0]);
 const order = ref(selectOptionsOrder[0]);
 
-onMounted(async () => {
-    hasReserves.value = await reserveStore.getReserves(0, filter.value.value);
-});
-
 watch(filter, async (value) => {
     if (value.value != reserveStore.filterTable) {
-        hasReserves.value = await reserveStore.getReserves(0, value.value);
-        setTimeout(() => {
-            reserveStore.filterTable = value.value;
-        }, 200);
+        reserveStore.filterTable = value.value;
+        hasReserves.value = true;
     }
 });
 
 watch(order, (value) => {
-    reserveStore.orderTable = value.value;
+    if (value.value != reserveStore.orderTable) {
+        reserveStore.orderTable = value.value;
+    }
 });
 
 watchEffect(() => {
@@ -120,6 +116,7 @@ watchEffect(() => {
                     v-if="hasReserves"
                     :filter="filter.value"
                     :order="order.value"
+                    @update:not-empty="hasReserves = $event"
                 />
                 <CardBoxComponentEmpty
                     v-else

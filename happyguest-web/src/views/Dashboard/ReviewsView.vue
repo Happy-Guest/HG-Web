@@ -16,12 +16,12 @@ import CardBox from "@/components/CardBoxs/CardBox.vue";
 import BaseButtons from "@/components/Bases/BaseButtons.vue";
 import BaseButton from "@/components/Bases/BaseButton.vue";
 import CardBoxRegisterReview from "@/components/CardBoxsCustom/CardBoxRegisterReview.vue";
-import { onMounted, ref, watch, watchEffect } from "vue";
+import { ref, watch, watchEffect } from "vue";
 import { useReviewStore } from "@/stores/review";
 
 const reviewStore = useReviewStore();
 
-const hasReviews = ref(false);
+const hasReviews = ref(true);
 const isModalActiveCreate = ref(false);
 
 const selectOptionsFilter = [
@@ -40,21 +40,17 @@ const selectOptionsOrder = [
 const filter = ref(selectOptionsFilter[0]);
 const order = ref(selectOptionsOrder[0]);
 
-onMounted(async () => {
-    hasReviews.value = await reviewStore.getReviews(0, filter.value.value);
-});
-
 watch(filter, async (value) => {
     if (value.value != reviewStore.filterTable) {
-        hasReviews.value = await reviewStore.getReviews(0, value.value);
-        setTimeout(() => {
-            reviewStore.filterTable = value.value;
-        }, 200);
+        reviewStore.filterTable = value.value;
+        hasReviews.value = true;
     }
 });
 
-watch(order, (value) => {
-    reviewStore.orderTable = value.value;
+watch(order, async (value) => {
+    if (value.value != reviewStore.orderTable) {
+        reviewStore.orderTable = value.value;
+    }
 });
 
 watchEffect(() => {
@@ -128,6 +124,7 @@ watchEffect(() => {
                     v-if="hasReviews"
                     :filter="filter.value"
                     :order="order.value"
+                    @update:not-empty="hasReviews = $event"
                 />
                 <CardBoxComponentEmpty
                     v-else

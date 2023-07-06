@@ -52,16 +52,20 @@ const props = defineProps({
     },
 });
 
+const emit = defineEmits(["update:not-empty"]);
+
 async function getOrders() {
     orders.value = await orderStore.getOrders(
         currentPage.value + 1,
         props.filter,
         props.orderFilter
     );
+    emit("update:not-empty", orders.value.length > 0);
 }
 
 onMounted(async () => {
     if (orderStore.updateTable != true) {
+        orderStore.clearStore();
         await getOrders();
     }
 });

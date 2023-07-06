@@ -15,12 +15,12 @@ import BaseButtons from "@/components/Bases/BaseButtons.vue";
 import BaseButton from "@/components/Bases/BaseButton.vue";
 import FormControl from "@/components/Forms/FormControl.vue";
 import CardBox from "@/components/CardBoxs/CardBox.vue";
-import { onMounted, ref, watch, watchEffect } from "vue";
+import { ref, watch, watchEffect } from "vue";
 import { useComplaintStore } from "@/stores/complaint";
 
 const complaintStore = useComplaintStore();
 
-const hasComplaints = ref(false);
+const hasComplaints = ref(true);
 
 const selectOptionsFilter = [
     { value: "ALL", label: "Todas" },
@@ -39,29 +39,17 @@ const selectOptionsOrder = [
 const filter = ref(selectOptionsFilter[0]);
 const order = ref(selectOptionsOrder[0]);
 
-onMounted(async () => {
-    hasComplaints.value = await complaintStore.getComplaints(
-        0,
-        null,
-        filter.value.value
-    );
-});
-
 watch(filter, async (value) => {
     if (value.value != complaintStore.filterTable) {
-        hasComplaints.value = await complaintStore.getComplaints(
-            0,
-            null,
-            value.value
-        );
-        setTimeout(() => {
-            complaintStore.filterTable = value.value;
-        }, 200);
+        complaintStore.filterTable = value.value;
+        hasComplaints.value = true;
     }
 });
 
 watch(order, (value) => {
-    complaintStore.orderTable = value.value;
+    if (value.value != complaintStore.orderTable) {
+        complaintStore.orderTable = value.value;
+    }
 });
 
 watchEffect(() => {
@@ -126,6 +114,7 @@ watchEffect(() => {
                     v-if="hasComplaints"
                     :filter="filter.value"
                     :order="order.value"
+                    @update:not-empty="hasComplaints = $event"
                 />
                 <CardBoxComponentEmpty
                     v-else

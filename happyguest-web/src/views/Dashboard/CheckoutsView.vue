@@ -16,12 +16,12 @@ import FormControl from "@/components/Forms/FormControl.vue";
 import CardBox from "@/components/CardBoxs/CardBox.vue";
 import BaseButtons from "@/components/Bases/BaseButtons.vue";
 import BaseButton from "@/components/Bases/BaseButton.vue";
-import { onMounted, ref, watch, watchEffect } from "vue";
+import { ref, watch, watchEffect } from "vue";
 import { useCheckoutStore } from "@/stores/checkout";
 
 const checkoutStore = useCheckoutStore();
 
-const hascheckouts = ref(false);
+const hascheckouts = ref(true);
 const newCheckout = ref(null);
 
 const isModalActiveRegister = ref(false);
@@ -40,24 +40,17 @@ const selectOptionsOrder = [
 const filter = ref(selectOptionsFilter[0]);
 const order = ref(selectOptionsOrder[0]);
 
-onMounted(async () => {
-    hascheckouts.value = await checkoutStore.getCheckouts(
-        0,
-        filter.value.value
-    );
-});
-
 watch(filter, async (value) => {
     if (value.value != checkoutStore.filterTable) {
-        hascheckouts.value = await checkoutStore.getCheckouts(0, value.value);
-        setTimeout(() => {
-            checkoutStore.filterTable = value.value;
-        }, 200);
+        checkoutStore.filterTable = value.value;
+        hascheckouts.value = true;
     }
 });
 
 watch(order, (value) => {
-    checkoutStore.orderTable = value.value;
+    if (value.value != checkoutStore.orderTable) {
+        checkoutStore.orderTable = value.value;
+    }
 });
 
 watchEffect(() => {
@@ -128,6 +121,7 @@ watchEffect(() => {
                     :new-checkout="newCheckout"
                     :filter="filter.value"
                     :order="order.value"
+                    @update:not-empty="hascheckouts = $event"
                 />
                 <CardBoxComponentEmpty
                     v-else

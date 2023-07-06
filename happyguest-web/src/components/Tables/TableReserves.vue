@@ -49,16 +49,20 @@ const props = defineProps({
     },
 });
 
+const emit = defineEmits(["update:not-empty"]);
+
 async function getReserves() {
     reserves.value = await reserveStore.getReserves(
         currentPage.value + 1,
         props.filter,
         props.order
     );
+    emit("update:not-empty", reserves.value.length > 0);
 }
 
 onMounted(async () => {
     if (reserveStore.updateTable != true) {
+        reserveStore.clearStore();
         await getReserves();
     }
 });

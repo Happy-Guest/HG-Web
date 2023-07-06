@@ -50,12 +50,15 @@ const resErrors = ref([]);
 const selected = ref(null);
 const selectedView = ref(null);
 
+const emit = defineEmits(["update:not-empty"]);
+
 async function getReviews() {
     reviews.value = await reviewStore.getReviews(
         currentPage.value + 1,
         props.filter,
         props.order
     );
+    emit("update:not-empty", reviews.value.length > 0);
 }
 
 watch(currentPageHuman, async () => {
@@ -73,6 +76,7 @@ watch(
 
 onMounted(async () => {
     if (reviewStore.updateTable != true) {
+        reviewStore.clearStore();
         await getReviews();
     }
 });

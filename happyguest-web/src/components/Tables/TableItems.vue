@@ -80,6 +80,8 @@ const numPages = computed(() => {
 
 const currentPageHuman = computed(() => currentPage.value + 1);
 
+const emit = defineEmits(["update:not-empty"]);
+
 async function getItems() {
     if (props.serviceId != null) {
         items.value = await serviceStore.getItemsService(
@@ -95,10 +97,13 @@ async function getItems() {
             props.order
         );
     }
+    emit("update:not-empty", items.value.length > 0);
 }
 
 onMounted(async () => {
     if (itemStore.updateTable != true) {
+        itemStore.clearStore();
+        serviceStore.clearStore();
         await getItems();
     }
 });
@@ -186,7 +191,6 @@ watch(
 watch(
     () => props.serviceId,
     () => {
-        serviceStore.clearStore();
         reloadTable();
     }
 );

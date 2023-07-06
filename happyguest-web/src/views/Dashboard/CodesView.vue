@@ -16,12 +16,12 @@ import TableCodes from "@/components/Tables/TableCodes.vue";
 import CardBox from "@/components/CardBoxs/CardBox.vue";
 import CardBoxCode from "@/components/CardBoxsCustom/CardBoxCode.vue";
 import FormControl from "@/components/Forms/FormControl.vue";
-import { onMounted, ref, watch, watchEffect } from "vue";
+import { ref, watch, watchEffect } from "vue";
 import { useCodeStore } from "@/stores/code";
 
 const codeStore = useCodeStore();
 
-const hasCodes = ref(false);
+const hasCodes = ref(true);
 const newCode = ref(null);
 
 const isModalActiveCreate = ref(false);
@@ -43,21 +43,17 @@ const selectOptionsOrder = [
 const filter = ref(selectOptionsFilter[0]);
 const order = ref(selectOptionsOrder[0]);
 
-onMounted(async () => {
-    hasCodes.value = await codeStore.getCodes(0, filter.value.value);
-});
-
-watch(filter, async (value) => {
+watch(filter, (value) => {
     if (value.value != codeStore.filterTable) {
-        hasCodes.value = await codeStore.getCodes(0, value.value);
-        setTimeout(() => {
-            codeStore.filterTable = value.value;
-        }, 200);
+        codeStore.filterTable = value.value;
+        hasCodes.value = true;
     }
 });
 
 watch(order, (value) => {
-    codeStore.orderTable = value.value;
+    if (value.value != codeStore.orderTable) {
+        codeStore.orderTable = value.value;
+    }
 });
 
 watchEffect(() => {
@@ -128,6 +124,7 @@ watchEffect(() => {
                     :new-code="newCode"
                     :filter="filter.value"
                     :order="order.value"
+                    @update:not-empty="hasCodes = $event"
                 />
                 <CardBoxComponentEmpty
                     v-else

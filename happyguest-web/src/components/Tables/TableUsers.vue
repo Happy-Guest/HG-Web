@@ -57,12 +57,15 @@ const isSuccessNotifActive = ref(false);
 const isErrorNotifActive = ref(false);
 const isModalDeleteActive = ref(false);
 
+const emit = defineEmits(["update:not-empty"]);
+
 async function getUsers() {
     users.value = await userStore.getUsers(
         currentPage.value + 1,
         props.filter,
         props.order
     );
+    emit("update:not-empty", users.value.length > 0);
 }
 
 watch(currentPageHuman, async () => {
@@ -80,6 +83,7 @@ watch(
 
 onMounted(async () => {
     if (userStore.updateTable != true) {
+        userStore.clearStore();
         await getUsers();
     }
 });

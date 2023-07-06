@@ -16,12 +16,12 @@ import CardBox from "@/components/CardBoxs/CardBox.vue";
 import CardBoxItem from "@/components/CardBoxsCustom/CardBoxItem.vue";
 import BaseButton from "@/components/Bases/BaseButton.vue";
 import BaseButtons from "@/components/Bases/BaseButtons.vue";
-import { onMounted, ref, watchEffect, watch } from "vue";
+import { ref, watchEffect, watch } from "vue";
 import { useItemStore } from "@/stores/item";
 
 const itemStore = useItemStore();
 
-const hasItems = ref(false);
+const hasItems = ref(true);
 const newItem = ref(null);
 
 const isModalActiveCreate = ref(false);
@@ -49,21 +49,17 @@ const selectOptionsOrder = [
 const filter = ref(selectOptionsFilter[0]);
 const order = ref(selectOptionsOrder[0]);
 
-onMounted(async () => {
-    hasItems.value = await itemStore.getItems(0, filter.value.value);
-});
-
 watch(filter, async (value) => {
     if (value.value != itemStore.filterTable) {
-        hasItems.value = await itemStore.getItems(0, value.value);
-        setTimeout(() => {
-            itemStore.filterTable = value.value;
-        }, 200);
+        itemStore.filterTable = value.value;
+        hasItems.value = true;
     }
 });
 
 watch(order, (value) => {
-    itemStore.orderTable = value.value;
+    if (value.value != itemStore.orderTable) {
+        itemStore.orderTable = value.value;
+    }
 });
 
 watchEffect(() => {
@@ -138,6 +134,7 @@ watchEffect(() => {
                     :new-item="newItem"
                     :filter="filter.value"
                     :order="order.value"
+                    @update:not-empty="hasItems = $event"
                 />
                 <CardBoxComponentEmpty
                     v-else

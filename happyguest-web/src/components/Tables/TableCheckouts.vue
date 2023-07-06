@@ -50,12 +50,15 @@ const selectedView = ref(null);
 const notifText = ref("");
 const resErrors = ref([]);
 
+const emit = defineEmits(["update:not-empty"]);
+
 async function getCheckouts() {
     checkouts.value = await checkoutStore.getCheckouts(
         currentPage.value + 1,
         props.filter,
         props.order
     );
+    emit("update:not-empty", checkouts.value.length > 0);
 }
 
 watch(currentPageHuman, async () => {
@@ -88,6 +91,7 @@ watch(
 
 onMounted(async () => {
     if (checkoutStore.updateTable != true) {
+        checkoutStore.clearStore();
         await getCheckouts();
     }
 });

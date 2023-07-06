@@ -56,12 +56,15 @@ const selectedUsed = ref(null);
 const selectedCode = ref(null);
 const selectedId = ref(null);
 
+const emit = defineEmits(["update:not-empty"]);
+
 async function getCodes() {
     codes.value = await codeStore.getCodes(
         currentPage.value + 1,
         props.filter,
         props.order
     );
+    emit("update:not-empty", codes.value.length > 0);
 }
 
 watch(currentPageHuman, async () => {
@@ -88,6 +91,7 @@ watch(
 
 onMounted(async () => {
     if (codeStore.updateTable != true) {
+        codeStore.clearStore();
         await getCodes();
     }
 });

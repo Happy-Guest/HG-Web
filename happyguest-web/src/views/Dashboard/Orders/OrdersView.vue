@@ -15,12 +15,12 @@ import FormControl from "@/components/Forms/FormControl.vue";
 import CardBox from "@/components/CardBoxs/CardBox.vue";
 import BaseButton from "@/components/Bases/BaseButton.vue";
 import BaseButtons from "@/components/Bases/BaseButtons.vue";
-import { onMounted, ref, watchEffect, watch } from "vue";
+import { ref, watchEffect, watch } from "vue";
 import { useOrderStore } from "@/stores/order";
 
 const orderStore = useOrderStore();
 
-const hasOrders = ref(false);
+const hasOrders = ref(true);
 
 const selectOptionsFilter = [
     { value: "ALL", label: "Todos" },
@@ -44,21 +44,17 @@ const selectOptionsOrder = [
 const filter = ref(selectOptionsFilter[0]);
 const order = ref(selectOptionsOrder[0]);
 
-onMounted(async () => {
-    hasOrders.value = await orderStore.getOrders(0, filter.value.value);
-});
-
 watch(filter, async (value) => {
     if (value.value != orderStore.filterTable) {
-        hasOrders.value = await orderStore.getOrders(0, value.value);
-        setTimeout(() => {
-            orderStore.filterTable = value.value;
-        }, 200);
+        orderStore.filterTable = value.value;
+        hasOrders.value = true;
     }
 });
 
 watch(order, (value) => {
-    orderStore.orderTable = value.value;
+    if (value.value != orderStore.orderTable) {
+        orderStore.orderTable = value.value;
+    }
 });
 
 watchEffect(() => {
@@ -123,6 +119,7 @@ watchEffect(() => {
                     v-if="hasOrders"
                     :filter="filter.value"
                     :order-filter="order.value"
+                    @update:not-empty="hasOrders = $event"
                 />
                 <CardBoxComponentEmpty
                     v-else

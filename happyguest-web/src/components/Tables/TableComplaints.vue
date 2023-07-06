@@ -55,6 +55,8 @@ const selectedAnswer = ref(null);
 const notifText = ref("");
 const resErrors = ref([]);
 
+const emit = defineEmits(["update:not-empty"]);
+
 async function getComplaints() {
     complaints.value = await complaintStore.getComplaints(
         currentPage.value + 1,
@@ -62,6 +64,7 @@ async function getComplaints() {
         props.filter,
         props.order
     );
+    emit("update:not-empty", complaints.value.length > 0);
 }
 
 watch(currentPageHuman, async () => {
@@ -78,15 +81,17 @@ watch(
 );
 
 onMounted(async () => {
-    if (
-        complaintStore.updateTable != true &&
-        props.userId == complaintStore.user
-    ) {
+    if (complaintStore.updateTable != true) {
+        complaintStore.clearStore();
+        if (props.userId) {
+            complaintStore.user = props.userId;
+        }
         await getComplaints();
     }
 });
 
 async function reloadTable() {
+    console.log("reload");
     complaintStore.clearStore();
     setTimeout(async () => {
         await getComplaints();
@@ -98,10 +103,8 @@ async function reloadTable() {
 }
 
 watchEffect(async () => {
-    if (complaintStore.updateTable || props.userId != complaintStore.user) {
-        await reloadTable().then(() => {
-            complaintStore.user = props.userId;
-        });
+    if (complaintStore.updateTable) {
+        await reloadTable();
     }
 });
 
