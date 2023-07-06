@@ -259,7 +259,7 @@ const submitAssociate = (item) => {
                     isSuccessNotifActive.value = false;
                 }, 5000);
             } else {
-                resErrors.value = response.data.message;
+                resErrors.value.push([response.data.message]);
             }
         })
         .catch(() => {
@@ -287,7 +287,7 @@ const submitDissociate = () => {
                     isSuccessNotifActive.value = false;
                 }, 5000);
             } else {
-                resErrors.value = response.data.message;
+                resErrors.value.push([response.data.message]);
             }
         })
         .catch(() => {

@@ -22,6 +22,7 @@ import { useReviewStore } from "@/stores/review";
 const reviewStore = useReviewStore();
 
 const hasReviews = ref(true);
+const newReview = ref(null);
 const isModalActiveCreate = ref(false);
 
 const selectOptionsFilter = [
@@ -75,7 +76,7 @@ watchEffect(() => {
         <CardBoxRegisterReview
             :active="isModalActiveCreate"
             @update:active="isModalActiveCreate = $event"
-            @updated="reviewStore.updateTable"
+            @updated="newReview = $event"
         />
         <SectionMain>
             <SectionTitleLine
@@ -122,6 +123,7 @@ watchEffect(() => {
             <CardBox class="mb-6" has-table>
                 <TableReviews
                     v-if="hasReviews"
+                    :new-review="newReview"
                     :filter="filter.value"
                     :order="order.value"
                     @update:not-empty="hasReviews = $event"

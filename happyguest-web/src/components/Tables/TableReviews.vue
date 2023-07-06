@@ -22,6 +22,10 @@ import BaseIcon from "@/components/Bases/BaseIcon.vue";
 import { useReviewStore } from "@/stores/review";
 
 const props = defineProps({
+    newReview: {
+        type: Boolean,
+        default: false,
+    },
     filter: {
         type: String,
         default: "ALL",
@@ -64,6 +68,21 @@ async function getReviews() {
 watch(currentPageHuman, async () => {
     await getReviews();
 });
+
+watch(
+    () => props.newReview,
+    (value) => {
+        if (value) {
+            isSuccessNotifActive.value = true;
+            isModalActive.value = false;
+            reviewStore.updateTable = true;
+            notifText.value = "Avaliação registada com sucesso!";
+            setTimeout(() => {
+                isSuccessNotifActive.value = false;
+            }, 5000);
+        }
+    }
+);
 
 watch(
     () => isModalDeleteActive.value,

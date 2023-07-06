@@ -14,6 +14,7 @@ import FormControl from "@/components/Forms/FormControl.vue";
 import FormField from "@/components/Forms/FormField.vue";
 import BaseButtons from "@/components/Bases/BaseButtons.vue";
 import BaseButton from "@/components/Bases/BaseButton.vue";
+import FormCheckRadioGroup from "@/components/Forms/FormCheckRadioGroup.vue";
 import FormCheckRadio from "@/components/Forms/FormCheckRadio.vue";
 import { useReviewStore } from "@/stores/review";
 import { useRouter } from "vue-router";
@@ -66,7 +67,7 @@ const clear = () => {
     form.value.stars = "";
     form.value.comment = null;
     form.value.authorize = false;
-    resErrors.value = "";
+    resErrors.value = [];
     anonymous.value = false;
 };
 
@@ -87,7 +88,7 @@ const registerReview = () => {
                 emit("updated", true);
                 clear();
             } else if (response.status == 400 || response.status == 429) {
-                resErrors.value = response.data.message;
+                resErrors.value.push([response.data.message]);
             } else {
                 resErrors.value = response.data.errors;
             }
@@ -127,7 +128,7 @@ watch(
         @cancel="emit('update:active', false), clear()"
         @confirm="registerReview()"
     >
-        <div class="text-end">
+        <div class="text-end -mt-4 -mb-4 me-4">
             <FormCheckRadio
                 v-model="anonymous"
                 class="font-semibold"
@@ -205,7 +206,7 @@ watch(
         </FormField>
         <FormField
             label="Comentário"
-            help="Registe/Edite o comentário. Obrigatório."
+            help="O comentário da avaliação. Obrigatório."
             label-for="comment"
         >
             <FormControl
@@ -216,13 +217,13 @@ watch(
                 type="textarea"
             />
         </FormField>
-        <FormCheckRadio
-            v-model="form.authorize"
-            class="font-semibold mt-5"
-            name="autorize-switch"
-            type="checkbox"
-            label="Autorizar Partilha da Avaliação"
-            input-value="autorize"
-        />
+        <FormField>
+            <FormCheckRadioGroup
+                v-model="form.authorize"
+                class="mt-6 ml-4"
+                name="autorize-switch"
+                :options="{ true: 'Autorizar Partilha da Avaliação' }"
+            />
+        </FormField>
     </CardBoxModal>
 </template>

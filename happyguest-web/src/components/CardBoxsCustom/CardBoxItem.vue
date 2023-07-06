@@ -315,7 +315,7 @@ const updateItem = async () => {
             <FormCheckRadioGroup
                 v-model="form.associate"
                 class="mt-6 ml-4"
-                name="sample-checkbox"
+                name="associate-checkbox"
                 :options="{ true: 'Adicionar ao Menu Atual' }"
             />
         </FormField>
