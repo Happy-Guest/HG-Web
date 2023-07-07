@@ -12,6 +12,7 @@ import {
     mdiInformationVariant,
     mdiHuman,
     mdiHomeAnalytics,
+    mdiStarBoxMultiple,
 } from "@mdi/js";
 import LayoutAuthenticated from "@/layouts/LayoutAuthenticated.vue";
 import SectionMain from "@/components/Sections/SectionMain.vue";
@@ -43,6 +44,7 @@ const form = ref({
     policies: null,
     access: null,
     description: "",
+    commodities: null,
 });
 
 onMounted(() => {
@@ -61,6 +63,7 @@ const fillForm = (response) => {
     form.value.policies = response.policies;
     form.value.access = response.access;
     form.value.description = response.description;
+    form.value.commodities = response.commodities;
 };
 
 const editHotel = () => {
@@ -74,6 +77,7 @@ const editHotel = () => {
             policies: form.value.policies,
             access: form.value.access,
             description: form.value.description,
+            commodities: form.value.commodities,
         })
         .then((response) => {
             resErrors.value = [];
@@ -116,28 +120,12 @@ const cancel = () => {
                         <b>{{ notifText }}</b>
                     </NotificationBarInCard>
                 </Transition>
-                <FormField
-                    label="Descrição"
-                    label-for="description"
-                    help="A descrição do serviço. Obrigatória"
-                >
-                    <FormControl
-                        id="description"
-                        v-model="form.description"
-                        :icon="mdiTextBox"
-                        name="description"
-                        :disabled="!update"
-                        autocomplete="description"
-                        type="textarea"
-                        required
-                    />
-                </FormField>
                 <FormField flex>
                     <FormField
                         label="Email"
                         class="w-full md:w-2/4 mb-4 sm:mb-0"
                         label-for="email"
-                        help="O email do serviço. Obrigatória"
+                        help="O email principal do hotel. Obrigatório"
                     >
                         <FormControl
                             id="email"
@@ -153,7 +141,7 @@ const cancel = () => {
                         label="Nº Telefone"
                         class="w-full md:w-2/4 mb-4 sm:mb-0"
                         label-for="phone"
-                        help="O número de telefone do serviço. Obrigatória"
+                        help="O número de telefone principal do hotel. Obrigatório"
                     >
                         <FormControl
                             id="phone"
@@ -171,7 +159,7 @@ const cancel = () => {
                         label="Morada"
                         class="w-full md:w-2/4 mb-4 sm:mb-0"
                         label-for="address"
-                        help="A Morada. Obrigatória"
+                        help="A Morada do hotel. Obrigatória"
                     >
                         <FormControl
                             id="address"
@@ -187,7 +175,7 @@ const cancel = () => {
                         label="Capacidade"
                         class="w-full md:w-2/4 mb-4 sm:mb-0"
                         label-for="capacity"
-                        help="A capacidade. Opcional"
+                        help="A capacidade do hotel. Opcional"
                     >
                         <FormControl
                             id="capacity"
@@ -206,7 +194,7 @@ const cancel = () => {
                     label="Website"
                     class="w-full"
                     label-for="website"
-                    help="O website. Opcional"
+                    help="O website do hotel. Opcional"
                 >
                     <FormControl
                         id="website"
@@ -222,10 +210,46 @@ const cancel = () => {
                 </FormField>
                 <BaseDivider />
                 <FormField
+                    label="Comodidades"
+                    class="w-full"
+                    label-for="commodities"
+                    help="As comodidades do hotel. Separadas por virgula. Opcionais"
+                >
+                    <FormControl
+                        id="commodities"
+                        v-model="form.commodities"
+                        :icon="mdiStarBoxMultiple"
+                        type="textarea"
+                        name="commodities"
+                        :disabled="!update"
+                        autocomplete="commodities"
+                        :placeholder="
+                            form.commodities == null ? 'Não definidas' : ''
+                        "
+                    />
+                </FormField>
+                <FormField
+                    label="Descrição"
+                    label-for="description"
+                    help="Uma descrição do hotel. Obrigatória"
+                >
+                    <FormControl
+                        id="description"
+                        v-model="form.description"
+                        :icon="mdiTextBox"
+                        name="description"
+                        :disabled="!update"
+                        autocomplete="description"
+                        type="textarea"
+                        required
+                    />
+                </FormField>
+                <BaseDivider />
+                <FormField
                     label="Políticas do Hotel"
                     class="w-full"
                     label-for="policies"
-                    help="As politicas. Opcional"
+                    help="As politicas do hotel. Separadas por virgula. Opcionais"
                 >
                     <FormControl
                         id="policies"
@@ -236,15 +260,15 @@ const cancel = () => {
                         :disabled="!update"
                         autocomplete="policies"
                         :placeholder="
-                            form.policies == null ? 'Não definido' : ''
+                            form.policies == null ? 'Não definidas' : ''
                         "
                     />
                 </FormField>
                 <FormField
-                    label="Informações de acesso"
+                    label="Informações de Acesso"
                     class="w-full"
                     label-for="access"
-                    help="As politicas. Opcional"
+                    help="As informações de acesso ao hotel. Separadas por virgula. Opcionais"
                 >
                     <FormControl
                         id="access"
@@ -254,7 +278,9 @@ const cancel = () => {
                         name="access"
                         :disabled="!update"
                         autocomplete="access"
-                        :placeholder="form.access == null ? 'Não definido' : ''"
+                        :placeholder="
+                            form.access == null ? 'Não definidas' : ''
+                        "
                     />
                 </FormField>
                 <template #footer>
