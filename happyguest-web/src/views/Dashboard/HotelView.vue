@@ -42,9 +42,13 @@ const form = ref({
     capacity: null,
     website: null,
     policies: null,
+    policiesEN: null,
     access: null,
+    accessEN: null,
     description: "",
+    descriptionEN: "",
     commodities: null,
+    commoditiesEN: null,
 });
 
 onMounted(() => {
@@ -61,9 +65,13 @@ const fillForm = (response) => {
     form.value.capacity = response.capacity;
     form.value.website = response.website;
     form.value.policies = response.policies;
+    form.value.policiesEN = response.policiesEN;
     form.value.access = response.access;
+    form.value.accessEN = response.accessEN;
     form.value.description = response.description;
+    form.value.descriptionEN = response.descriptionEN;
     form.value.commodities = response.commodities;
+    form.value.commoditiesEN = response.commoditiesEN;
 };
 
 const editHotel = () => {
@@ -75,9 +83,13 @@ const editHotel = () => {
             capacity: form.value.capacity,
             website: form.value.website,
             policies: form.value.policies,
+            policiesEN: form.value.policiesEN,
             access: form.value.access,
+            accessEN: form.value.accessEN,
             description: form.value.description,
+            descriptionEN: form.value.descriptionEN,
             commodities: form.value.commodities,
+            commoditiesEN: form.value.commoditiesEN,
         })
         .then((response) => {
             resErrors.value = [];
@@ -213,7 +225,7 @@ const cancel = () => {
                     label="Comodidades"
                     class="w-full"
                     label-for="commodities"
-                    help="As comodidades do hotel. Separadas por virgula. Opcionais"
+                    help="As comodidades do hotel. Separadas por vírgula. Opcionais"
                 >
                     <FormControl
                         id="commodities"
@@ -228,6 +240,27 @@ const cancel = () => {
                         "
                     />
                 </FormField>
+                <FormField
+                    label="Comodidades (Inglês)"
+                    class="w-full"
+                    label-for="commoditiesEN"
+                    help="As comodidades do hotel em inglês. Separadas por vírgula. Opcionais"
+                >
+                    <FormControl
+                        id="commoditiesEN"
+                        v-model="form.commoditiesEN"
+                        :icon="mdiStarBoxMultiple"
+                        type="textarea"
+                        name="commoditiesEN"
+                        :disabled="!update"
+                        autocomplete="commoditiesEN"
+                        :placeholder="
+                            form.commoditiesEN == null ? 'Não definidas' : ''
+                        "
+                        :required="form.commodities != null"
+                    />
+                </FormField>
+                <BaseDivider />
                 <FormField
                     label="Descrição"
                     label-for="description"
@@ -244,12 +277,28 @@ const cancel = () => {
                         required
                     />
                 </FormField>
+                <FormField
+                    label="Descrição (Inglês)"
+                    label-for="descriptionEN"
+                    help="Uma descrição do hotel em inglês. Obrigatória"
+                >
+                    <FormControl
+                        id="descriptionEN"
+                        v-model="form.descriptionEN"
+                        :icon="mdiTextBox"
+                        name="descriptionEN"
+                        :disabled="!update"
+                        autocomplete="descriptionEN"
+                        type="textarea"
+                        required
+                    />
+                </FormField>
                 <BaseDivider />
                 <FormField
                     label="Políticas do Hotel"
                     class="w-full"
                     label-for="policies"
-                    help="As politicas do hotel. Separadas por virgula. Opcionais"
+                    help="As politicas do hotel. Separadas por vírgula. Opcionais"
                 >
                     <FormControl
                         id="policies"
@@ -265,10 +314,31 @@ const cancel = () => {
                     />
                 </FormField>
                 <FormField
+                    label="Políticas do Hotel (Inglês)"
+                    class="w-full"
+                    label-for="policiesEN"
+                    help="As politicas do hotel em inglês. Separadas por vírgula. Opcionais"
+                >
+                    <FormControl
+                        id="policiesEN"
+                        v-model="form.policiesEN"
+                        :icon="mdiInformationVariant"
+                        type="textarea"
+                        name="policiesEN"
+                        :disabled="!update"
+                        autocomplete="policiesEN"
+                        :placeholder="
+                            form.policiesEN == null ? 'Não definidas' : ''
+                        "
+                        :required="form.policies != null"
+                    />
+                </FormField>
+                <BaseDivider />
+                <FormField
                     label="Informações de Acesso"
                     class="w-full"
                     label-for="access"
-                    help="As informações de acesso ao hotel. Separadas por virgula. Opcionais"
+                    help="As informações de acesso ao hotel. Separadas por vírgula. Opcionais"
                 >
                     <FormControl
                         id="access"
@@ -281,6 +351,26 @@ const cancel = () => {
                         :placeholder="
                             form.access == null ? 'Não definidas' : ''
                         "
+                    />
+                </FormField>
+                <FormField
+                    label="Informações de Acesso (Inglês)"
+                    class="w-full"
+                    label-for="accessEN"
+                    help="As informações de acesso ao hotel em inglês. Separadas por vírgula. Opcionais"
+                >
+                    <FormControl
+                        id="accessEN"
+                        v-model="form.accessEN"
+                        :icon="mdiHuman"
+                        type="textarea"
+                        name="accessEN"
+                        :disabled="!update"
+                        autocomplete="accessEN"
+                        :placeholder="
+                            form.accessEN == null ? 'Não definidas' : ''
+                        "
+                        :required="form.access != null"
                     />
                 </FormField>
                 <template #footer>

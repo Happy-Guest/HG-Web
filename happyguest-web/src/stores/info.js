@@ -6,7 +6,7 @@ export const useInfoStore = defineStore("info", () => {
 
     async function getHotel() {
         try {
-            let response = await axios.get("hotel");
+            let response = await axios.get("hotel/1");
             return response.data.data;
         } catch (error) {
             return error;
@@ -15,7 +15,7 @@ export const useInfoStore = defineStore("info", () => {
 
     async function updateHotel(data) {
         try {
-            const response = await axios.patch("hotel", data);
+            const response = await axios.patch("hotels/1", data);
             return response;
         } catch (error) {
             return error;
