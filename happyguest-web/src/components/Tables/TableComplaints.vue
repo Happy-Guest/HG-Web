@@ -91,7 +91,6 @@ onMounted(async () => {
 });
 
 async function reloadTable() {
-    console.log("reload");
     complaintStore.clearStore();
     setTimeout(async () => {
         await getComplaints();
