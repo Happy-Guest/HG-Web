@@ -129,7 +129,52 @@ const fillForm = (response) => {
 const notifText = ref("");
 const resErrors = ref([]);
 
+function validateSchedule() {
+    resErrors.value = [];
+    // Format: 00:00-00:00-00:00-00:00 or 00:00-00:00 (in pairs)
+    const regex = /^(\d{1,2}:\d{2})(?:-(?:(?!.*-\1)(\d{1,2}:\d{2})))*$/;
+    if (!regex.test(form.value.schedule)) {
+        resErrors.value.push(["O horário não está no formato correto."]);
+        return false;
+    }
+    // Separate by - and check if the first number is smaller than the second
+    const schedule = form.value.schedule.split("-");
+    for (let i = 0; i < schedule.length - 1; i++) {
+        const time = schedule[i].split(":");
+        const time2 = schedule[i + 1].split(":");
+
+        // Check if the time is valid
+        if (
+            parseInt(time[0]) > 23 ||
+            parseInt(time[1]) > 59 ||
+            parseInt(time2[0]) > 23 ||
+            parseInt(time2[1]) > 59
+        ) {
+            resErrors.value.push(["O horário não é válido."]);
+            return false;
+        }
+
+        // Convert time values to integers for comparison
+        const hour1 = parseInt(time[0]);
+        const minute1 = parseInt(time[1]);
+        const hour2 = parseInt(time2[0]);
+        const minute2 = parseInt(time2[1]);
+
+        // Check if the time is smaller than the next one
+        if (hour1 > hour2 || (hour1 === hour2 && minute1 >= minute2)) {
+            resErrors.value.push([
+                "O horário de abertura não pode ser maior ou igual que o de fecho.",
+            ]);
+            return false;
+        }
+    }
+    return true;
+}
+
 const editService = () => {
+    if (!validateSchedule()) {
+        return;
+    }
     serviceStore
         .editService(router.currentRoute.value.params?.id, {
             name: service.value.name,
@@ -352,7 +397,7 @@ function open(menu_url) {
                     <FormField
                         label="Horário de Funcionamento"
                         class="w-full md:w-3/4 mb-4 sm:mb-0"
-                        help="O horário de funcionamento. Ex: 8:30-12:00-14:00-20:15. Obrigatório."
+                        help="O horário de funcionamento. Ex: 8:30-12:00-14:00-20:15 ou 9:30-21:00. Sempre em pares. Obrigatório."
                         label-for="schedule"
                     >
                         <FormControl
