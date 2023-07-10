@@ -94,6 +94,7 @@ const editHotel = () => {
         .then((response) => {
             resErrors.value = [];
             if (response.status === 200) {
+                hotel.value = response.data.hotel;
                 notifText.value = response.data.message;
                 update.value = false;
                 statusHotel.value = true;

@@ -10,6 +10,8 @@ import {
     mdiMapMarkerDistance,
     mdiClose,
     mdiBookPlus,
+    mdiMapMarker,
+    mdiEye,
 } from "@mdi/js";
 import LayoutAuthenticated from "@/layouts/LayoutAuthenticated.vue";
 import SectionMain from "@/components/Sections/SectionMain.vue";
@@ -74,16 +76,18 @@ const editRegion = () => {
         .updateRegion({
             description: form.value.description,
             descriptionEN: form.value.descriptionEN,
-            proximities: form.value.proximities,
-            activities: form.value.activities,
-            websites: form.value.websites,
+            proximities: form.value.proximities ?? null,
+            activities: form.value.activities ?? null,
+            websites: form.value.websites ?? null,
         })
         .then((response) => {
             resErrors.value = [];
             if (response.status === 200) {
+                region.value = response.data.region;
                 notifText.value = response.data.message;
                 update.value = false;
                 statusRegion.value = true;
+                clear();
                 setTimeout(() => {
                     statusRegion.value = false;
                 }, 5000);
@@ -98,7 +102,22 @@ const editRegion = () => {
         });
 };
 
+const clear = () => {
+    proximityName.value = "";
+    proximityDescription.value = "";
+    proximityDescriptionEN.value = "";
+    proximityDistance.value = "";
+    proximityDirections.value = "";
+    activityName.value = "";
+    activityDescription.value = "";
+    activityDescriptionEN.value = "";
+    activityInformations.value = "";
+    linkName.value = "";
+    linkLink.value = "";
+};
+
 const cancel = () => {
+    console.log(region.value);
     update.value = false;
     fillForm(region.value);
 };
@@ -151,6 +170,10 @@ const addLink = () => {
 const removeLink = (index) => {
     form.value.websites.splice(form.value.websites.indexOf(index), 1);
 };
+
+const openLink = (link) => {
+    window.open(link, "_blank");
+};
 </script>
 
 <template>
@@ -200,7 +223,7 @@ const removeLink = (index) => {
                         required
                     />
                 </FormField>
-                <BaseDivider />
+                <BaseDivider v-if="form.proximities.length == 0 && update" />
                 <div v-if="update">
                     <FormField
                         label="Nome do pontos de interesse"
@@ -296,16 +319,13 @@ const removeLink = (index) => {
                         </BaseButtons>
                     </FormField>
                 </div>
-                <table>
+                <table v-if="form.proximities.length != 0" class="w-full">
                     <thead>
                         <tr>
-                            <th class="px-4 py-2">
-                                Nome do Ponto de interesse
-                            </th>
-                            <th class="px-4 py-2">Descrição</th>
-                            <th class="px-4 py-2">Distância</th>
-                            <th class="px-4 py-2">Direções</th>
-                            <th v-if="update" class="px-4 py-2"></th>
+                            <th>Nome do Ponto de interesse</th>
+                            <th>Descrição</th>
+                            <th>Distância</th>
+                            <th></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -319,22 +339,28 @@ const removeLink = (index) => {
                             <td>
                                 {{ proximity.description }}
                             </td>
-                            <td>
+                            <td
+                                class="text-center text-gray-500 dark:text-slate-400"
+                            >
                                 {{ proximity.distance }}
                             </td>
-                            <td>
-                                {{
-                                    proximity.map_link
-                                        ? proximity.map_link
-                                        : "N/A"
-                                }}
-                            </td>
-                            <td v-if="update" class="border px-4 py-2">
+                            <td
+                                class="before:hidden lg:w-1 whitespace-nowrap place-content-center"
+                            >
                                 <BaseButtons
                                     type="justify-start lg:justify-end"
                                     no-wrap
                                 >
                                     <BaseButton
+                                        color="info"
+                                        :icon="mdiMapMarker"
+                                        :disabled="!proximity.map_link"
+                                        small
+                                        title="Ver no Mapa"
+                                        @click="openLink(proximity.map_link)"
+                                    />
+                                    <BaseButton
+                                        v-if="update"
                                         color="danger"
                                         :icon="mdiClose"
                                         small
@@ -346,7 +372,7 @@ const removeLink = (index) => {
                         </tr>
                     </tbody>
                 </table>
-                <BaseDivider />
+                <BaseDivider v-if="form.activities.length == 0 && update" />
                 <div v-if="update">
                     <FormField
                         label="Nome da Atividade"
@@ -427,13 +453,12 @@ const removeLink = (index) => {
                         </BaseButtons>
                     </FormField>
                 </div>
-                <table>
+                <table v-if="form.activities.length != 0" class="w-full">
                     <thead>
                         <tr>
-                            <th class="px-4 py-2">Nome da atividade</th>
-                            <th class="px-4 py-2">Descrição</th>
-                            <th class="px-4 py-2">Link Informações</th>
-                            <th v-if="update" class="px-4 py-2"></th>
+                            <th>Nome da atividade</th>
+                            <th>Descrição</th>
+                            <th></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -447,16 +472,23 @@ const removeLink = (index) => {
                             <td>
                                 {{ activity.description }}
                             </td>
-                            <td>
-                                {{ activity.link ? activity.link : "N/A" }}
-                            </td>
-
-                            <td v-if="update" class="border px-4 py-2">
+                            <td
+                                class="before:hidden lg:w-1 whitespace-nowrap place-content-center"
+                            >
                                 <BaseButtons
                                     type="justify-start lg:justify-end"
                                     no-wrap
                                 >
                                     <BaseButton
+                                        color="info"
+                                        :icon="mdiEye"
+                                        :disabled="!activity.link"
+                                        small
+                                        title="Ver no Mapa"
+                                        @click="openLink(activity.link)"
+                                    />
+                                    <BaseButton
+                                        v-if="update"
                                         color="danger"
                                         :icon="mdiClose"
                                         small
@@ -468,7 +500,7 @@ const removeLink = (index) => {
                         </tr>
                     </tbody>
                 </table>
-                <BaseDivider />
+                <BaseDivider v-if="form.websites.length == 0 && update" />
                 <div v-if="update">
                     <FormField
                         label="Nome do link adicional"
@@ -512,12 +544,12 @@ const removeLink = (index) => {
                         </BaseButtons>
                     </FormField>
                 </div>
-                <table>
+                <table v-if="form.websites.length != 0" class="w-full">
                     <thead>
                         <tr>
-                            <th class="px-4 py-2">Website informações</th>
-                            <th class="px-4 py-2">Link</th>
-                            <th v-if="update" class="px-4 py-2"></th>
+                            <th>Website informações</th>
+                            <th>Link</th>
+                            <th v-if="update"></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -529,12 +561,23 @@ const removeLink = (index) => {
                                 {{ link.link }}
                             </td>
 
-                            <td v-if="update" class="border px-4 py-2">
+                            <td
+                                class="before:hidden lg:w-1 whitespace-nowrap place-content-center"
+                            >
                                 <BaseButtons
                                     type="justify-start lg:justify-end"
                                     no-wrap
                                 >
                                     <BaseButton
+                                        color="info"
+                                        :icon="mdiEye"
+                                        :disabled="!link.link"
+                                        small
+                                        title="Ver no Mapa"
+                                        @click="openLink(link.link)"
+                                    />
+                                    <BaseButton
+                                        v-if="update"
                                         color="danger"
                                         :icon="mdiClose"
                                         small
