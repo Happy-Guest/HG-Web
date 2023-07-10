@@ -16,6 +16,7 @@ import {
     mdiBookOpenPageVariant,
     mdiBookClock,
     mdiHomeAnalytics,
+    mdiForest,
 } from "@mdi/js";
 
 export default [
@@ -110,7 +111,7 @@ export default [
     },
     {
         middleware: ["A", "M"],
-        to: "/reservas",
+        to: "/reserves",
         label: "Reservas",
         icon: mdiReceiptClock,
     },
@@ -122,5 +123,11 @@ export default [
         to: "/hotel",
         label: "Hotel",
         icon: mdiHomeAnalytics,
+    },
+    {
+        middleware: ["A", "M"],
+        to: "/region",
+        label: "Região",
+        icon: mdiForest,
     },
 ];

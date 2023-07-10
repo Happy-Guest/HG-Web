@@ -22,8 +22,28 @@ export const useInfoStore = defineStore("info", () => {
         }
     }
 
+    async function getRegion() {
+        try {
+            let response = await axios.get("regions/1");
+            return response.data.data;
+        } catch (error) {
+            return error;
+        }
+    }
+
+    async function updateRegion(data) {
+        try {
+            const response = await axios.patch("regions/1", data);
+            return response;
+        } catch (error) {
+            return error;
+        }
+    }
+
     return {
         getHotel,
         updateHotel,
+        getRegion,
+        updateRegion,
     };
 });

@@ -39,6 +39,7 @@ import FormValidationErrors from "@/components/Forms/FormValidationErrors.vue";
 import TableItems from "@/components/Tables/TableItems.vue";
 import CardBoxItem from "@/components/CardBoxsCustom/CardBoxItem.vue";
 import CardBoxAssociateItem from "@/components/CardBoxsCustom/CardBoxAssociateItem.vue";
+import FormCheckRadio from "@/components/Forms/FormCheckRadio.vue";
 import { onMounted, ref, watch, watchEffect } from "vue";
 import { useServiceStore } from "@/stores/service";
 import { useRouter } from "vue-router";
@@ -88,6 +89,7 @@ const form = ref({
     descriptionEN: "",
     menu_url: null,
     menu: null,
+    active: true,
 });
 
 onMounted(() => {
@@ -123,6 +125,7 @@ const fillForm = (response) => {
     form.value.description = response.description;
     form.value.descriptionEN = response.descriptionEN;
     form.value.menu_url = response.menu_url;
+    form.value.active = response.active == 1 ? true : false;
     hasItems.value = response.items.length > 0;
 };
 
@@ -189,6 +192,7 @@ const editService = () => {
             description: form.value.description,
             descriptionEN: form.value.descriptionEN,
             menu: form.value.menu,
+            active: form.value.active == true ? 1 : 0,
         })
         .then((response) => {
             resErrors.value = [];
@@ -309,7 +313,18 @@ function open(menu_url) {
                 :icon="serviceIcon(service?.id)"
                 :title="service?.name ?? 'Serviço'"
                 main
-            />
+            >
+                <FormCheckRadio
+                    v-model="form.active"
+                    class="font-semibold mr-8"
+                    name="anon-switch"
+                    type="switch"
+                    label="Ativo"
+                    input-value="active"
+                    :disabled="!update"
+                    :class="!update ? 'cursor-not-allowed opacity-80' : ''"
+                />
+            </SectionTitleLine>
             <CardBox class="mb-6" is-form @submit.prevent="editService">
                 <FormValidationErrors
                     v-if="statusService == false"

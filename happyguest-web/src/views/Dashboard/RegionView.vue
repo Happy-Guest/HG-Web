@@ -1,0 +1,584 @@
+<script setup>
+import {
+    mdiLockCheck,
+    mdiTextBox,
+    mdiCancel,
+    mdiContentSaveCheck,
+    mdiForest,
+    mdiCursorText,
+    mdiHumanCapacityDecrease,
+    mdiMapMarkerDistance,
+    mdiClose,
+    mdiBookPlus,
+} from "@mdi/js";
+import LayoutAuthenticated from "@/layouts/LayoutAuthenticated.vue";
+import SectionMain from "@/components/Sections/SectionMain.vue";
+import SectionTitleLine from "@/components/Sections/SectionTitleLine.vue";
+import CardBox from "@/components/CardBoxs/CardBox.vue";
+import FormField from "@/components/Forms/FormField.vue";
+import FormControl from "@/components/Forms/FormControl.vue";
+import BaseButton from "@/components/Bases/BaseButton.vue";
+import BaseButtons from "@/components/Bases/BaseButtons.vue";
+import NotificationBarInCard from "@/components/Others/NotificationBarInCard.vue";
+import FormValidationErrors from "@/components/Forms/FormValidationErrors.vue";
+import { onMounted, ref } from "vue";
+import { useInfoStore } from "@/stores/info";
+import BaseDivider from "@/components/Bases/BaseDivider.vue";
+
+const infoStore = useInfoStore();
+const update = ref(false);
+const region = ref([]);
+const statusRegion = ref(false);
+const resErrors = ref([]);
+const notifText = ref("");
+
+const proximityName = ref("");
+const proximityDescription = ref("");
+const proximityDescriptionEN = ref("");
+const proximityDistance = ref("");
+const proximityDirections = ref("");
+
+const activityName = ref("");
+const activityDescription = ref("");
+const activityDescriptionEN = ref("");
+const activityInformations = ref("");
+
+const linkName = ref("");
+const linkLink = ref("");
+
+const form = ref({
+    description: "",
+    descriptionEN: "",
+    proximities: [],
+    activities: [],
+    websites: [],
+});
+
+onMounted(() => {
+    infoStore.getRegion().then((response) => {
+        fillForm(response);
+    });
+});
+
+const fillForm = (response) => {
+    region.value = response;
+    form.value.description = response.description;
+    form.value.descriptionEN = response.descriptionEN;
+    form.value.proximities = JSON.parse(response.proximities);
+    form.value.activities = JSON.parse(response.activities);
+    form.value.websites = JSON.parse(response.websites);
+};
+
+const editRegion = () => {
+    infoStore
+        .updateRegion({
+            description: form.value.description,
+            descriptionEN: form.value.descriptionEN,
+            proximities: form.value.proximities,
+            activities: form.value.activities,
+            websites: form.value.websites,
+        })
+        .then((response) => {
+            resErrors.value = [];
+            if (response.status === 200) {
+                notifText.value = response.data.message;
+                update.value = false;
+                statusRegion.value = true;
+                setTimeout(() => {
+                    statusRegion.value = false;
+                }, 5000);
+            } else {
+                resErrors.value = response.response.data.errors;
+                statusRegion.value = false;
+            }
+        })
+        .catch(() => {
+            notifText.value = "Ocorreu um erro ao atualizar a região.";
+            statusRegion.value = false;
+        });
+};
+
+const cancel = () => {
+    update.value = false;
+    fillForm(region.value);
+};
+
+const removeProximity = (index) => {
+    form.value.proximities.splice(form.value.proximities.indexOf(index), 1);
+};
+
+const addProximity = () => {
+    form.value.proximities.push({
+        name: proximityName.value,
+        description: proximityDescription.value,
+        descriptionEN: proximityDescriptionEN.value,
+        distance: proximityDistance.value,
+        map_link: proximityDirections.value ?? null,
+    });
+    proximityName.value = "";
+    proximityDescription.value = "";
+    proximityDescriptionEN.value = "";
+    proximityDistance.value = "";
+    proximityDirections.value = "";
+};
+
+const addActivity = () => {
+    form.value.activities.push({
+        name: activityName.value,
+        description: activityDescription.value,
+        descriptionEN: activityDescriptionEN.value,
+        link: activityInformations.value,
+    });
+    activityName.value = "";
+    activityDescription.value = "";
+    activityDescriptionEN.value = "";
+    activityInformations.value = "";
+};
+
+const removeActivity = (index) => {
+    form.value.activities.splice(form.value.activities.indexOf(index), 1);
+};
+
+const addLink = () => {
+    form.value.websites.push({
+        name: linkName.value,
+        link: linkLink.value,
+    });
+    linkName.value = "";
+    linkLink.value = "";
+};
+
+const removeLink = (index) => {
+    form.value.websites.splice(form.value.websites.indexOf(index), 1);
+};
+</script>
+
+<template>
+    <LayoutAuthenticated>
+        <SectionMain>
+            <SectionTitleLine :icon="mdiForest" title="Região" main />
+
+            <CardBox class="mb-6" is-form @submit.prevent="editRegion">
+                <FormValidationErrors
+                    v-if="statusRegion == false"
+                    :errors="resErrors"
+                />
+                <Transition name="fade">
+                    <NotificationBarInCard v-if="statusRegion" color="success">
+                        <b>{{ notifText }}</b>
+                    </NotificationBarInCard>
+                </Transition>
+                <FormField
+                    label="Descrição"
+                    label-for="description"
+                    help="Uma descrição da região. Obrigatória"
+                >
+                    <FormControl
+                        id="description"
+                        v-model="form.description"
+                        :icon="mdiTextBox"
+                        name="description"
+                        :disabled="!update"
+                        autocomplete="description"
+                        type="textarea"
+                        required
+                    />
+                </FormField>
+                <FormField
+                    label="Descrição (Inglês)"
+                    label-for="descriptionEN"
+                    help="Uma descrição da região em inglês. Obrigatória"
+                >
+                    <FormControl
+                        id="descriptionEN"
+                        v-model="form.descriptionEN"
+                        :icon="mdiTextBox"
+                        name="descriptionEN"
+                        :disabled="!update"
+                        autocomplete="descriptionEN"
+                        type="textarea"
+                        required
+                    />
+                </FormField>
+                <BaseDivider />
+                <div v-if="update">
+                    <FormField
+                        label="Nome do pontos de interesse"
+                        help="O Nome do ponto de interesse. Obrigatório."
+                        label-for="name"
+                    >
+                        <FormControl
+                            id="name"
+                            v-model="proximityName"
+                            :icon="mdiCursorText"
+                            name="name"
+                        />
+                    </FormField>
+                    <FormField flex>
+                        <FormField
+                            label="Descrição"
+                            label-for="description"
+                            class="w-full md:w-2/4 mb-3 sm:mb-4"
+                            help="Uma descrição do ponto de interesse. Obrigatória"
+                        >
+                            <FormControl
+                                id="description"
+                                v-model="proximityDescription"
+                                :icon="mdiTextBox"
+                                name="description"
+                                autocomplete="description"
+                                type="textarea"
+                            />
+                        </FormField>
+                        <FormField
+                            label="Descrição (Inglês)"
+                            label-for="descriptionEN"
+                            class="w-full md:w-2/4 mb-3 sm:mb-4"
+                            help="Uma descrição do ponto de interesse em inglês. Obrigatória"
+                        >
+                            <FormControl
+                                id="descriptionEN"
+                                v-model="proximityDescriptionEN"
+                                :icon="mdiTextBox"
+                                name="descriptionEN"
+                                autocomplete="descriptionEN"
+                                type="textarea"
+                            />
+                        </FormField>
+                    </FormField>
+                    <FormField flex>
+                        <FormField
+                            label="Distância"
+                            label-for="distance"
+                            class="w-full md:w-7/12"
+                            help="A distancia ao ponto de interesse. Obrigatória"
+                        >
+                            <FormControl
+                                id="distance"
+                                v-model="proximityDistance"
+                                :icon="mdiMapMarkerDistance"
+                                name="distance"
+                                autocomplete="distance"
+                            />
+                        </FormField>
+                        <FormField
+                            label="Link para direções"
+                            label-for="directions"
+                            class="w-full md:w-6/12"
+                            help="O link para direções. Opicional"
+                        >
+                            <FormControl
+                                id="directions"
+                                v-model="proximityDirections"
+                                :icon="mdiHumanCapacityDecrease"
+                                name="directions"
+                                autocomplete="directions"
+                            />
+                        </FormField>
+                        <BaseButtons>
+                            <BaseButton
+                                color="success"
+                                class="w-10 h-10 mb-6"
+                                :icon="mdiBookPlus"
+                                small
+                                outline
+                                rounded-full
+                                :disabled="
+                                    !update ||
+                                    !proximityName ||
+                                    !proximityDescription ||
+                                    !proximityDescriptionEN ||
+                                    !proximityDistance
+                                "
+                                title="Adicionar Proximidade"
+                                @click="addProximity()"
+                            />
+                        </BaseButtons>
+                    </FormField>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th class="px-4 py-2">
+                                Nome do Ponto de interesse
+                            </th>
+                            <th class="px-4 py-2">Descrição</th>
+                            <th class="px-4 py-2">Distância</th>
+                            <th class="px-4 py-2">Direções</th>
+                            <th v-if="update" class="px-4 py-2"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr
+                            v-for="(proximity, index) in form.proximities"
+                            :key="index"
+                        >
+                            <td>
+                                {{ proximity.name }}
+                            </td>
+                            <td>
+                                {{ proximity.description }}
+                            </td>
+                            <td>
+                                {{ proximity.distance }}
+                            </td>
+                            <td>
+                                {{
+                                    proximity.map_link
+                                        ? proximity.map_link
+                                        : "N/A"
+                                }}
+                            </td>
+                            <td v-if="update" class="border px-4 py-2">
+                                <BaseButtons
+                                    type="justify-start lg:justify-end"
+                                    no-wrap
+                                >
+                                    <BaseButton
+                                        color="danger"
+                                        :icon="mdiClose"
+                                        small
+                                        title="Remover Item"
+                                        @click="removeProximity(proximity)"
+                                    />
+                                </BaseButtons>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <BaseDivider />
+                <div v-if="update">
+                    <FormField
+                        label="Nome da Atividade"
+                        help="O Nome da atividade. Obrigatório."
+                        label-for="name"
+                    >
+                        <FormControl
+                            id="name"
+                            v-model="activityName"
+                            :icon="mdiCursorText"
+                            name="name"
+                        />
+                    </FormField>
+                    <FormField flex>
+                        <FormField
+                            label="Descrição"
+                            label-for="description"
+                            class="w-full md:w-2/4 mb-3 sm:mb-4"
+                            help="Uma descrição da atividade. Obrigatória"
+                        >
+                            <FormControl
+                                id="description"
+                                v-model="activityDescription"
+                                :icon="mdiTextBox"
+                                name="description"
+                                autocomplete="description"
+                                type="textarea"
+                            />
+                        </FormField>
+                        <FormField
+                            label="Descrição (Inglês)"
+                            label-for="descriptionEN"
+                            class="w-full md:w-2/4 mb-3 sm:mb-4"
+                            help="Uma descrição da atividade em inglês. Obrigatória"
+                        >
+                            <FormControl
+                                id="descriptionEN"
+                                v-model="activityDescriptionEN"
+                                :icon="mdiTextBox"
+                                name="descriptionEN"
+                                autocomplete="descriptionEN"
+                                type="textarea"
+                            />
+                        </FormField>
+                    </FormField>
+                    <FormField flex>
+                        <FormField
+                            label="Link para informações"
+                            label-for="informations"
+                            class="w-full"
+                            help="O link para informações. Opicional"
+                        >
+                            <FormControl
+                                id="informations"
+                                v-model="activityInformations"
+                                :icon="mdiHumanCapacityDecrease"
+                                name="informations"
+                                autocomplete="informations"
+                            />
+                        </FormField>
+                        <BaseButtons>
+                            <BaseButton
+                                color="success"
+                                class="w-10 h-10 mb-6"
+                                :icon="mdiBookPlus"
+                                small
+                                outline
+                                rounded-full
+                                :disabled="
+                                    !update ||
+                                    !activityName ||
+                                    !activityDescription ||
+                                    !activityDescriptionEN
+                                "
+                                title="Adicionar Atividade"
+                                @click="addActivity()"
+                            />
+                        </BaseButtons>
+                    </FormField>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th class="px-4 py-2">Nome da atividade</th>
+                            <th class="px-4 py-2">Descrição</th>
+                            <th class="px-4 py-2">Link Informações</th>
+                            <th v-if="update" class="px-4 py-2"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr
+                            v-for="(activity, index) in form.activities"
+                            :key="index"
+                        >
+                            <td>
+                                {{ activity.name }}
+                            </td>
+                            <td>
+                                {{ activity.description }}
+                            </td>
+                            <td>
+                                {{ activity.link ? activity.link : "N/A" }}
+                            </td>
+
+                            <td v-if="update" class="border px-4 py-2">
+                                <BaseButtons
+                                    type="justify-start lg:justify-end"
+                                    no-wrap
+                                >
+                                    <BaseButton
+                                        color="danger"
+                                        :icon="mdiClose"
+                                        small
+                                        title="Remover Item"
+                                        @click="removeActivity(activity)"
+                                    />
+                                </BaseButtons>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <BaseDivider />
+                <div v-if="update">
+                    <FormField
+                        label="Nome do link adicional"
+                        help="O Nome do link adiconal. Obrigatório."
+                        label-for="name"
+                    >
+                        <FormControl
+                            id="name"
+                            v-model="linkName"
+                            :icon="mdiCursorText"
+                            name="name"
+                        />
+                    </FormField>
+                    <FormField flex>
+                        <FormField
+                            label="Link"
+                            label-for="link"
+                            class="w-full"
+                            help="O link adicional. Obrigatório"
+                        >
+                            <FormControl
+                                id="link"
+                                v-model="linkLink"
+                                :icon="mdiHumanCapacityDecrease"
+                                name="link"
+                                autocomplete="link"
+                            />
+                        </FormField>
+                        <BaseButtons>
+                            <BaseButton
+                                color="success"
+                                class="w-10 h-10 mb-6"
+                                :icon="mdiBookPlus"
+                                small
+                                outline
+                                rounded-full
+                                :disabled="!update || !linkName || !linkLink"
+                                title="Adicionar Link"
+                                @click="addLink()"
+                            />
+                        </BaseButtons>
+                    </FormField>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th class="px-4 py-2">Website informações</th>
+                            <th class="px-4 py-2">Link</th>
+                            <th v-if="update" class="px-4 py-2"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="(link, index) in form.websites" :key="index">
+                            <td>
+                                {{ link.name }}
+                            </td>
+                            <td>
+                                {{ link.link }}
+                            </td>
+
+                            <td v-if="update" class="border px-4 py-2">
+                                <BaseButtons
+                                    type="justify-start lg:justify-end"
+                                    no-wrap
+                                >
+                                    <BaseButton
+                                        color="danger"
+                                        :icon="mdiClose"
+                                        small
+                                        title="Remover link"
+                                        @click="removeLink(link)"
+                                    />
+                                </BaseButtons>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <template #footer>
+                    <div class="relative">
+                        <BaseButtons v-if="update == false">
+                            <BaseButton
+                                color="success"
+                                label="Alterar"
+                                :icon="mdiLockCheck"
+                                @click="update = true"
+                            />
+                        </BaseButtons>
+
+                        <BaseButtons v-if="update == true">
+                            <BaseButton
+                                type="submit"
+                                color="success"
+                                label="Confirmar"
+                                :icon="mdiContentSaveCheck"
+                            />
+                            <BaseButton
+                                color="info"
+                                label="Cancelar"
+                                outline
+                                :icon="mdiCancel"
+                                @click="cancel()"
+                            />
+                        </BaseButtons>
+                        <span
+                            class="static text-zinc-500 right-0 bottom-0 mb-4 text-center sm:text-right sm:absolute"
+                            >Última Atualização: {{ region?.updated_at }}</span
+                        >
+                    </div>
+                </template>
+            </CardBox>
+        </SectionMain>
+    </LayoutAuthenticated>
+</template>
