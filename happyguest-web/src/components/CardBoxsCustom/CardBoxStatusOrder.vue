@@ -17,6 +17,7 @@ import {
     mdiBed,
     mdiShower,
     mdiFoodVariant,
+    mdiCandy,
 } from "@mdi/js";
 import CardBoxModal from "@/components/CardBoxs/CardBoxModal.vue";
 import FormControl from "@/components/Forms/FormControl.vue";
@@ -185,6 +186,15 @@ const updateStatus = () => {
                                     label="Lanche"
                                     color="success"
                                     :icon="mdiFoodApple"
+                                    outline
+                                    small
+                                />
+                                <PillTag
+                                    v-else-if="item.category == 'dessert'"
+                                    class="justify-center"
+                                    label="Sobremesa"
+                                    color="warning"
+                                    :icon="mdiCandy"
                                     outline
                                     small
                                 />

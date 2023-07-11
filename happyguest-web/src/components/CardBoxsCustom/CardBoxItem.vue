@@ -18,6 +18,7 @@ import {
     mdiFoodTurkey,
     mdiHamburger,
     mdiFoodApple,
+    mdiCandy,
 } from "@mdi/js";
 import CardBoxModal from "@/components/CardBoxs/CardBoxModal.vue";
 import FormControl from "@/components/Forms/FormControl.vue";
@@ -55,17 +56,18 @@ const selectOptionsType = [
 
 const selectOptionsObjects = [
     { id: 0, value: "room", label: "Quarto", icon: mdiBed },
-    { id: 0, value: "bathroom", label: "Casa Banho", icon: mdiShower },
-    { id: 0, value: "other", label: "Outros", icon: mdiFoodVariant },
+    { id: 1, value: "bathroom", label: "Casa Banho", icon: mdiShower },
+    { id: 2, value: "other", label: "Outros", icon: mdiFoodVariant },
 ];
 
 const selectOptionsFood = [
     { id: 0, value: "drink", label: "Bebidas", icon: mdiBeer },
-    { id: 0, value: "breakfast", label: "P. Almoço", icon: mdiFoodCroissant },
-    { id: 0, value: "lunch", label: "Almoço", icon: mdiFoodTurkey },
-    { id: 0, value: "dinner", label: "Jantar", icon: mdiHamburger },
-    { id: 0, value: "snack", label: "Lanches", icon: mdiFoodApple },
-    { id: 0, value: "other", label: "Outros", icon: mdiFoodVariant },
+    { id: 1, value: "breakfast", label: "P. Almoço", icon: mdiFoodCroissant },
+    { id: 2, value: "lunch", label: "Almoço", icon: mdiFoodTurkey },
+    { id: 3, value: "dinner", label: "Jantar", icon: mdiHamburger },
+    { id: 4, value: "snack", label: "Lanches", icon: mdiFoodApple },
+    { id: 5, value: "dessert", label: "Sobremesas", icon: mdiCandy },
+    { id: 6, value: "other", label: "Outros", icon: mdiFoodVariant },
 ];
 
 const form = ref({

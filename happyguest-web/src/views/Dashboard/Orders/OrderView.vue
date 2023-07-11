@@ -31,6 +31,7 @@ import {
     mdiPackageCheck,
     mdiCheck,
     mdiUpdate,
+    mdiCandy,
 } from "@mdi/js";
 import LayoutAuthenticated from "@/layouts/LayoutAuthenticated.vue";
 import SectionMain from "@/components/Sections/SectionMain.vue";
@@ -556,6 +557,15 @@ const updateStatus = () => {
                                         small
                                     />
                                     <PillTag
+                                        v-else-if="item.category == 'dessert'"
+                                        class="justify-center"
+                                        label="Sobremesa"
+                                        color="warning"
+                                        :icon="mdiCandy"
+                                        outline
+                                        small
+                                    />
+                                    <PillTag
                                         v-else-if="item.category == 'breakfast'"
                                         class="justify-center w-32"
                                         label="P. Almoço"
@@ -679,6 +689,15 @@ const updateStatus = () => {
                                         label="Lanche"
                                         color="success"
                                         :icon="mdiFoodApple"
+                                        outline
+                                        small
+                                    />
+                                    <PillTag
+                                        v-else-if="item.category == 'dessert'"
+                                        class="justify-center"
+                                        label="Sobremesa"
+                                        color="warning"
+                                        :icon="mdiCandy"
                                         outline
                                         small
                                     />

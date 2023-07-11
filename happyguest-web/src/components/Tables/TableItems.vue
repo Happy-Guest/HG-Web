@@ -19,6 +19,7 @@ import {
     mdiBookPlus,
     mdiCheck,
     mdiClose,
+    mdiCandy,
 } from "@mdi/js";
 import BaseLevel from "@/components/Bases/BaseLevel.vue";
 import BaseButtons from "@/components/Bases/BaseButtons.vue";
@@ -444,6 +445,15 @@ const submitDissociate = () => {
                         color="success"
                         :icon="mdiFoodApple"
                         outline
+                    />
+                    <PillTag
+                        v-else-if="item.category == 'dessert'"
+                        class="justify-center"
+                        label="Sobremesa"
+                        color="warning"
+                        :icon="mdiCandy"
+                        outline
+                        small
                     />
                     <PillTag
                         v-else-if="item.category == 'breakfast'"

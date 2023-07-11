@@ -70,6 +70,7 @@ const selectOptionsFilterFood = [
     { value: "lunch", label: "Almoço" },
     { value: "dinner", label: "Jantar" },
     { value: "snack", label: "Lanches" },
+    { value: "dessert", label: "Sobremesas" },
     { value: "other", label: "Outros" },
 ];
 
