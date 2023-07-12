@@ -159,18 +159,12 @@ function validateSchedule() {
         }
 
         // Convert time values to integers for comparison
-        let hour1 = parseInt(time[0]);
+        const hour1 = parseInt(time[0]);
         const minute1 = parseInt(time[1]);
-        let hour2 = parseInt(time2[0]);
+        const hour2 = parseInt(time2[0]);
         const minute2 = parseInt(time2[1]);
 
         // Check if the time is smaller than the next one
-        if (hour1 === 0) {
-            hour1 = 24; // Treat 00:00 as 24:00
-        }
-        if (hour2 === 0) {
-            hour2 = 24; // Treat 00:00 as 24:00
-        }
         if (hour1 > hour2 || (hour1 === hour2 && minute1 >= minute2)) {
             resErrors.value.push([
                 "O horário de abertura não pode ser maior ou igual que o de fecho.",
