@@ -163,6 +163,11 @@ const formatDate = (date, api) => {
 const statusOrder = ref(false);
 
 const registerOrder = async () => {
+    if (form.value.items.length == 0 && form.value.service.value != 1) {
+        resErrors.value = [];
+        resErrors.value.push(["Deve selecionar pelo menos um item!"]);
+        return;
+    }
     orderStore
         .registerOrder({
             user_id: form.value.user.id,

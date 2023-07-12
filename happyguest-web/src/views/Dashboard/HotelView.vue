@@ -13,6 +13,8 @@ import {
     mdiHuman,
     mdiHomeAnalytics,
     mdiStarBoxMultiple,
+    mdiBookPlus,
+    mdiClose,
 } from "@mdi/js";
 import LayoutAuthenticated from "@/layouts/LayoutAuthenticated.vue";
 import SectionMain from "@/components/Sections/SectionMain.vue";
@@ -35,20 +37,24 @@ const statusHotel = ref(false);
 const resErrors = ref([]);
 const notifText = ref("");
 
+const access = ref("");
+const accessEN = ref("");
+const policy = ref("");
+const policyEN = ref("");
+const commodity = ref("");
+const commodityEN = ref("");
+
 const form = ref({
     email: "",
     phone: "",
     address: "",
     capacity: null,
     website: null,
-    policies: null,
-    policiesEN: null,
-    access: null,
-    accessEN: null,
+    policies: [],
+    accesses: [],
     description: "",
     descriptionEN: "",
-    commodities: null,
-    commoditiesEN: null,
+    commodities: [],
 });
 
 onMounted(() => {
@@ -64,14 +70,11 @@ const fillForm = (response) => {
     form.value.address = response.address;
     form.value.capacity = response.capacity;
     form.value.website = response.website;
-    form.value.policies = response.policies;
-    form.value.policiesEN = response.policiesEN;
-    form.value.access = response.access;
-    form.value.accessEN = response.accessEN;
+    form.value.policies = JSON.parse(response.policies);
+    form.value.accesses = JSON.parse(response.accesses);
     form.value.description = response.description;
     form.value.descriptionEN = response.descriptionEN;
-    form.value.commodities = response.commodities;
-    form.value.commoditiesEN = response.commoditiesEN;
+    form.value.commodities = JSON.parse(response.commodities);
 };
 
 const editHotel = () => {
@@ -82,14 +85,11 @@ const editHotel = () => {
             address: form.value.address,
             capacity: form.value.capacity,
             website: form.value.website,
-            policies: form.value.policies,
-            policiesEN: form.value.policiesEN,
-            access: form.value.access,
-            accessEN: form.value.accessEN,
+            policies: form.value.policies ?? null,
+            accesses: form.value.accesses ?? null,
             description: form.value.description,
             descriptionEN: form.value.descriptionEN,
-            commodities: form.value.commodities,
-            commoditiesEN: form.value.commoditiesEN,
+            commodities: form.value.commodities ?? null,
         })
         .then((response) => {
             resErrors.value = [];
@@ -115,6 +115,17 @@ const editHotel = () => {
 const cancel = () => {
     update.value = false;
     fillForm(hotel.value);
+};
+
+const add = (array, v1, v2, value1, value2) => {
+    array.push({
+        [v1]: value1,
+        [v2]: value2,
+    });
+};
+
+const remove = (array, index) => {
+    array.splice(array.indexOf(index), 1);
 };
 </script>
 
@@ -222,45 +233,107 @@ const cancel = () => {
                     />
                 </FormField>
                 <BaseDivider />
-                <FormField
-                    label="Comodidades"
-                    class="w-full"
-                    label-for="commodities"
-                    help="As comodidades do hotel. Separadas por vírgula. Opcionais"
-                >
-                    <FormControl
-                        id="commodities"
-                        v-model="form.commodities"
-                        :icon="mdiStarBoxMultiple"
-                        type="textarea"
-                        name="commodities"
-                        :disabled="!update"
-                        autocomplete="commodities"
-                        :placeholder="
-                            form.commodities == null ? 'Não definidas' : ''
-                        "
-                    />
+                <FormField v-if="update" flex>
+                    <FormField
+                        label="Comodidade"
+                        class="w-full"
+                        label-for="commodity"
+                        help="As comodidade do hotel. Opcionais"
+                    >
+                        <FormControl
+                            id="commodity"
+                            v-model="commodity"
+                            :icon="mdiStarBoxMultiple"
+                            type="text"
+                            name="commodity"
+                            :disabled="!update"
+                            autocomplete="commodity"
+                        />
+                    </FormField>
+                    <FormField
+                        label="Comodidade (Inglês)"
+                        class="w-full"
+                        label-for="commodityEN"
+                        help="As comodidade do hotel em inglês. Opcionais"
+                    >
+                        <FormControl
+                            id="commodityEN"
+                            v-model="commodityEN"
+                            :icon="mdiStarBoxMultiple"
+                            type="text"
+                            name="commodityEN"
+                            :disabled="!update"
+                            autocomplete="commoditiesEN"
+                        />
+                    </FormField>
+                    <BaseButtons>
+                        <BaseButton
+                            color="success"
+                            class="w-10 h-10 mb-6"
+                            :icon="mdiBookPlus"
+                            small
+                            outline
+                            rounded-full
+                            :disabled="
+                                !update ||
+                                commodity.trim() === '' ||
+                                commodityEN.trim() === ''
+                            "
+                            title="Adicionar Comodidade"
+                            @click="
+                                add(
+                                    form.commodities,
+                                    'commodity',
+                                    'commodityEN',
+                                    commodity,
+                                    commodityEN
+                                ),
+                                    (commodity = ''),
+                                    (commodityEN = '')
+                            "
+                        />
+                    </BaseButtons>
                 </FormField>
-                <FormField
-                    label="Comodidades (Inglês)"
-                    class="w-full"
-                    label-for="commoditiesEN"
-                    help="As comodidades do hotel em inglês. Separadas por vírgula. Opcionais"
-                >
-                    <FormControl
-                        id="commoditiesEN"
-                        v-model="form.commoditiesEN"
-                        :icon="mdiStarBoxMultiple"
-                        type="textarea"
-                        name="commoditiesEN"
-                        :disabled="!update"
-                        autocomplete="commoditiesEN"
-                        :placeholder="
-                            form.commoditiesEN == null ? 'Não definidas' : ''
-                        "
-                        :required="form.commodities != null"
-                    />
-                </FormField>
+                <table v-if="form.commodities.length != 0" class="w-full">
+                    <thead>
+                        <tr>
+                            <th class="w-1/2">Comodidade</th>
+                            <th class="w-1/2">Comodidade (Inglês)</th>
+                            <th v-if="update"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr
+                            v-for="(tableCommodity, index) in form.commodities"
+                            :key="index"
+                        >
+                            <td>{{ tableCommodity.commodity }}</td>
+                            <td>{{ tableCommodity.commodityEN }}</td>
+                            <td
+                                v-if="update"
+                                class="before:hidden lg:w-1 whitespace-nowrap place-content-center"
+                            >
+                                <BaseButtons
+                                    type="justify-start lg:justify-end"
+                                    no-wrap
+                                >
+                                    <BaseButton
+                                        color="danger"
+                                        :icon="mdiClose"
+                                        small
+                                        title="Remover Comodidade"
+                                        @click="
+                                            remove(
+                                                form.commodities,
+                                                tableCommodity
+                                            )
+                                        "
+                                    />
+                                </BaseButtons>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
                 <BaseDivider />
                 <FormField
                     label="Descrição"
@@ -295,85 +368,203 @@ const cancel = () => {
                     />
                 </FormField>
                 <BaseDivider />
-                <FormField
-                    label="Políticas do Hotel"
-                    class="w-full"
-                    label-for="policies"
-                    help="As politicas do hotel. Separadas por vírgula. Opcionais"
-                >
-                    <FormControl
-                        id="policies"
-                        v-model="form.policies"
-                        :icon="mdiInformationVariant"
-                        type="textarea"
-                        name="policies"
-                        :disabled="!update"
-                        autocomplete="policies"
-                        :placeholder="
-                            form.policies == null ? 'Não definidas' : ''
-                        "
-                    />
+                <FormField v-if="update" flex>
+                    <FormField
+                        label="Política do Hotel"
+                        class="w-full md:w-2/4 mb-3 sm:mb-4"
+                        label-for="policies"
+                        help="A politica do hotel. Opcional"
+                    >
+                        <FormControl
+                            id="policies"
+                            v-model="policy"
+                            :icon="mdiInformationVariant"
+                            type="text"
+                            name="policies"
+                            :disabled="!update"
+                            autocomplete="policies"
+                        />
+                    </FormField>
+                    <FormField
+                        label="Política do Hotel (Inglês)"
+                        class="w-full md:w-2/4 mb-3 sm:mb-4"
+                        label-for="policiesEN"
+                        help="A politica do hotel em inglês. Opcional"
+                    >
+                        <FormControl
+                            id="policiesEN"
+                            v-model="policyEN"
+                            :icon="mdiInformationVariant"
+                            type="text"
+                            name="policiesEN"
+                            :disabled="!update"
+                            autocomplete="policiesEN"
+                        />
+                    </FormField>
+                    <BaseButtons>
+                        <BaseButton
+                            color="success"
+                            class="w-10 h-10 mb-6"
+                            :icon="mdiBookPlus"
+                            small
+                            outline
+                            rounded-full
+                            :disabled="
+                                !update ||
+                                policy.trim() === '' ||
+                                policyEN.trim() === ''
+                            "
+                            title="Adicionar Política"
+                            @click="
+                                add(
+                                    form.policies,
+                                    'policy',
+                                    'policyEN',
+                                    policy,
+                                    policyEN
+                                ),
+                                    (policy = ''),
+                                    (policyEN = '')
+                            "
+                        />
+                    </BaseButtons>
                 </FormField>
-                <FormField
-                    label="Políticas do Hotel (Inglês)"
-                    class="w-full"
-                    label-for="policiesEN"
-                    help="As politicas do hotel em inglês. Separadas por vírgula. Opcionais"
-                >
-                    <FormControl
-                        id="policiesEN"
-                        v-model="form.policiesEN"
-                        :icon="mdiInformationVariant"
-                        type="textarea"
-                        name="policiesEN"
-                        :disabled="!update"
-                        autocomplete="policiesEN"
-                        :placeholder="
-                            form.policiesEN == null ? 'Não definidas' : ''
-                        "
-                        :required="form.policies != null"
-                    />
-                </FormField>
+                <table v-if="form.policies.length != 0" class="w-full">
+                    <thead>
+                        <tr>
+                            <th class="w-1/2">Política do Hotel</th>
+                            <th class="w-1/2">Política do Hotel (Inglês)</th>
+                            <th v-if="update"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr
+                            v-for="(tablePolicy, index) in form.policies"
+                            :key="index"
+                        >
+                            <td>{{ tablePolicy.policy }}</td>
+                            <td>{{ tablePolicy.policyEN }}</td>
+                            <td
+                                v-if="update"
+                                class="before:hidden lg:w-1 whitespace-nowrap place-content-center"
+                            >
+                                <BaseButtons
+                                    type="justify-start lg:justify-end"
+                                    no-wrap
+                                >
+                                    <BaseButton
+                                        color="danger"
+                                        :icon="mdiClose"
+                                        small
+                                        title="Remover Política"
+                                        @click="
+                                            remove(form.policies, tablePolicy)
+                                        "
+                                    />
+                                </BaseButtons>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
                 <BaseDivider />
-                <FormField
-                    label="Informações de Acesso"
-                    class="w-full"
-                    label-for="access"
-                    help="As informações de acesso ao hotel. Separadas por vírgula. Opcionais"
-                >
-                    <FormControl
-                        id="access"
-                        v-model="form.access"
-                        :icon="mdiHuman"
-                        type="textarea"
-                        name="access"
-                        :disabled="!update"
-                        autocomplete="access"
-                        :placeholder="
-                            form.access == null ? 'Não definidas' : ''
-                        "
-                    />
+                <FormField v-if="update" flex>
+                    <FormField
+                        label="Informação de Acesso"
+                        class="w-full md:w-2/4 mb-3 sm:mb-4"
+                        label-for="access"
+                        help="As informação de acesso ao hotel.Opcionais"
+                    >
+                        <FormControl
+                            id="access"
+                            v-model="access"
+                            :icon="mdiHuman"
+                            type="text"
+                            name="access"
+                            :disabled="!update"
+                            autocomplete="access"
+                        />
+                    </FormField>
+                    <FormField
+                        label="Informação de Acesso (Inglês)"
+                        class="w-full md:w-2/4 mb-3 sm:mb-4"
+                        label-for="accessEN"
+                        help="As informação de acesso ao hotel em inglês.Opcionais"
+                    >
+                        <FormControl
+                            id="accessEN"
+                            v-model="accessEN"
+                            :icon="mdiHuman"
+                            type="text"
+                            name="accessEN"
+                            :disabled="!update"
+                            autocomplete="accessEN"
+                        />
+                    </FormField>
+                    <BaseButtons>
+                        <BaseButton
+                            color="success"
+                            class="w-10 h-10 mb-6"
+                            :icon="mdiBookPlus"
+                            small
+                            outline
+                            rounded-full
+                            :disabled="
+                                !update ||
+                                access.trim() === '' ||
+                                accessEN.trim() === ''
+                            "
+                            title="Adicionar Acesso"
+                            @click="
+                                add(
+                                    form.accesses,
+                                    'access',
+                                    'accessEN',
+                                    access,
+                                    accessEN
+                                ),
+                                    (access = ''),
+                                    (accessEN = '')
+                            "
+                        />
+                    </BaseButtons>
                 </FormField>
-                <FormField
-                    label="Informações de Acesso (Inglês)"
-                    class="w-full"
-                    label-for="accessEN"
-                    help="As informações de acesso ao hotel em inglês. Separadas por vírgula. Opcionais"
-                >
-                    <FormControl
-                        id="accessEN"
-                        v-model="form.accessEN"
-                        :icon="mdiHuman"
-                        type="textarea"
-                        name="accessEN"
-                        :disabled="!update"
-                        autocomplete="accessEN"
-                        :placeholder="
-                            form.accessEN == null ? 'Não definidas' : ''
-                        "
-                        :required="form.access != null"
-                    />
-                </FormField>
+                <table v-if="form.accesses.length != 0" class="w-full">
+                    <thead>
+                        <tr>
+                            <th class="w-1/2">Informação de Acesso</th>
+                            <th class="w-1/2">Informação de Acesso (Inglês)</th>
+                            <th v-if="update"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr
+                            v-for="(tableAccess, index) in form.accesses"
+                            :key="index"
+                        >
+                            <td>{{ tableAccess.access }}</td>
+                            <td>{{ tableAccess.accessEN }}</td>
+                            <td
+                                v-if="update"
+                                class="before:hidden lg:w-1 whitespace-nowrap place-content-center"
+                            >
+                                <BaseButtons
+                                    type="justify-start lg:justify-end"
+                                    no-wrap
+                                >
+                                    <BaseButton
+                                        color="danger"
+                                        :icon="mdiClose"
+                                        small
+                                        title="Remover Acesso"
+                                        @click="
+                                            remove(form.accesses, tableAccess)
+                                        "
+                                    />
+                                </BaseButtons>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
                 <template #footer>
                     <div class="relative">
                         <BaseButtons v-if="update == false">

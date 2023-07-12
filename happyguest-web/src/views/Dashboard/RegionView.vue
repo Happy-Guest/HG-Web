@@ -223,7 +223,7 @@ const openLink = (link) => {
                         required
                     />
                 </FormField>
-                <BaseDivider v-if="form.proximities.length == 0 && update" />
+                <BaseDivider v-if="form.proximities.length != 0 || update" />
                 <div v-if="update">
                     <FormField
                         label="Nome do pontos de interesse"
@@ -308,10 +308,10 @@ const openLink = (link) => {
                                 rounded-full
                                 :disabled="
                                     !update ||
-                                    !proximityName ||
-                                    !proximityDescription ||
-                                    !proximityDescriptionEN ||
-                                    !proximityDistance
+                                    proximityName.trim() === '' ||
+                                    proximityDescription.trim() === '' ||
+                                    proximityDescriptionEN.trim() === '' ||
+                                    proximityDistance.trim() === ''
                                 "
                                 title="Adicionar Proximidade"
                                 @click="addProximity()"
@@ -372,7 +372,7 @@ const openLink = (link) => {
                         </tr>
                     </tbody>
                 </table>
-                <BaseDivider v-if="form.activities.length == 0 && update" />
+                <BaseDivider v-if="form.activities.length != 0 || update" />
                 <div v-if="update">
                     <FormField
                         label="Nome da Atividade"
@@ -443,9 +443,9 @@ const openLink = (link) => {
                                 rounded-full
                                 :disabled="
                                     !update ||
-                                    !activityName ||
-                                    !activityDescription ||
-                                    !activityDescriptionEN
+                                    activityName.trim() === '' ||
+                                    activityDescription.trim() === '' ||
+                                    activityDescriptionEN.trim() === ''
                                 "
                                 title="Adicionar Atividade"
                                 @click="addActivity()"
@@ -500,7 +500,7 @@ const openLink = (link) => {
                         </tr>
                     </tbody>
                 </table>
-                <BaseDivider v-if="form.websites.length == 0 && update" />
+                <BaseDivider v-if="form.websites.length != 0 || update" />
                 <div v-if="update">
                     <FormField
                         label="Nome do link adicional"
@@ -537,7 +537,11 @@ const openLink = (link) => {
                                 small
                                 outline
                                 rounded-full
-                                :disabled="!update || !linkName || !linkLink"
+                                :disabled="
+                                    !update ||
+                                    linkName.trim() === '' ||
+                                    linkLink.trim() === ''
+                                "
                                 title="Adicionar Link"
                                 @click="addLink()"
                             />
