@@ -117,10 +117,10 @@ const cancel = () => {
     fillForm(hotel.value);
 };
 
-const add = (array, v1, v2, value1, value2) => {
+const add = (array, value1, value2) => {
     array.push({
-        [v1]: value1,
-        [v2]: value2,
+        name: value1,
+        nameEN: value2,
     });
 };
 
@@ -281,13 +281,7 @@ const remove = (array, index) => {
                             "
                             title="Adicionar Comodidade"
                             @click="
-                                add(
-                                    form.commodities,
-                                    'commodity',
-                                    'commodityEN',
-                                    commodity,
-                                    commodityEN
-                                ),
+                                add(form.commodities, commodity, commodityEN),
                                     (commodity = ''),
                                     (commodityEN = '')
                             "
@@ -307,8 +301,8 @@ const remove = (array, index) => {
                             v-for="(tableCommodity, index) in form.commodities"
                             :key="index"
                         >
-                            <td>{{ tableCommodity.commodity }}</td>
-                            <td>{{ tableCommodity.commodityEN }}</td>
+                            <td>{{ tableCommodity.name }}</td>
+                            <td>{{ tableCommodity.nameEN }}</td>
                             <td
                                 v-if="update"
                                 class="before:hidden lg:w-1 whitespace-nowrap place-content-center"
@@ -416,13 +410,7 @@ const remove = (array, index) => {
                             "
                             title="Adicionar Política"
                             @click="
-                                add(
-                                    form.policies,
-                                    'policy',
-                                    'policyEN',
-                                    policy,
-                                    policyEN
-                                ),
+                                add(form.policies, policy, policyEN),
                                     (policy = ''),
                                     (policyEN = '')
                             "
@@ -442,8 +430,8 @@ const remove = (array, index) => {
                             v-for="(tablePolicy, index) in form.policies"
                             :key="index"
                         >
-                            <td>{{ tablePolicy.policy }}</td>
-                            <td>{{ tablePolicy.policyEN }}</td>
+                            <td>{{ tablePolicy.name }}</td>
+                            <td>{{ tablePolicy.nameEN }}</td>
                             <td
                                 v-if="update"
                                 class="before:hidden lg:w-1 whitespace-nowrap place-content-center"
@@ -515,13 +503,7 @@ const remove = (array, index) => {
                             "
                             title="Adicionar Acesso"
                             @click="
-                                add(
-                                    form.accesses,
-                                    'access',
-                                    'accessEN',
-                                    access,
-                                    accessEN
-                                ),
+                                add(form.accesses, access, accessEN),
                                     (access = ''),
                                     (accessEN = '')
                             "
@@ -541,8 +523,8 @@ const remove = (array, index) => {
                             v-for="(tableAccess, index) in form.accesses"
                             :key="index"
                         >
-                            <td>{{ tableAccess.access }}</td>
-                            <td>{{ tableAccess.accessEN }}</td>
+                            <td>{{ tableAccess.name }}</td>
+                            <td>{{ tableAccess.nameEN }}</td>
                             <td
                                 v-if="update"
                                 class="before:hidden lg:w-1 whitespace-nowrap place-content-center"
