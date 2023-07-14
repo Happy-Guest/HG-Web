@@ -236,9 +236,9 @@ const remove = (array, index) => {
                 <FormField v-if="update" flex>
                     <FormField
                         label="Comodidade"
-                        class="w-full"
+                        class="w-full mb-4 sm:mb-0"
                         label-for="commodity"
-                        help="As comodidade do hotel. Opcionais"
+                        help="A comodidade do hotel. Obrigatória"
                     >
                         <FormControl
                             id="commodity"
@@ -252,9 +252,9 @@ const remove = (array, index) => {
                     </FormField>
                     <FormField
                         label="Comodidade (Inglês)"
-                        class="w-full"
+                        class="w-full mb-4 sm:mb-0"
                         label-for="commodityEN"
-                        help="As comodidade do hotel em inglês. Opcionais"
+                        help="A comodidade do hotel em inglês. Obrigatória"
                     >
                         <FormControl
                             id="commodityEN"
@@ -269,7 +269,7 @@ const remove = (array, index) => {
                     <BaseButtons>
                         <BaseButton
                             color="success"
-                            class="w-10 h-10 mb-6"
+                            class="w-10 h-10 mt-3"
                             :icon="mdiBookPlus"
                             small
                             outline
@@ -288,11 +288,11 @@ const remove = (array, index) => {
                         />
                     </BaseButtons>
                 </FormField>
-                <table v-if="form.commodities.length != 0" class="w-full">
+                <table v-if="form.commodities.length != 0" class="w-full -mt-3">
                     <thead>
                         <tr>
-                            <th class="w-1/2">Comodidade</th>
-                            <th class="w-1/2">Comodidade (Inglês)</th>
+                            <th class="w-1/2">Comodidades</th>
+                            <th class="w-1/2">Comodidades (Inglês)</th>
                             <th v-if="update"></th>
                         </tr>
                     </thead>
@@ -301,8 +301,13 @@ const remove = (array, index) => {
                             v-for="(tableCommodity, index) in form.commodities"
                             :key="index"
                         >
-                            <td>{{ tableCommodity.name }}</td>
-                            <td>{{ tableCommodity.nameEN }}</td>
+                            <td data-label="Nome">{{ tableCommodity.name }}</td>
+                            <td
+                                data-label="Nome (Inglês)"
+                                class="text-gray-500 dark:text-slate-400"
+                            >
+                                {{ tableCommodity.nameEN }}
+                            </td>
                             <td
                                 v-if="update"
                                 class="before:hidden lg:w-1 whitespace-nowrap place-content-center"
@@ -365,9 +370,9 @@ const remove = (array, index) => {
                 <FormField v-if="update" flex>
                     <FormField
                         label="Política do Hotel"
-                        class="w-full md:w-2/4 mb-3 sm:mb-4"
+                        class="w-full md:w-2/4 mb-4 sm:mb-0"
                         label-for="policies"
-                        help="A politica do hotel. Opcional"
+                        help="A politica do hotel. Obrigatória"
                     >
                         <FormControl
                             id="policies"
@@ -381,9 +386,9 @@ const remove = (array, index) => {
                     </FormField>
                     <FormField
                         label="Política do Hotel (Inglês)"
-                        class="w-full md:w-2/4 mb-3 sm:mb-4"
+                        class="w-full md:w-2/4 mb-4 sm:mb-0"
                         label-for="policiesEN"
-                        help="A politica do hotel em inglês. Opcional"
+                        help="A politica do hotel em inglês. Obrigatória"
                     >
                         <FormControl
                             id="policiesEN"
@@ -398,7 +403,7 @@ const remove = (array, index) => {
                     <BaseButtons>
                         <BaseButton
                             color="success"
-                            class="w-10 h-10 mb-6"
+                            class="w-10 h-10 mt-3"
                             :icon="mdiBookPlus"
                             small
                             outline
@@ -417,11 +422,11 @@ const remove = (array, index) => {
                         />
                     </BaseButtons>
                 </FormField>
-                <table v-if="form.policies.length != 0" class="w-full">
+                <table v-if="form.policies.length != 0" class="w-full -mt-3">
                     <thead>
                         <tr>
-                            <th class="w-1/2">Política do Hotel</th>
-                            <th class="w-1/2">Política do Hotel (Inglês)</th>
+                            <th class="w-1/2">Políticas do Hotel</th>
+                            <th class="w-1/2">Políticas do Hotel (Inglês)</th>
                             <th v-if="update"></th>
                         </tr>
                     </thead>
@@ -430,8 +435,13 @@ const remove = (array, index) => {
                             v-for="(tablePolicy, index) in form.policies"
                             :key="index"
                         >
-                            <td>{{ tablePolicy.name }}</td>
-                            <td>{{ tablePolicy.nameEN }}</td>
+                            <td data-label="Nome">{{ tablePolicy.name }}</td>
+                            <td
+                                data-label="Nome (Inglês)"
+                                class="text-gray-500 dark:text-slate-400"
+                            >
+                                {{ tablePolicy.nameEN }}
+                            </td>
                             <td
                                 v-if="update"
                                 class="before:hidden lg:w-1 whitespace-nowrap place-content-center"
@@ -458,9 +468,9 @@ const remove = (array, index) => {
                 <FormField v-if="update" flex>
                     <FormField
                         label="Informação de Acesso"
-                        class="w-full md:w-2/4 mb-3 sm:mb-4"
+                        class="w-full md:w-2/4 mb-4 sm:mb-0"
                         label-for="access"
-                        help="As informação de acesso ao hotel.Opcionais"
+                        help="A informação de acesso ao hotel. Obrigatória"
                     >
                         <FormControl
                             id="access"
@@ -474,9 +484,9 @@ const remove = (array, index) => {
                     </FormField>
                     <FormField
                         label="Informação de Acesso (Inglês)"
-                        class="w-full md:w-2/4 mb-3 sm:mb-4"
+                        class="w-full md:w-2/4 mb-4 sm:mb-0"
                         label-for="accessEN"
-                        help="As informação de acesso ao hotel em inglês.Opcionais"
+                        help="A informação de acesso ao hotel em inglês. Obrigatória"
                     >
                         <FormControl
                             id="accessEN"
@@ -491,7 +501,7 @@ const remove = (array, index) => {
                     <BaseButtons>
                         <BaseButton
                             color="success"
-                            class="w-10 h-10 mb-6"
+                            class="w-10 h-10 mt-3"
                             :icon="mdiBookPlus"
                             small
                             outline
@@ -510,11 +520,13 @@ const remove = (array, index) => {
                         />
                     </BaseButtons>
                 </FormField>
-                <table v-if="form.accesses.length != 0" class="w-full">
+                <table v-if="form.accesses.length != 0" class="w-full -mt-3">
                     <thead>
                         <tr>
-                            <th class="w-1/2">Informação de Acesso</th>
-                            <th class="w-1/2">Informação de Acesso (Inglês)</th>
+                            <th class="w-1/2">Informações de Acesso</th>
+                            <th class="w-1/2">
+                                Informações de Acesso (Inglês)
+                            </th>
                             <th v-if="update"></th>
                         </tr>
                     </thead>
@@ -523,8 +535,13 @@ const remove = (array, index) => {
                             v-for="(tableAccess, index) in form.accesses"
                             :key="index"
                         >
-                            <td>{{ tableAccess.name }}</td>
-                            <td>{{ tableAccess.nameEN }}</td>
+                            <td data-label="Nome">{{ tableAccess.name }}</td>
+                            <td
+                                data-label="Nome (Inglês)"
+                                class="text-gray-500 dark:text-slate-400"
+                            >
+                                {{ tableAccess.nameEN }}
+                            </td>
                             <td
                                 v-if="update"
                                 class="before:hidden lg:w-1 whitespace-nowrap place-content-center"

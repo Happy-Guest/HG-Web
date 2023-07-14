@@ -226,8 +226,8 @@ const openLink = (link) => {
                 <BaseDivider v-if="form.proximities.length != 0 || update" />
                 <div v-if="update">
                     <FormField
-                        label="Nome do pontos de interesse"
-                        help="O Nome do ponto de interesse. Obrigatório."
+                        label="Pontos de Interesse"
+                        help="O nome do ponto de interesse. Obrigatório."
                         label-for="name"
                     >
                         <FormControl
@@ -241,7 +241,7 @@ const openLink = (link) => {
                         <FormField
                             label="Descrição"
                             label-for="description"
-                            class="w-full md:w-2/4 mb-3 sm:mb-4"
+                            class="w-full md:w-2/4 mb-4 sm:mb-0"
                             help="Uma descrição do ponto de interesse. Obrigatória"
                         >
                             <FormControl
@@ -256,7 +256,7 @@ const openLink = (link) => {
                         <FormField
                             label="Descrição (Inglês)"
                             label-for="descriptionEN"
-                            class="w-full md:w-2/4 mb-3 sm:mb-4"
+                            class="w-full md:w-2/4 mb-4 sm:mb-0"
                             help="Uma descrição do ponto de interesse em inglês. Obrigatória"
                         >
                             <FormControl
@@ -274,7 +274,7 @@ const openLink = (link) => {
                             label="Distância"
                             label-for="distance"
                             class="w-full md:w-7/12"
-                            help="A distancia ao ponto de interesse. Obrigatória"
+                            help="A distância ao ponto de interesse. Obrigatória"
                         >
                             <FormControl
                                 id="distance"
@@ -285,10 +285,10 @@ const openLink = (link) => {
                             />
                         </FormField>
                         <FormField
-                            label="Link para direções"
+                            label="Link para Direções"
                             label-for="directions"
                             class="w-full md:w-6/12"
-                            help="O link para direções. Opicional"
+                            help="O link para direções no Google Maps. Opcional"
                         >
                             <FormControl
                                 id="directions"
@@ -301,7 +301,7 @@ const openLink = (link) => {
                         <BaseButtons>
                             <BaseButton
                                 color="success"
-                                class="w-10 h-10 mb-6"
+                                class="w-10 h-10 -mt-3"
                                 :icon="mdiBookPlus"
                                 small
                                 outline
@@ -319,10 +319,10 @@ const openLink = (link) => {
                         </BaseButtons>
                     </FormField>
                 </div>
-                <table v-if="form.proximities.length != 0" class="w-full">
+                <table v-if="form.proximities.length != 0" class="w-full -mt-3">
                     <thead>
                         <tr>
-                            <th>Nome do Ponto de interesse</th>
+                            <th>Pontos de Interesse</th>
                             <th>Descrição</th>
                             <th>Distância</th>
                             <th></th>
@@ -333,14 +333,18 @@ const openLink = (link) => {
                             v-for="(proximity, index) in form.proximities"
                             :key="index"
                         >
-                            <td>
+                            <td data-label="Nome">
                                 {{ proximity.name }}
                             </td>
-                            <td>
+                            <td
+                                class="text-gray-500 dark:text-slate-400"
+                                data-label="Descrição"
+                            >
                                 {{ proximity.description }}
                             </td>
                             <td
-                                class="text-center text-gray-500 dark:text-slate-400"
+                                data-label="Distância"
+                                class="text-center text-gray-500 dark:text-slate-400 font-semibold"
                             >
                                 {{ proximity.distance }}
                             </td>
@@ -364,7 +368,7 @@ const openLink = (link) => {
                                         color="danger"
                                         :icon="mdiClose"
                                         small
-                                        title="Remover Item"
+                                        title="Remover Ponto de Interesse"
                                         @click="removeProximity(proximity)"
                                     />
                                 </BaseButtons>
@@ -376,7 +380,7 @@ const openLink = (link) => {
                 <div v-if="update">
                     <FormField
                         label="Nome da Atividade"
-                        help="O Nome da atividade. Obrigatório."
+                        help="O nome da atividade. Obrigatório."
                         label-for="name"
                     >
                         <FormControl
@@ -390,7 +394,7 @@ const openLink = (link) => {
                         <FormField
                             label="Descrição"
                             label-for="description"
-                            class="w-full md:w-2/4 mb-3 sm:mb-4"
+                            class="w-full md:w-2/4 mb-4 sm:mb-0"
                             help="Uma descrição da atividade. Obrigatória"
                         >
                             <FormControl
@@ -405,7 +409,7 @@ const openLink = (link) => {
                         <FormField
                             label="Descrição (Inglês)"
                             label-for="descriptionEN"
-                            class="w-full md:w-2/4 mb-3 sm:mb-4"
+                            class="w-full md:w-2/4 mb-4 sm:mb-0"
                             help="Uma descrição da atividade em inglês. Obrigatória"
                         >
                             <FormControl
@@ -420,10 +424,10 @@ const openLink = (link) => {
                     </FormField>
                     <FormField flex>
                         <FormField
-                            label="Link para informações"
+                            label="Link para Informações"
                             label-for="informations"
                             class="w-full"
-                            help="O link para informações. Opicional"
+                            help="O link para informações sobre a atividade. Opcional"
                         >
                             <FormControl
                                 id="informations"
@@ -436,7 +440,7 @@ const openLink = (link) => {
                         <BaseButtons>
                             <BaseButton
                                 color="success"
-                                class="w-10 h-10 mb-6"
+                                class="w-10 h-10 -mt-3"
                                 :icon="mdiBookPlus"
                                 small
                                 outline
@@ -453,10 +457,10 @@ const openLink = (link) => {
                         </BaseButtons>
                     </FormField>
                 </div>
-                <table v-if="form.activities.length != 0" class="w-full">
+                <table v-if="form.activities.length != 0" class="w-full -mt-3">
                     <thead>
                         <tr>
-                            <th>Nome da atividade</th>
+                            <th>Atividades</th>
                             <th>Descrição</th>
                             <th></th>
                         </tr>
@@ -466,10 +470,13 @@ const openLink = (link) => {
                             v-for="(activity, index) in form.activities"
                             :key="index"
                         >
-                            <td>
+                            <td data-label="Nome">
                                 {{ activity.name }}
                             </td>
-                            <td>
+                            <td
+                                data-label="Descrição"
+                                class="text-gray-500 dark:text-slate-400"
+                            >
                                 {{ activity.description }}
                             </td>
                             <td
@@ -484,7 +491,7 @@ const openLink = (link) => {
                                         :icon="mdiEye"
                                         :disabled="!activity.link"
                                         small
-                                        title="Ver no Mapa"
+                                        title="Ver Informações"
                                         @click="openLink(activity.link)"
                                     />
                                     <BaseButton
@@ -492,7 +499,7 @@ const openLink = (link) => {
                                         color="danger"
                                         :icon="mdiClose"
                                         small
-                                        title="Remover Item"
+                                        title="Remover Atividade"
                                         @click="removeActivity(activity)"
                                     />
                                 </BaseButtons>
@@ -503,8 +510,8 @@ const openLink = (link) => {
                 <BaseDivider v-if="form.websites.length != 0 || update" />
                 <div v-if="update">
                     <FormField
-                        label="Nome do link adicional"
-                        help="O Nome do link adiconal. Obrigatório."
+                        label="Nome do Website"
+                        help="O nome do website de informações. Obrigatório."
                         label-for="name"
                     >
                         <FormControl
@@ -519,7 +526,7 @@ const openLink = (link) => {
                             label="Link"
                             label-for="link"
                             class="w-full"
-                            help="O link adicional. Obrigatório"
+                            help="O link para o website de informações. Obrigatório"
                         >
                             <FormControl
                                 id="link"
@@ -551,20 +558,15 @@ const openLink = (link) => {
                 <table v-if="form.websites.length != 0" class="w-full">
                     <thead>
                         <tr>
-                            <th>Website informações</th>
-                            <th>Link</th>
+                            <th>Websites de Informações</th>
                             <th v-if="update"></th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr v-for="(link, index) in form.websites" :key="index">
-                            <td>
+                            <td data-label="Nome">
                                 {{ link.name }}
                             </td>
-                            <td>
-                                {{ link.link }}
-                            </td>
-
                             <td
                                 class="before:hidden lg:w-1 whitespace-nowrap place-content-center"
                             >
@@ -577,7 +579,7 @@ const openLink = (link) => {
                                         :icon="mdiEye"
                                         :disabled="!link.link"
                                         small
-                                        title="Ver no Mapa"
+                                        title="Ver Website"
                                         @click="openLink(link.link)"
                                     />
                                     <BaseButton
@@ -585,7 +587,7 @@ const openLink = (link) => {
                                         color="danger"
                                         :icon="mdiClose"
                                         small
-                                        title="Remover link"
+                                        title="Remover Website"
                                         @click="removeLink(link)"
                                     />
                                 </BaseButtons>
