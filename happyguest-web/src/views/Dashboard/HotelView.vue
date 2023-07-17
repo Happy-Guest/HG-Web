@@ -207,7 +207,7 @@ const remove = (array, index) => {
                             :icon="mdiHumanCapacityDecrease"
                             name="capacity"
                             :disabled="!update"
-                            autocomplete="capacity"
+                            autocomplete="cap"
                             :placeholder="
                                 form.capacity == null ? 'Não definido' : ''
                             "

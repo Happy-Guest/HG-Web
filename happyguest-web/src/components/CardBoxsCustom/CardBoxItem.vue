@@ -207,6 +207,7 @@ const updateItem = async () => {
                     maxlength="255"
                     type="text"
                     :icon="mdiCursorText"
+                    autocomplete="name"
                     name="name"
                     required
                 />
@@ -224,6 +225,7 @@ const updateItem = async () => {
                     maxlength="255"
                     type="text"
                     :icon="mdiCursorText"
+                    autocomplete="name"
                     name="nameEN"
                     required
                 />

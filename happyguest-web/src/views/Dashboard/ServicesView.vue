@@ -364,7 +364,7 @@ function open(menu_url) {
                             :model-value="service?.nameEN"
                             :icon="mdiText"
                             name="nameEN"
-                            autocomplete="nameEN"
+                            autocomplete="name"
                             disabled
                             required
                         />

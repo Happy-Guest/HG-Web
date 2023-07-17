@@ -46,6 +46,10 @@ export const useAuthStore = defineStore("auth", () => {
             return true;
         } catch (error) {
             clearUser();
+            if (error.response.status == 503) {
+                error.response.data.message =
+                    "Servico indisponivel no momento, tente novamente mais tarde.";
+            }
             return error.response;
         }
     }
@@ -59,6 +63,10 @@ export const useAuthStore = defineStore("auth", () => {
             });
             return response;
         } catch (error) {
+            if (error.response.status == 503) {
+                error.response.data.message =
+                    "Servico indisponivel no momento, tente novamente mais tarde.";
+            }
             return error.response;
         }
     }
