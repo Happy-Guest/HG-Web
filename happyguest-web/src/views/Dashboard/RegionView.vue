@@ -43,6 +43,7 @@ const proximityDirections = ref("");
 const activityName = ref("");
 const activityDescription = ref("");
 const activityDescriptionEN = ref("");
+const activityDistance = ref("");
 const activityInformations = ref("");
 
 const linkName = ref("");
@@ -132,7 +133,7 @@ const addProximity = () => {
         description: proximityDescription.value,
         descriptionEN: proximityDescriptionEN.value,
         distance: proximityDistance.value,
-        map_link: proximityDirections.value ?? null,
+        link: proximityDirections.value ?? null,
     });
     proximityName.value = "";
     proximityDescription.value = "";
@@ -146,11 +147,13 @@ const addActivity = () => {
         name: activityName.value,
         description: activityDescription.value,
         descriptionEN: activityDescriptionEN.value,
+        distance: activityDistance.value,
         link: activityInformations.value,
     });
     activityName.value = "";
     activityDescription.value = "";
     activityDescriptionEN.value = "";
+    activityDistance.value = "";
     activityInformations.value = "";
 };
 
@@ -358,10 +361,10 @@ const openLink = (link) => {
                                     <BaseButton
                                         color="info"
                                         :icon="mdiMapMarker"
-                                        :disabled="!proxim.map_link"
+                                        :disabled="!proxim.link"
                                         small
                                         title="Ver no Mapa"
-                                        @click="openLink(proxim.map_link)"
+                                        @click="openLink(proxim.link)"
                                     />
                                     <BaseButton
                                         v-if="update"
@@ -424,9 +427,23 @@ const openLink = (link) => {
                     </FormField>
                     <FormField flex>
                         <FormField
+                            label="Distância"
+                            label-for="distance"
+                            class="w-full md:w-7/12"
+                            help="A distância a atividade. Obrigatória"
+                        >
+                            <FormControl
+                                id="distance"
+                                v-model="activityDistance"
+                                :icon="mdiMapMarkerDistance"
+                                name="distance"
+                                autocomplete="distance"
+                            />
+                        </FormField>
+                        <FormField
                             label="Link para Informações"
                             label-for="informations"
-                            class="w-full"
+                            class="w-full md:w-6/12"
                             help="O link para informações sobre a atividade. Opcional"
                         >
                             <FormControl
@@ -449,7 +466,8 @@ const openLink = (link) => {
                                     !update ||
                                     activityName.trim() === '' ||
                                     activityDescription.trim() === '' ||
-                                    activityDescriptionEN.trim() === ''
+                                    activityDescriptionEN.trim() === '' ||
+                                    activityDistance.trim() === ''
                                 "
                                 title="Adicionar Atividade"
                                 @click="addActivity()"
@@ -462,6 +480,7 @@ const openLink = (link) => {
                         <tr>
                             <th>Atividades</th>
                             <th>Descrição</th>
+                            <th>Distância</th>
                             <th></th>
                         </tr>
                     </thead>
@@ -478,6 +497,12 @@ const openLink = (link) => {
                                 class="text-gray-500 dark:text-slate-400"
                             >
                                 {{ activity.description }}
+                            </td>
+                            <td
+                                data-label="Distância"
+                                class="text-center text-gray-500 dark:text-slate-400 font-semibold"
+                            >
+                                {{ activity.distance }}
                             </td>
                             <td
                                 class="before:hidden lg:w-1 whitespace-nowrap place-content-center"
