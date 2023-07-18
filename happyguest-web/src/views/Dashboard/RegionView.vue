@@ -51,7 +51,7 @@ const linkLink = ref("");
 const form = ref({
     description: "",
     descriptionEN: "",
-    proximities: [],
+    proximity: [],
     activities: [],
     websites: [],
 });
@@ -66,7 +66,7 @@ const fillForm = (response) => {
     region.value = response;
     form.value.description = response.description;
     form.value.descriptionEN = response.descriptionEN;
-    form.value.proximities = JSON.parse(response.proximities);
+    form.value.proximity = JSON.parse(response.proximity);
     form.value.activities = JSON.parse(response.activities);
     form.value.websites = JSON.parse(response.websites);
 };
@@ -76,7 +76,7 @@ const editRegion = () => {
         .updateRegion({
             description: form.value.description,
             descriptionEN: form.value.descriptionEN,
-            proximities: form.value.proximities ?? null,
+            proximity: form.value.proximity ?? null,
             activities: form.value.activities ?? null,
             websites: form.value.websites ?? null,
         })
@@ -123,11 +123,11 @@ const cancel = () => {
 };
 
 const removeProximity = (index) => {
-    form.value.proximities.splice(form.value.proximities.indexOf(index), 1);
+    form.value.proximity.splice(form.value.proximity.indexOf(index), 1);
 };
 
 const addProximity = () => {
-    form.value.proximities.push({
+    form.value.proximity.push({
         name: proximityName.value,
         description: proximityDescription.value,
         descriptionEN: proximityDescriptionEN.value,
@@ -223,7 +223,7 @@ const openLink = (link) => {
                         required
                     />
                 </FormField>
-                <BaseDivider v-if="form.proximities.length != 0 || update" />
+                <BaseDivider v-if="form.proximity.length != 0 || update" />
                 <div v-if="update">
                     <FormField
                         label="Pontos de Interesse"
@@ -319,7 +319,7 @@ const openLink = (link) => {
                         </BaseButtons>
                     </FormField>
                 </div>
-                <table v-if="form.proximities.length != 0" class="w-full -mt-3">
+                <table v-if="form.proximity.length != 0" class="w-full -mt-3">
                     <thead>
                         <tr>
                             <th>Pontos de Interesse</th>
@@ -330,23 +330,23 @@ const openLink = (link) => {
                     </thead>
                     <tbody>
                         <tr
-                            v-for="(proximity, index) in form.proximities"
+                            v-for="(proxim, index) in form.proximity"
                             :key="index"
                         >
                             <td data-label="Nome">
-                                {{ proximity.name }}
+                                {{ proxim.name }}
                             </td>
                             <td
                                 class="text-gray-500 dark:text-slate-400"
                                 data-label="Descrição"
                             >
-                                {{ proximity.description }}
+                                {{ proxim.description }}
                             </td>
                             <td
                                 data-label="Distância"
                                 class="text-center text-gray-500 dark:text-slate-400 font-semibold"
                             >
-                                {{ proximity.distance }}
+                                {{ proxim.distance }}
                             </td>
                             <td
                                 class="before:hidden lg:w-1 whitespace-nowrap place-content-center"
@@ -358,10 +358,10 @@ const openLink = (link) => {
                                     <BaseButton
                                         color="info"
                                         :icon="mdiMapMarker"
-                                        :disabled="!proximity.map_link"
+                                        :disabled="!proxim.map_link"
                                         small
                                         title="Ver no Mapa"
-                                        @click="openLink(proximity.map_link)"
+                                        @click="openLink(proxim.map_link)"
                                     />
                                     <BaseButton
                                         v-if="update"
@@ -369,7 +369,7 @@ const openLink = (link) => {
                                         :icon="mdiClose"
                                         small
                                         title="Remover Ponto de Interesse"
-                                        @click="removeProximity(proximity)"
+                                        @click="removeProximity(proxim)"
                                     />
                                 </BaseButtons>
                             </td>
