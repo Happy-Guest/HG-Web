@@ -427,10 +427,18 @@ function open(menu_url) {
                         />
                     </FormField>
                     <FormField
-                        label="Limite de Pedidos (Hora)"
+                        :label="
+                            service.type == 'R'
+                                ? 'Limite de Pessoas (Reserva)'
+                                : 'Limite de Pedidos (Hora)'
+                        "
                         class="w-full md:w-1/4 mb-4 sm:mb-0"
                         label-for="limit"
-                        help="O limite de pedidos por hora. Opcional"
+                        :help="
+                            service.type == 'R'
+                                ? 'O limite de pessoas por reserva. Opcional'
+                                : 'O limite de pedidos por hora. Opcional'
+                        "
                     >
                         <FormControl
                             id="limit"

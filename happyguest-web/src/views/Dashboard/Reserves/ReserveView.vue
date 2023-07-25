@@ -16,6 +16,7 @@ import {
     mdiAccountMultiple,
     mdiClockTimeTwoOutline,
     mdiPackageCheck,
+    mdiCog,
     mdiCheck,
     mdiClose,
     mdiUpdate,
@@ -78,9 +79,10 @@ onMounted(() => {
 
 const selectStatus = [
     { id: 0, label: "Pendente", value: "P", icon: mdiClockTimeTwoOutline },
-    { id: 1, label: "Aceite", value: "A", icon: mdiPackageCheck },
-    { id: 2, label: "Rejeitada", value: "R", icon: mdiCheck },
-    { id: 3, label: "Cancelada", value: "C", icon: mdiClose },
+    { id: 1, label: "Aceite", value: "A", icon: mdiCog },
+    { id: 2, label: "Finalizada", value: "F", icon: mdiPackageCheck },
+    { id: 3, label: "Rejeitada", value: "R", icon: mdiCheck },
+    { id: 4, label: "Cancelada", value: "C", icon: mdiClose },
 ];
 
 const selectService = [

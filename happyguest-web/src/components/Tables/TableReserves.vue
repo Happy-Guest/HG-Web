@@ -12,6 +12,7 @@ import {
     mdiEye,
     mdiCheckCircle,
     mdiAlertCircle,
+    mdiCog,
 } from "@mdi/js";
 import BaseLevel from "@/components/Bases/BaseLevel.vue";
 import BaseButtons from "@/components/Bases/BaseButtons.vue";
@@ -252,8 +253,8 @@ const submitDelete = (password) => {
                         v-else-if="reserve.status == 'A'"
                         class="justify-center"
                         label="Aceite"
-                        color="success"
-                        :icon="mdiPackageCheck"
+                        color="warning"
+                        :icon="mdiCog"
                     />
                     <PillTag
                         v-else-if="reserve.status == 'R'"
@@ -261,6 +262,13 @@ const submitDelete = (password) => {
                         label="Rejeitada"
                         color="danger"
                         :icon="mdiCheck"
+                    />
+                    <PillTag
+                        v-else-if="reserve.status == 'F'"
+                        class="justify-center"
+                        label="Finalizada"
+                        color="success"
+                        :icon="mdiPackageCheck"
                     />
                     <PillTag
                         v-else

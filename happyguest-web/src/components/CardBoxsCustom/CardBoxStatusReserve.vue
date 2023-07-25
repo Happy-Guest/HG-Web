@@ -1,5 +1,5 @@
 <script setup>
-import { watch, ref, watchEffect } from "vue";
+import { ref, watchEffect } from "vue";
 import {
     mdiUpdate,
     mdiCheck,
@@ -8,6 +8,7 @@ import {
     mdiTextBox,
     mdiPackageCheck,
     mdiListStatus,
+    mdiCog,
 } from "@mdi/js";
 import CardBoxModal from "@/components/CardBoxs/CardBoxModal.vue";
 import FormControl from "@/components/Forms/FormControl.vue";
@@ -36,13 +37,9 @@ const resErrors = ref([]);
 
 watchEffect(() => {
     isModalActive.value = props.active;
-});
-
-watch(
-    () => props.selected,
-    (value) => {
+    if (props.active) {
         resErrors.value = [];
-        reserveStore.getReserve(value).then((response) => {
+        reserveStore.getReserve(props.selected).then((response) => {
             reserve.value = response;
             form.value.comment = reserve.value.comment;
             form.value.status = selectStatus.find(
@@ -50,7 +47,7 @@ watch(
             );
         });
     }
-);
+});
 
 const form = ref({
     comment: "",
@@ -59,9 +56,10 @@ const form = ref({
 
 const selectStatus = [
     { id: 0, label: "Pendente", value: "P", icon: mdiClockTimeTwoOutline },
-    { id: 1, label: "Aceite", value: "A", icon: mdiPackageCheck },
-    { id: 2, label: "Rejeitada", value: "R", icon: mdiCheck },
-    { id: 3, label: "Cancelada", value: "C", icon: mdiClose },
+    { id: 1, label: "Aceite", value: "A", icon: mdiCog },
+    { id: 2, label: "Finalizada", value: "F", icon: mdiPackageCheck },
+    { id: 3, label: "Rejeitada", value: "R", icon: mdiCheck },
+    { id: 4, label: "Cancelada", value: "C", icon: mdiClose },
 ];
 
 const updateStatus = () => {

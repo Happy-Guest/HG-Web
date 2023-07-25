@@ -28,6 +28,7 @@ const selectOptionsFilter = [
     { value: "O", label: "Outras" },
     { value: "P", label: "Pendentes" },
     { value: "A", label: "Aceites" },
+    { value: "F", label: "Finalizadas" },
     { value: "R", label: "Rejeitadas" },
     { value: "C", label: "Canceladas" },
     { value: "D", label: "Eliminadas" },
