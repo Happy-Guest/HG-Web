@@ -9,6 +9,7 @@ import {
     mdiAccountSupervisor,
     mdiCancel,
     mdiKey,
+    mdiQrcode,
 } from "@mdi/js";
 import BaseLevel from "@/components/Bases/BaseLevel.vue";
 import BaseButtons from "@/components/Bases/BaseButtons.vue";
@@ -19,6 +20,7 @@ import CardBoxCodeUsers from "../CardBoxsCustom/CardBoxCodeUsers.vue";
 import NotificationBar from "@/components/Others/NotificationBar.vue";
 import CardBoxModal from "@/components/CardBoxs/CardBoxModal.vue";
 import { useCodeStore } from "@/stores/code";
+import CardBoxQrCode from "../CardBoxsCustom/CardBoxQrCode.vue";
 
 const props = defineProps({
     newCode: {
@@ -44,6 +46,7 @@ const numPages = computed(() => codeStore.lastPage);
 const currentPageHuman = computed(() => currentPage.value + 1);
 
 const isModalActive = ref(false);
+const isModalActiveQRCode = ref(false);
 const isModalDeleteActive = ref(false);
 const isSuccessNotifActive = ref(false);
 const isErrorNotifActive = ref(false);
@@ -249,6 +252,11 @@ const submitDelete = (password) => {
         @update:active="isModalActive = $event"
         @updated="updateModal($event)"
     />
+    <CardBoxQrCode
+        :selected="selectedCode"
+        :active="isModalActiveQRCode"
+        @update:active="isModalActiveQRCode = $event"
+    />
     <CardBoxCodeUsers
         :selected="selectedClients"
         :selected-code="selectedCode"
@@ -362,6 +370,16 @@ const submitDelete = (password) => {
                             @click="
                                 isModalActive = true;
                                 selectedId = code.id;
+                            "
+                        />
+                        <BaseButton
+                            color="success"
+                            title="QR Code"
+                            :icon="mdiQrcode"
+                            small
+                            @click="
+                                isModalActiveQRCode = true;
+                                selectedCode = code.code;
                             "
                         />
                         <BaseButton
