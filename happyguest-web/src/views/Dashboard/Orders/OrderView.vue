@@ -573,7 +573,7 @@ const updateStatus = () => {
                                     <PillTag
                                         v-else-if="item.category == 'breakfast'"
                                         class="justify-center w-32"
-                                        label="P. Almoço"
+                                        label="P-Almoço"
                                         color="info"
                                         :icon="mdiFoodCroissant"
                                         outline
@@ -709,7 +709,7 @@ const updateStatus = () => {
                                     <PillTag
                                         v-else-if="item.category == 'breakfast'"
                                         class="justify-center w-32"
-                                        label="P. Almoço"
+                                        label="P-Almoço"
                                         color="info"
                                         :icon="mdiFoodCroissant"
                                         outline
