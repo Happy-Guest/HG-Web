@@ -66,7 +66,7 @@ const selectOptionsFilterObjects = [
 const selectOptionsFilterFood = [
     { value: "ALL", label: "Todos" },
     { value: "drink", label: "Bebidas" },
-    { value: "breakfast", label: "P. Almoço" },
+    { value: "breakfast", label: "P-Almoço" },
     { value: "lunch", label: "Almoço" },
     { value: "dinner", label: "Jantar" },
     { value: "snack", label: "Lanches" },

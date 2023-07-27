@@ -62,7 +62,7 @@ const selectOptionsObjects = [
 
 const selectOptionsFood = [
     { id: 0, value: "drink", label: "Bebidas", icon: mdiBeer },
-    { id: 1, value: "breakfast", label: "P. Almoço", icon: mdiFoodCroissant },
+    { id: 1, value: "breakfast", label: "P-Almoço", icon: mdiFoodCroissant },
     { id: 2, value: "lunch", label: "Almoço", icon: mdiFoodTurkey },
     { id: 3, value: "dinner", label: "Jantar", icon: mdiHamburger },
     { id: 4, value: "snack", label: "Lanches", icon: mdiFoodApple },

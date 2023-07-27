@@ -33,7 +33,7 @@ const selectOptionsFilter = [
     { value: "room", label: "Quarto" },
     { value: "bathroom", label: "Casa Banho" },
     { value: "drink", label: "Bebidas" },
-    { value: "breakfast", label: "P. Almoço" },
+    { value: "breakfast", label: "P-Almoço" },
     { value: "lunch", label: "Almoço" },
     { value: "dinner", label: "Jantar" },
     { value: "snack", label: "Lanches" },
