@@ -144,6 +144,9 @@ const submitPassword = () => {
                 setTimeout(function () {
                     statusPassword.value = null;
                 }, 5000);
+                passwordForm.value.old_password = "";
+                passwordForm.value.new_password = "";
+                passwordForm.value.new_password_confirmation = "";
             } else {
                 statusPassword.value = false;
                 resErrors.value = response.data.errors;

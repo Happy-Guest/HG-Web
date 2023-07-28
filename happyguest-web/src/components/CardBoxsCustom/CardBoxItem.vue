@@ -110,6 +110,7 @@ watch(
             }
             form.value.stock = response.stock ? response.stock : "";
             form.value.price = response.price ? response.price : "";
+            form.value.associate = response.active == 1 ? true : false;
         });
     }
 );
@@ -165,6 +166,13 @@ const updateItem = async () => {
                 isModalActive.value = false;
                 itemStore.updateTable = true;
                 emit("updated", response.data.item);
+                if (form.value.associate) {
+                    itemStore.associateItem(
+                        response.data.item.id,
+                        response.data.item.type == "O" ? 2 : 3
+                    );
+                }
+                resErrors.value = [];
             } else {
                 resErrors.value = response.data.errors;
             }

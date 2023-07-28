@@ -121,6 +121,7 @@ const createCode = async () => {
                 codeStore.updateTable = true;
                 emit("update:active", false);
                 emit("updated", true);
+                clear();
             } else {
                 resErrors.value = response.data.errors;
             }
@@ -152,6 +153,15 @@ const editCode = async () => {
             resMessage.value = "Ocorreu um erro ao atualizar o código.";
         });
 };
+
+const clear = () => {
+    if (!props.selected) {
+        form.value.code = randomString();
+        form.value.rooms = "";
+        form.value.entry_date = "";
+        form.value.exit_date = "";
+    }
+};
 </script>
 
 <template>
@@ -166,7 +176,7 @@ const editCode = async () => {
         has-cancel
         has-close
         :errors="resErrors"
-        @cancel="emit('update:active', false)"
+        @cancel="emit('update:active', false), clear()"
         @confirm="selected ? editCode() : createCode()"
     >
         <FormField>
