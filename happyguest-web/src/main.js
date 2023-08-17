@@ -5,12 +5,9 @@ import App from "./App.vue";
 import router from "./router";
 import { useStyleStore } from "@/stores/style.js";
 import { darkModeKey, styleKey } from "@/config.js";
-import firebaseMessaging from "./firebase";
+import { firebaseMessaging } from "./firebase";
 
 import "./css/main.css";
-
-/* Firebase Notifs */
-app.config.globalProperties.$messaging = firebaseMessaging;
 
 /* Init Pinia */
 const pinia = createPinia();
@@ -18,6 +15,9 @@ const pinia = createPinia();
 /* Create Vue app */
 const app = createApp(App);
 const serverUrl = import.meta.env.VITE_SERVER_URL;
+
+/* Firebase Notifs */
+app.config.globalProperties.$messaging = firebaseMessaging;
 
 app.provide(
     "axios",
