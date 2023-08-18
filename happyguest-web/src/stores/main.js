@@ -51,12 +51,15 @@ export const useMainStore = defineStore("main", () => {
         const messaging = getMessaging();
 
         onMessage(messaging, (payload) => {
-            toast.success(payload.notification.body);
+            toast.success(payload.notification.body, {
+                dismissible: true,
+                duration: 5000,
+            });
         });
 
         getToken(messaging, {
             vapidKey:
-                "BFrd_fWqUL5Teaq3rrubjvhh5dea_zKVmgEAYSuBeerJrx3w9athL5_fcYO30xQHnuxZKvpplqtRpRR4vVaibfc",
+                "BHn3Zcn2jjOXa22zaRsMBP-4oTKYyej317RKwmgp-5_OCv02Pg-8s0NE4vE11rWjc3BMB9yFg3fWpJE2BJBGjbY",
         })
             .then((currentToken) => {
                 if (currentToken) {
