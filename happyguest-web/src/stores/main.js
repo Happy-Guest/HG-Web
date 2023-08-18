@@ -20,8 +20,17 @@ export const useMainStore = defineStore("main", () => {
         }
     }
 
+    async function sendNotifToken(token) {
+        try {
+            return await axios.post("notifications/token", { token });
+        } catch (error) {
+            return error;
+        }
+    }
+
     return {
         getHomeStatistics,
         getHomeGraph,
+        sendNotifToken,
     };
 });
