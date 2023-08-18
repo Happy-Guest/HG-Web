@@ -34,6 +34,7 @@ import { useAuthStore } from "@/stores/auth";
 
 const itemStore = useItemStore();
 const authStore = useAuthStore();
+const user = authStore.user;
 
 const serviceStore = useServiceStore();
 
@@ -553,7 +554,7 @@ const submitDissociate = () => {
                 >
                     <BaseButtons type="justify-start lg:justify-end" no-wrap>
                         <BaseButton
-                            v-if="item.active == '0'"
+                            v-if="item.active == '0' && user.role != 'E'"
                             color="success"
                             title="Adicionar ao Menu"
                             :icon="mdiBookPlus"
@@ -565,7 +566,7 @@ const submitDissociate = () => {
                             "
                         />
                         <BaseButton
-                            v-else
+                            v-else-if="item.active == '1' && user.role != 'E'"
                             color="warning"
                             title="Remover do Menu"
                             :icon="mdiBookRemove"
@@ -587,7 +588,7 @@ const submitDissociate = () => {
                             "
                         />
                         <BaseButton
-                            v-if="props.serviceId == null"
+                            v-if="props.serviceId == null && user.role != 'E'"
                             color="danger"
                             title="Remover"
                             :icon="mdiTrashCan"

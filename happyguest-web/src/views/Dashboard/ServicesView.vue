@@ -42,12 +42,14 @@ import CardBoxAssociateItem from "@/components/CardBoxsCustom/CardBoxAssociateIt
 import FormCheckRadio from "@/components/Forms/FormCheckRadio.vue";
 import { onMounted, ref, watch, watchEffect } from "vue";
 import { useServiceStore } from "@/stores/service";
+import { useAuthStore } from "@/stores/auth";
 import { useRouter } from "vue-router";
 const serverUrl = import.meta.env.VITE_SERVER_URL;
 
 const router = useRouter();
 
 const serviceStore = useServiceStore();
+const user = useAuthStore().user;
 const hasItems = ref(false);
 const update = ref(false);
 const service = ref([]);
@@ -582,7 +584,7 @@ function open(menu_url) {
                 </FormField>
                 <template #footer>
                     <div class="relative">
-                        <BaseButtons v-if="update == false">
+                        <BaseButtons v-if="update == false && user.role != 'E'">
                             <BaseButton
                                 color="success"
                                 label="Alterar"
@@ -591,7 +593,7 @@ function open(menu_url) {
                             />
                         </BaseButtons>
 
-                        <BaseButtons v-if="update == true">
+                        <BaseButtons v-if="update == true && user.role != 'E'">
                             <BaseButton
                                 type="submit"
                                 color="success"
@@ -651,7 +653,10 @@ function open(menu_url) {
                             "
                             :icon="mdiFilterMultiple"
                         />
-                        <BaseButtons class="justify-center">
+                        <BaseButtons
+                            v-if="user.role != 'E'"
+                            class="justify-center"
+                        >
                             <BaseButton
                                 :icon="mdiBookPlus"
                                 label="Adicionar"

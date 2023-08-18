@@ -18,8 +18,10 @@ import BaseButton from "@/components/Bases/BaseButton.vue";
 import BaseButtons from "@/components/Bases/BaseButtons.vue";
 import { ref, watchEffect, watch } from "vue";
 import { useItemStore } from "@/stores/item";
+import { useAuthStore } from "@/stores/auth";
 
 const itemStore = useItemStore();
+const user = useAuthStore().user;
 
 const hasItems = ref(true);
 const newItem = ref(null);
@@ -117,6 +119,7 @@ watchEffect(() => {
                         />
                         <BaseButtons class="justify-center">
                             <BaseButton
+                                v-if="user.role != 'E'"
                                 :icon="mdiFilePlus"
                                 label="Criar"
                                 class="mt-2 lg:mt-0"
