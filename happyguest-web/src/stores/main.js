@@ -53,7 +53,7 @@ export const useMainStore = defineStore("main", () => {
         onMessage(messaging, (payload) => {
             toast.success(payload.notification.body, {
                 dismissible: true,
-                duration: 5000,
+                duration: 8000,
             });
         });
 
