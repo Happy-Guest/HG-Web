@@ -1,28 +1,28 @@
-importScripts('https://www.gstatic.com/firebasejs/8.2.7/firebase-app.js');
-importScripts('https://www.gstatic.com/firebasejs/8.2.7/firebase-messaging.js');
+importScripts("https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js");
+importScripts(
+    "https://www.gstatic.com/firebasejs/8.10.1/firebase-messaging.js"
+);
 
-const firebaseConfig = {
+firebase.initializeApp({
     apiKey: "AIzaSyAucBbldmHvC2YxZ4d4w6W_KLaAsRuJjpA",
-    authDomain: "vue-push-notifications-296a8.firebaseapp.com",
-    projectId: "vue-push-notifications-296a8",
-    storageBucket: "vue-push-notifications-296a8.appspot.com",
-    messagingSenderId: "365691417480",
+    authDomain: "happyguest-ipl.firebaseapp.com",
+    projectId: "happyguest-ipl",
+    storageBucket: "happyguest-ipl.appspot.com",
+    messagingSenderId: "825950088067",
     appId: "1:825950088067:web:b7c49a380b2463779064b6",
-};
+    measurementId: "G-G7JHEECZ5T",
+});
 
-firebase.initializeApp(firebaseConfig);
+// Retrieve an instance of Firebase Messaging so that it can handle background
+// messages.
 const messaging = firebase.messaging();
 
-// Optional: Customize notification behavior
-messaging.setBackgroundMessageHandler((payload) => {
+messaging.onBackgroundMessage((payload) => {
+    const notificationTitle = payload.notification.title;
     const notificationOptions = {
         body: payload.notification.body,
-        icon: payload.notification.icon,
-        click_action: payload.notification.click_action,
+        icon: "/logo.png",
     };
 
-    return self.registration.showNotification(
-        payload.notification.title,
-        notificationOptions
-    );
+    self.registration.showNotification(notificationTitle, notificationOptions);
 });
