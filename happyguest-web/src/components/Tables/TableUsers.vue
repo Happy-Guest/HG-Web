@@ -323,11 +323,18 @@ const submitDelete = (password) => {
                         :icon="mdiBriefcaseAccount"
                     />
                     <PillTag
-                        v-else
-                        label="Outro"
+                        v-else-if="user.role === 'E'"
+                        label="Funcionário"
                         class="justify-center"
                         color="info"
                         :icon="mdiAccountHardHat"
+                    />
+                    <PillTag
+                        v-else
+                        label="Outro"
+                        class="justify-center"
+                        color="danger"
+                        :icon="mdiAlertCircle"
                     />
                 </td>
                 <td data-label="Estado" class="whitespace-nowrap text-center">

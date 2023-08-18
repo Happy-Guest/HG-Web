@@ -25,6 +25,7 @@ const hasUsers = ref(true);
 const selectOptionsFilter = [
     { value: "ALL", label: "Todos" },
     { value: "C", label: "Clientes" },
+    { value: "E", label: "Funcionários" },
     { value: "M", label: "Gestores" },
     { value: "A", label: "Admins" },
     { value: "NB", label: "Ativos" },

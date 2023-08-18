@@ -2,8 +2,8 @@ import { createRouter, createWebHistory } from "vue-router";
 import Home from "@/views/HomeView.vue";
 import auth from "@/middleware/auth";
 import guest from "@/middleware/guest";
-//import admin from "@/middleware/admin";
 import manager from "@/middleware/manager";
+import employee from "@/middleware/employee";
 
 const routes = [
     // Home
@@ -135,10 +135,13 @@ const routes = [
         name: "checkouts",
         component: () => import("@/views/Dashboard/CheckoutsView.vue"),
     },
+
+    // Employee & Manager & Admin
+
     {
         meta: {
             title: "Serviços",
-            middleware: [auth, manager],
+            middleware: [auth, employee],
         },
         path: "/service/:id",
         name: "services",
@@ -147,7 +150,7 @@ const routes = [
     {
         meta: {
             title: "Objetos",
-            middleware: [auth, manager],
+            middleware: [auth, employee],
         },
         path: "/items",
         name: "items",
@@ -156,7 +159,7 @@ const routes = [
     {
         meta: {
             title: "Pedidos",
-            middleware: [auth, manager],
+            middleware: [auth, employee],
         },
         path: "/orders",
         name: "orders",
@@ -165,7 +168,7 @@ const routes = [
     {
         meta: {
             title: "Pedido",
-            middleware: [auth, manager],
+            middleware: [auth, employee],
         },
         path: "/order",
         name: "orderRegister",
@@ -174,7 +177,7 @@ const routes = [
     {
         meta: {
             title: "Pedido",
-            middleware: [auth, manager],
+            middleware: [auth, employee],
         },
         path: "/order/:id",
         name: "orderView",
@@ -183,7 +186,7 @@ const routes = [
     {
         meta: {
             title: "Reservas",
-            middleware: [auth, manager],
+            middleware: [auth, employee],
         },
         path: "/reserves",
         name: "reserves",
@@ -192,7 +195,7 @@ const routes = [
     {
         meta: {
             title: "Reserva",
-            middleware: [auth, manager],
+            middleware: [auth, employee],
         },
         path: "/reserve",
         name: "reserveRegister",
@@ -201,7 +204,7 @@ const routes = [
     {
         meta: {
             title: "Reserva",
-            middleware: [auth, manager],
+            middleware: [auth, employee],
         },
         path: "/reserve/:id",
         name: "reserveView",
@@ -210,7 +213,7 @@ const routes = [
     {
         meta: {
             title: "Hotel",
-            middleware: [auth, manager],
+            middleware: [auth, employee],
         },
         path: "/hotel",
         name: "hotel",
@@ -219,7 +222,7 @@ const routes = [
     {
         meta: {
             title: "Região",
-            middleware: [auth, manager],
+            middleware: [auth, employee],
         },
         path: "/region",
         name: "region",

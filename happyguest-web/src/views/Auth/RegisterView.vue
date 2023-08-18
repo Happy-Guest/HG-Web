@@ -13,6 +13,7 @@ import {
     mdiCrown,
     mdiAccountTie,
     mdiBriefcaseAccount,
+    mdiAccountHardHat,
 } from "@mdi/js";
 import LayoutAuthenticated from "@/layouts/LayoutAuthenticated.vue";
 import SectionMain from "@/components/Sections/SectionMain.vue";
@@ -56,6 +57,12 @@ if (authStore.user?.role == "A") {
         label: "Gestor",
         value: "M",
         icon: mdiAccountTie,
+    });
+    selectOptions.push({
+        id: 3,
+        label: "Funcionário",
+        value: "E",
+        icon: mdiAccountHardHat,
     });
 }
 

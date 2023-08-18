@@ -38,6 +38,7 @@ export default [
         icon: mdiBarcode,
     },
     {
+        middleware: ["A", "M"],
         isDivider: true,
     },
     {
@@ -67,7 +68,7 @@ export default [
         icon: mdiBookOpenPageVariant,
     },
     {
-        middleware: ["A", "M"],
+        middleware: ["A", "M", "E"],
         label: "Serviços",
         icon: mdiNewspaperVariant,
         menu: [
@@ -104,13 +105,13 @@ export default [
         ],
     },
     {
-        middleware: ["A", "M"],
+        middleware: ["A", "M", "E"],
         to: "/orders",
         label: "Pedidos",
         icon: mdiBookClock,
     },
     {
-        middleware: ["A", "M"],
+        middleware: ["A", "M", "E"],
         to: "/reserves",
         label: "Reservas",
         icon: mdiReceiptClock,
@@ -119,13 +120,13 @@ export default [
         isDivider: true,
     },
     {
-        middleware: ["A", "M"],
+        middleware: ["A", "M", "E"],
         to: "/hotel",
         label: "Hotel",
         icon: mdiHomeAnalytics,
     },
     {
-        middleware: ["A", "M"],
+        middleware: ["A", "M", "E"],
         to: "/region",
         label: "Região",
         icon: mdiForest,

@@ -6,6 +6,7 @@ import {
     mdiAccountHardHat,
     mdiBriefcaseAccount,
     mdiAccountTie,
+    mdiAlertCircle,
 } from "@mdi/js";
 import BaseLevel from "@/components/Bases/BaseLevel.vue";
 import UserAvatarCurrentUser from "@/components/Users/UserAvatarCurrentUser.vue";
@@ -84,11 +85,18 @@ defineProps({
                         :icon="mdiBriefcaseAccount"
                     />
                     <PillTag
-                        v-else
-                        label="Outro"
+                        v-else-if="userRole === 'E'"
+                        label="Funcionário"
                         class="mr-4"
                         color="info"
                         :icon="mdiAccountHardHat"
+                    />
+                    <PillTag
+                        v-else
+                        label="Outro"
+                        class="mr-4"
+                        color="danger"
+                        :icon="mdiAlertCircle"
                     />
                     <PillTag
                         v-if="!userBlocked"
