@@ -1,4 +1,4 @@
-import { inject } from "vue";
+import { inject, ref } from "vue";
 import { defineStore } from "pinia";
 import { initializeApp } from "firebase/app";
 import { getMessaging, getToken, onMessage } from "firebase/messaging";
@@ -6,6 +6,26 @@ import { createToaster } from "@meforma/vue-toaster";
 
 export const useMainStore = defineStore("main", () => {
     const axios = inject("axios");
+
+    const toast = createToaster();
+    const showNotifs = ref(true);
+
+    function setNotifs(value) {
+        showNotifs.value = value;
+        localStorage.setItem("showNotifs", value);
+        if (value) {
+            toast.success("Notificações ativadas!", {
+                dismissible: true,
+                duration: 2000,
+            });
+            setupNotifications();
+        } else {
+            toast.error("Notificações desativadas!", {
+                dismissible: true,
+                duration: 2000,
+            });
+        }
+    }
 
     async function getHomeStatistics() {
         try {
@@ -24,6 +44,9 @@ export const useMainStore = defineStore("main", () => {
     }
 
     async function sendNotifToken(token) {
+        if (!showNotifs.value) {
+            return;
+        }
         try {
             return await axios.post("users/token", { token });
         } catch (error) {
@@ -33,6 +56,9 @@ export const useMainStore = defineStore("main", () => {
 
     /* Firebase Notifs */
     async function setupNotifications() {
+        if (!showNotifs.value) {
+            return;
+        }
         const firebaseConfig = {
             apiKey: "AIzaSyAucBbldmHvC2YxZ4d4w6W_KLaAsRuJjpA",
             authDomain: "happyguest-ipl.firebaseapp.com",
@@ -42,8 +68,6 @@ export const useMainStore = defineStore("main", () => {
             appId: "1:825950088067:web:b7c49a380b2463779064b6",
             measurementId: "G-G7JHEECZ5T",
         };
-
-        const toast = createToaster();
 
         // eslint-disable-next-line no-unused-vars
         const app = initializeApp(firebaseConfig);
@@ -72,6 +96,8 @@ export const useMainStore = defineStore("main", () => {
     }
 
     return {
+        showNotifs,
+        setNotifs,
         getHomeStatistics,
         getHomeGraph,
         sendNotifToken,

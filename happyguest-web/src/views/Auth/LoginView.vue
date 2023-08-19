@@ -17,7 +17,6 @@ import BaseButtons from "@/components/Bases/BaseButtons.vue";
 import LayoutGuest from "@/layouts/LayoutGuest.vue";
 import NotificationBarInCard from "@/components/Others/NotificationBarInCard.vue";
 import { useAuthStore } from "@/stores/auth";
-import { useMainStore } from "@/stores/main";
 import router from "@/router/index";
 
 const form = ref({
@@ -27,7 +26,6 @@ const form = ref({
 });
 
 const authStore = useAuthStore();
-const mainStore = useMainStore();
 
 const errors = ref({
     message: "",
@@ -37,7 +35,6 @@ const errors = ref({
 const submit = async () => {
     var response = await authStore.login(form.value);
     if (response == true) {
-        mainStore.setupNotifications();
         router.push({ name: "dashboard" });
     } else {
         errors.value.message = JSON.parse(

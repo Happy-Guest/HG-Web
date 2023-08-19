@@ -1,10 +1,13 @@
 import { inject, ref, computed } from "vue";
 import { defineStore } from "pinia";
 import router from "@/router";
+import { useMainStore } from "@/stores/main.js";
 
 export const useAuthStore = defineStore("auth", () => {
     const axios = inject("axios");
     const user = ref(null);
+
+    const mainStore = useMainStore();
 
     const userId = computed(() => {
         return user.value?.id ?? -1;
@@ -30,6 +33,7 @@ export const useAuthStore = defineStore("auth", () => {
         localStorage.removeItem("token");
         localStorage.removeItem("remember");
         localStorage.removeItem("user");
+        localStorage.removeItem("showNotifs");
         user.value = null;
         router.push({ name: "login" });
     }
@@ -42,6 +46,7 @@ export const useAuthStore = defineStore("auth", () => {
                 "Bearer " + response.data.access_token;
             localStorage.setItem("token", response.data.access_token);
             localStorage.setItem("remember", credentials.remember);
+            mainStore.setNotifs(true);
             await loadUser();
             return true;
         } catch (error) {
@@ -75,6 +80,7 @@ export const useAuthStore = defineStore("auth", () => {
         let storedToken = localStorage.getItem("token");
         let storedRemember = localStorage.getItem("remember");
         let storedUser = localStorage.getItem("user");
+        mainStore.setNotifs(localStorage.getItem("showNotifs") == "true");
 
         if (storedRemember == "false" && storedToken) {
             axios.defaults.headers.common.Authorization =

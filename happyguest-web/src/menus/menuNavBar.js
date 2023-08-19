@@ -1,10 +1,4 @@
-import {
-    mdiAccount,
-    mdiCogOutline,
-    mdiEmail,
-    mdiLogout,
-    mdiThemeLightDark,
-} from "@mdi/js";
+import { mdiAccount, mdiEmail, mdiLogout, mdiThemeLightDark } from "@mdi/js";
 
 export default [
     {
@@ -22,15 +16,12 @@ export default [
                 to: "/perfil",
             },
             {
-                icon: mdiEmail,
-                label: "Mensagens",
-            },
-            {
                 isDivider: true,
             },
             {
-                icon: mdiCogOutline,
-                label: "Configurações",
+                isNotif: true,
+                icon: mdiEmail,
+                label: "Notificações",
             },
         ],
     },

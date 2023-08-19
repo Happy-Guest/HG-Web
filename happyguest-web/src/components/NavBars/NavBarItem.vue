@@ -4,6 +4,7 @@ import { RouterLink } from "vue-router";
 import { computed, ref, onMounted, onBeforeUnmount } from "vue";
 import { useStyleStore } from "@/stores/style.js";
 import { useAuthStore } from "@/stores/auth";
+import { useMainStore } from "@/stores/main";
 import BaseIcon from "@/components/Bases/BaseIcon.vue";
 import UserAvatarCurrentUser from "@/components/Users/UserAvatarCurrentUser.vue";
 import NavBarMenuList from "@/components/NavBars/NavBarMenuList.vue";
@@ -29,6 +30,7 @@ const is = computed(() => {
 });
 
 const authStore = useAuthStore();
+const mainStore = useMainStore();
 const styleStore = useStyleStore();
 
 const componentClass = computed(() => {
@@ -58,6 +60,14 @@ const menuClick = (event) => {
     if (props.item.menu) {
         isDropdownActive.value = !isDropdownActive.value;
     }
+
+    if (props.item.isNotif) {
+        notifClick();
+    }
+};
+
+const notifClick = () => {
+    mainStore.setNotifs(!mainStore.showNotifs);
 };
 
 const menuClickDropdown = (event, item) => {
@@ -119,6 +129,19 @@ onBeforeUnmount(() => {
                 class="transition-colors"
             />
             <span
+                v-if="item.isNotif"
+                class="px-2 transition-colors"
+                :class="{ 'lg:hidden': item.isDesktopNoLabel && item.icon }"
+            >
+                {{ itemLabel }}
+                <span
+                    :style="{ color: mainStore.showNotifs ? 'green' : 'red' }"
+                >
+                    <b>{{ mainStore.showNotifs ? "ON" : "OFF" }}</b>
+                </span>
+            </span>
+            <span
+                v-else
                 class="px-2 transition-colors"
                 :class="{ 'lg:hidden': item.isDesktopNoLabel && item.icon }"
                 >{{ itemLabel }}</span
