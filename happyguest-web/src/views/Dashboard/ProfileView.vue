@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from "vue";
+import { ref, watch } from "vue";
 import { useRouter } from "vue-router";
 import {
     mdiAccount,
@@ -248,6 +248,13 @@ function format(date, api) {
             .slice(0, 10);
     }
 }
+
+watch(
+    () => router.currentRoute.value.params.id,
+    () => {
+        defineUser();
+    }
+);
 </script>
 
 <template>
