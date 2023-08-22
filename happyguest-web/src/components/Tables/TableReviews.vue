@@ -18,6 +18,7 @@ import PillTag from "@/components/PillTags/PillTag.vue";
 import CardBoxReview from "@/components/CardBoxsCustom/CardBoxReview.vue";
 import NotificationBar from "@/components/Others/NotificationBar.vue";
 import CardBoxModal from "@/components/CardBoxs/CardBoxModal.vue";
+import CardBoxShareReview from "@/components/CardBoxsCustom/CardBoxShareReview.vue";
 import BaseIcon from "@/components/Bases/BaseIcon.vue";
 import { useReviewStore } from "@/stores/review";
 
@@ -46,6 +47,7 @@ const currentPageHuman = computed(() => currentPage.value + 1);
 
 const isModalActive = ref(false);
 const isModalDeleteActive = ref(false);
+const isModalShareActive = ref(false);
 const isSuccessNotifActive = ref(false);
 const isErrorNotifActive = ref(false);
 
@@ -53,6 +55,7 @@ const notifText = ref("");
 const resErrors = ref([]);
 const selected = ref(null);
 const selectedView = ref(null);
+const selectedShare = ref(null);
 
 const emit = defineEmits(["update:not-empty"]);
 
@@ -214,6 +217,11 @@ const submitDelete = (password) => {
         only-view
         @update:active="isModalActive = $event"
     />
+    <CardBoxShareReview
+        :selected="selectedShare"
+        :active="isModalShareActive"
+        @update:active="isModalShareActive = $event"
+    />
     <table class="w-full">
         <thead>
             <tr>
@@ -321,7 +329,10 @@ const submitDelete = (password) => {
                             :disabled="
                                 review.shared == '1' || review.authorize == '0'
                             "
-                            @click="selected = review.id"
+                            @click="
+                                isModalShareActive = true;
+                                selectedShare = review.id;
+                            "
                         />
                         <BaseButton
                             color="danger"

@@ -8,6 +8,7 @@ import {
     mdiCalendarRange,
     mdiRefresh,
     mdiPlusBoxMultiple,
+    mdiEmail,
 } from "@mdi/js";
 import CardBoxModal from "@/components/CardBoxs/CardBoxModal.vue";
 import FormControl from "@/components/Forms/FormControl.vue";
@@ -73,6 +74,7 @@ const form = ref({
     rooms: "",
     entry_date: "",
     exit_date: "",
+    email: "",
 });
 
 const emit = defineEmits(["update:active", "updated"]);
@@ -113,6 +115,7 @@ const createCode = async () => {
             rooms: setRooms(form.value.rooms),
             entry_date: format(form.value.entry_date, true),
             exit_date: format(form.value.exit_date, true),
+            email: form.value.email,
         })
         .then((response) => {
             resMessage.value = response.data.message;
@@ -160,6 +163,7 @@ const clear = () => {
         form.value.rooms = "";
         form.value.entry_date = "";
         form.value.exit_date = "";
+        form.value.email = "";
     }
 };
 </script>
@@ -254,6 +258,21 @@ const clear = () => {
                     name="exit_date"
                     type="date"
                     required
+                />
+            </FormField>
+        </FormField>
+        <FormField v-if="!onlyView">
+            <FormField
+                label="Email do Cliente"
+                help="O email do cliente para enviar o código. Opcional."
+                label-for="shareCodeEmail"
+            >
+                <FormControl
+                    id="shareCodeEmail"
+                    v-model="form.email"
+                    :icon="mdiEmail"
+                    name="shareCodeEmail"
+                    type="text"
                 />
             </FormField>
         </FormField>

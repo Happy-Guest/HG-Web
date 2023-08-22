@@ -77,6 +77,17 @@ export const useReviewStore = defineStore("review", () => {
         }
     }
 
+    async function shareReview(reviewId, data) {
+        try {
+            let response = await axios.post("reviews/" + reviewId + "/share", {
+                email: data,
+            });
+            return response;
+        } catch (error) {
+            return error.response;
+        }
+    }
+
     function clearStore() {
         reviews.value = [];
         lastPage.value = null;
@@ -97,5 +108,6 @@ export const useReviewStore = defineStore("review", () => {
         deleteReview,
         clearStore,
         registerReview,
+        shareReview,
     };
 });
