@@ -71,15 +71,6 @@ const routes = [
     },
     {
         meta: {
-            title: "Perfil",
-            middleware: [auth, manager],
-        },
-        path: "/perfil/:id",
-        name: "profileUser",
-        component: () => import("@/views/Dashboard/ProfileView.vue"),
-    },
-    {
-        meta: {
             title: "Códigos",
             middleware: [auth, manager],
         },
@@ -138,6 +129,15 @@ const routes = [
 
     // Employee & Manager & Admin
 
+    {
+        meta: {
+            title: "Perfil",
+            middleware: [auth, employee],
+        },
+        path: "/perfil/:id",
+        name: "profileUser",
+        component: () => import("@/views/Dashboard/ProfileView.vue"),
+    },
     {
         meta: {
             title: "Serviços",

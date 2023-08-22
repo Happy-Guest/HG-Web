@@ -396,9 +396,12 @@ function format(date, api) {
                                 maxlength="255"
                                 required
                                 :disabled="
-                                    user.id != authStore.user?.id &&
-                                    authStore.user?.role == 'M' &&
-                                    (user.role == 'A' || user.role == 'M')
+                                    (user.id != authStore.user?.id &&
+                                        authStore.user?.role == 'M' &&
+                                        (user.role == 'A' ||
+                                            user.role == 'M')) ||
+                                    (authStore.user?.role == 'E' &&
+                                        user.id != authStore.user?.id)
                                 "
                             />
                         </FormField>
@@ -409,6 +412,10 @@ function format(date, api) {
                                     v-model="profileForm.photo"
                                     label="Enviar"
                                     is-round-icon
+                                    :disabled="
+                                        authStore.user?.role == 'E' &&
+                                        user.id != authStore.user?.id
+                                    "
                                     accept="
                                     image/png,image/jpeg,image/jpg,image/gif,image/svg+xml,
                                 "
@@ -436,9 +443,11 @@ function format(date, api) {
                             required
                             autocomplete="email"
                             :disabled="
-                                user.id != authStore.user?.id &&
-                                authStore.user?.role == 'M' &&
-                                (user.role == 'A' || user.role == 'M')
+                                (user.id != authStore.user?.id &&
+                                    authStore.user?.role == 'M' &&
+                                    (user.role == 'A' || user.role == 'M')) ||
+                                (authStore.user?.role == 'E' &&
+                                    user.id != authStore.user?.id)
                             "
                         />
                     </FormField>
@@ -469,9 +478,12 @@ function format(date, api) {
                                         : ''
                                 "
                                 :disabled="
-                                    user.id != authStore.user?.id &&
-                                    authStore.user?.role == 'M' &&
-                                    (user.role == 'A' || user.role == 'M')
+                                    (user.id != authStore.user?.id &&
+                                        authStore.user?.role == 'M' &&
+                                        (user.role == 'A' ||
+                                            user.role == 'M')) ||
+                                    (authStore.user?.role == 'E' &&
+                                        user.id != authStore.user?.id)
                                 "
                             />
                         </FormField>
@@ -492,9 +504,12 @@ function format(date, api) {
                                 :icon="mdiCalendarRange"
                                 name="birth_date"
                                 :disabled="
-                                    user.id != authStore.user?.id &&
-                                    authStore.user?.role == 'M' &&
-                                    (user.role == 'A' || user.role == 'M')
+                                    (user.id != authStore.user?.id &&
+                                        authStore.user?.role == 'M' &&
+                                        (user.role == 'A' ||
+                                            user.role == 'M')) ||
+                                    (authStore.user?.role == 'E' &&
+                                        user.id != authStore.user?.id)
                                 "
                             />
                         </FormField>
@@ -522,9 +537,11 @@ function format(date, api) {
                                     : ''
                             "
                             :disabled="
-                                user.id != authStore.user?.id &&
-                                authStore.user?.role == 'M' &&
-                                (user.role == 'A' || user.role == 'M')
+                                (user.id != authStore.user?.id &&
+                                    authStore.user?.role == 'M' &&
+                                    (user.role == 'A' || user.role == 'M')) ||
+                                (authStore.user?.role == 'E' &&
+                                    user.id != authStore.user?.id)
                             "
                         />
                     </FormField>
@@ -537,9 +554,12 @@ function format(date, api) {
                                 label="Atualizar"
                                 :icon="mdiContentSaveCheck"
                                 :disabled="
-                                    user.id != authStore.user?.id &&
-                                    authStore.user?.role == 'M' &&
-                                    (user.role == 'A' || user.role == 'M')
+                                    (user.id != authStore.user?.id &&
+                                        authStore.user?.role == 'M' &&
+                                        (user.role == 'A' ||
+                                            user.role == 'M')) ||
+                                    (authStore.user?.role == 'E' &&
+                                        user.id != authStore.user?.id)
                                 "
                             />
                             <BaseButton
@@ -548,9 +568,12 @@ function format(date, api) {
                                 outline
                                 :icon="mdiLockReset"
                                 :disabled="
-                                    user.id != authStore.user?.id &&
-                                    authStore.user?.role == 'M' &&
-                                    (user.role == 'A' || user.role == 'M')
+                                    (user.id != authStore.user?.id &&
+                                        authStore.user?.role == 'M' &&
+                                        (user.role == 'A' ||
+                                            user.role == 'M')) ||
+                                    (authStore.user?.role == 'E' &&
+                                        user.id != authStore.user?.id)
                                 "
                                 @click="clearProfileFields"
                             />
@@ -650,7 +673,7 @@ function format(date, api) {
                     </template>
                 </CardBox>
             </div>
-            <div v-if="user.role == 'C'">
+            <div v-if="user.role == 'C' && authStore.user?.role != 'E'">
                 <SectionTitleLine
                     :icon="mdiBullhorn"
                     title="Reclamações do Cliente"

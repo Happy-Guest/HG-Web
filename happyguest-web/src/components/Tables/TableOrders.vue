@@ -24,10 +24,13 @@ import CardBoxModal from "../CardBoxs/CardBoxModal.vue";
 import NotificationBar from "@/components/Others/NotificationBar.vue";
 import CardBoxStatusOrder from "../CardBoxsCustom/CardBoxStatusOrder.vue";
 import { useOrderStore } from "@/stores/order";
+import { useAuthStore } from "@/stores/auth";
 import { useRouter } from "vue-router";
 
 const router = useRouter();
 const orderStore = useOrderStore();
+const user = useAuthStore().user;
+
 const selected = ref(null);
 const notifText = ref("");
 const resErrors = ref([]);
@@ -322,6 +325,7 @@ const submitDelete = (password) => {
                             "
                         />
                         <BaseButton
+                            v-if="user.role == 'A' || user.role == 'M'"
                             color="danger"
                             title="Remover"
                             :icon="mdiTrashCan"

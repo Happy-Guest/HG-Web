@@ -22,10 +22,13 @@ import CardBoxStatusReserve from "../CardBoxsCustom/CardBoxStatusReserve.vue";
 import CardBoxModal from "../CardBoxs/CardBoxModal.vue";
 import NotificationBar from "@/components/Others/NotificationBar.vue";
 import { useReserveStore } from "@/stores/reserve";
+import { useAuthStore } from "@/stores/auth";
 import { useRouter } from "vue-router";
 
 const router = useRouter();
 const reserveStore = useReserveStore();
+const user = useAuthStore().user;
+
 const selected = ref(null);
 const isModalActive = ref(false);
 const isModalDeleteActive = ref(false);
@@ -311,6 +314,7 @@ const submitDelete = (password) => {
                             "
                         />
                         <BaseButton
+                            v-if="user.role == 'A' || user.role == 'M'"
                             color="danger"
                             title="Remover"
                             :icon="mdiTrashCan"

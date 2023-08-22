@@ -24,6 +24,10 @@ const props = defineProps({
         type: String,
         default: "info",
     },
+    disabled: {
+        type: Boolean,
+        default: false,
+    },
     isRoundIcon: Boolean,
 });
 
@@ -68,8 +72,10 @@ const upload = (event) => {
                 :icon="icon"
                 :color="color"
                 :rounded-full="isRoundIcon"
+                :disabled="disabled"
             />
             <input
+                v-if="!disabled"
                 ref="root"
                 type="file"
                 class="absolute top-0 left-0 w-full h-full opacity-0 outline-none cursor-pointer -z-1"

@@ -64,6 +64,7 @@ const itemId = ref();
 const selectedItem = ref(null);
 const validItem = ref(false);
 const rooms = ref([]);
+const selectedRoom = ref(null);
 
 onMounted(() => {
     if (router.currentRoute.value.params?.id) {
@@ -72,11 +73,7 @@ onMounted(() => {
             .getOrder(router.currentRoute.value.params?.id)
             .then((response) => {
                 order.value = response;
-                rooms.value.push({
-                    value: order.value.room,
-                    label: order.value.room,
-                });
-                form.value.room = rooms.value[0];
+                selectedRoom.value = order.value.room;
                 form.value.time = formatDate(order.value.time, false);
                 form.value.service = selectService.find(
                     (option) => option.value == order.value.service.id
@@ -440,6 +437,17 @@ const updateStatus = () => {
                         class="w-full mb-4 sm:mb-0"
                     >
                         <FormControl
+                            v-if="router.currentRoute.value.params?.id"
+                            id="roomOrder"
+                            v-model="selectedRoom"
+                            :icon="mdiBed"
+                            required
+                            :disabled="
+                                rooms.length == 0 || selected ? true : false
+                            "
+                        />
+                        <FormControl
+                            v-else
                             id="room"
                             v-model="form.room"
                             :options="rooms"

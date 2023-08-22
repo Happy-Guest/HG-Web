@@ -29,8 +29,11 @@ import NotificationBarInCard from "@/components/Others/NotificationBarInCard.vue
 import FormValidationErrors from "@/components/Forms/FormValidationErrors.vue";
 import { onMounted, ref } from "vue";
 import { useInfoStore } from "@/stores/info";
+import { useAuthStore } from "@/stores/auth";
 
 const infoStore = useInfoStore();
+const user = useAuthStore().user;
+
 const update = ref(false);
 const hotel = ref([]);
 const statusHotel = ref(false);
@@ -566,7 +569,12 @@ const remove = (array, index) => {
                 </table>
                 <template #footer>
                     <div class="relative">
-                        <BaseButtons v-if="update == false">
+                        <BaseButtons
+                            v-if="
+                                (update == false && user.role == 'A') ||
+                                user.role == 'M'
+                            "
+                        >
                             <BaseButton
                                 color="success"
                                 label="Alterar"
@@ -591,7 +599,12 @@ const remove = (array, index) => {
                             />
                         </BaseButtons>
                         <span
-                            class="static text-zinc-500 right-0 bottom-0 mb-4 text-center sm:text-right sm:absolute"
+                            class="static text-zinc-500 right-0 bottom-0 text-center sm:text-right sm:absolute"
+                            :class="
+                                user.role == 'A' || user.role == 'M'
+                                    ? 'mb-2'
+                                    : 'mb-0'
+                            "
                             >Última Atualização: {{ hotel?.updated_at }}</span
                         >
                     </div>
