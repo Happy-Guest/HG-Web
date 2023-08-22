@@ -115,7 +115,7 @@ const createCode = async () => {
             rooms: setRooms(form.value.rooms),
             entry_date: format(form.value.entry_date, true),
             exit_date: format(form.value.exit_date, true),
-            email: form.value.email,
+            email: form.value.email != "" ? form.value.email : null,
         })
         .then((response) => {
             resMessage.value = response.data.message;
@@ -164,6 +164,7 @@ const clear = () => {
         form.value.entry_date = "";
         form.value.exit_date = "";
         form.value.email = "";
+        resErrors.value = [];
     }
 };
 </script>
@@ -263,8 +264,8 @@ const clear = () => {
         </FormField>
         <FormField v-if="!onlyView">
             <FormField
-                label="Email do Cliente"
-                help="O email do cliente para enviar o código. Opcional."
+                label="Email Destinatário"
+                help="O email do destinatário para enviar o código. Opcional."
                 label-for="shareCodeEmail"
             >
                 <FormControl
