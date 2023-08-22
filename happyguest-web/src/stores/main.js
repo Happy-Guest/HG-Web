@@ -10,16 +10,18 @@ export const useMainStore = defineStore("main", () => {
     const toast = createToaster();
     const showNotifs = ref(true);
 
-    function setNotifs(value) {
+    function setNotifs(value, showToast) {
         showNotifs.value = value;
         localStorage.setItem("showNotifs", value);
         if (value) {
-            toast.success("Notificações ativadas!", {
-                dismissible: true,
-                duration: 2000,
-            });
+            if (showToast) {
+                toast.success("Notificações ativadas!", {
+                    dismissible: true,
+                    duration: 2000,
+                });
+            }
             setupNotifications();
-        } else {
+        } else if (showToast) {
             toast.error("Notificações desativadas!", {
                 dismissible: true,
                 duration: 2000,

@@ -25,9 +25,11 @@ import FormControl from "@/components/Forms/FormControl.vue";
 import FormCheckRadioGroup from "@/components/Forms/FormCheckRadioGroup.vue";
 import FormField from "@/components/Forms/FormField.vue";
 import { useItemStore } from "@/stores/item";
+import { useAuthStore } from "@/stores/auth";
 import BaseDivider from "../Bases/BaseDivider.vue";
 
 const itemStore = useItemStore();
+const user = useAuthStore().user;
 
 const isModalActive = ref(false);
 
@@ -323,7 +325,7 @@ const updateItem = async () => {
                 />
             </FormField>
         </FormField>
-        <FormField>
+        <FormField v-if="user.role != 'E'">
             <FormCheckRadioGroup
                 v-model="form.associate"
                 class="mt-6 ml-4"

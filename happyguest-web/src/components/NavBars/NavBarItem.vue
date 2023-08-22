@@ -67,7 +67,7 @@ const menuClick = (event) => {
 };
 
 const notifClick = () => {
-    mainStore.setNotifs(!mainStore.showNotifs);
+    mainStore.setNotifs(!mainStore.showNotifs, true);
 };
 
 const menuClickDropdown = (event, item) => {

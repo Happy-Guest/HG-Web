@@ -46,7 +46,7 @@ export const useAuthStore = defineStore("auth", () => {
                 "Bearer " + response.data.access_token;
             localStorage.setItem("token", response.data.access_token);
             localStorage.setItem("remember", credentials.remember);
-            mainStore.setNotifs(true);
+            mainStore.setNotifs(true, false);
             await loadUser();
             return true;
         } catch (error) {
@@ -80,7 +80,10 @@ export const useAuthStore = defineStore("auth", () => {
         let storedToken = localStorage.getItem("token");
         let storedRemember = localStorage.getItem("remember");
         let storedUser = localStorage.getItem("user");
-        mainStore.setNotifs(localStorage.getItem("showNotifs") == "true");
+        mainStore.setNotifs(
+            localStorage.getItem("showNotifs") == "true",
+            false
+        );
 
         if (storedRemember == "false" && storedToken) {
             axios.defaults.headers.common.Authorization =
