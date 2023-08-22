@@ -79,9 +79,10 @@ export const useReviewStore = defineStore("review", () => {
 
     async function shareReview(reviewId, data) {
         try {
-            let response = await axios.post("reviews/" + reviewId + "/share", {
-                email: data,
-            });
+            let response = await axios.patch(
+                "reviews/" + reviewId + "/share",
+                data
+            );
             return response;
         } catch (error) {
             return error.response;

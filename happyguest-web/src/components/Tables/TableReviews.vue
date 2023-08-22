@@ -179,6 +179,14 @@ const submitDelete = (password) => {
             }, 5000);
         });
 };
+
+function updateModal() {
+    isSuccessNotifActive.value = true;
+    notifText.value = "Avaliação foi partilhada com sucesso!";
+    setTimeout(() => {
+        isSuccessNotifActive.value = false;
+    }, 5000);
+}
 </script>
 
 <template>
@@ -221,6 +229,7 @@ const submitDelete = (password) => {
         :selected="selectedShare"
         :active="isModalShareActive"
         @update:active="isModalShareActive = $event"
+        @updated="updateModal()"
     />
     <table class="w-full">
         <thead>
@@ -321,14 +330,12 @@ const submitDelete = (password) => {
                             color="success"
                             title="Partilhar"
                             :icon="
-                                review.shared == '1' || review.authorize == '0'
+                                review.authorize == '0'
                                     ? mdiCancel
                                     : mdiMonitorShare
                             "
                             small
-                            :disabled="
-                                review.shared == '1' || review.authorize == '0'
-                            "
+                            :disabled="review.authorize == '0'"
                             @click="
                                 isModalShareActive = true;
                                 selectedShare = review.id;

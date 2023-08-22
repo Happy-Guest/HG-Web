@@ -41,11 +41,11 @@ const shareReview = async () => {
         })
         .then((response) => {
             resMessage.value = response.data.message;
-            if (response.status == 201) {
+            if (response.status == 200) {
                 isModalActive.value = false;
                 reviewStore.updateTable = true;
                 emit("update:active", false);
-                emit("updated", true);
+                emit("updated");
                 clear();
             } else {
                 resErrors.value = response.data.errors;
