@@ -166,6 +166,7 @@ async function submitLogout() {
 }
 
 const submitDelete = (password) => {
+    statusProfile.value = null;
     userStore
         .deleteUser(user.value.id, password)
         .then((response) => {
@@ -186,6 +187,7 @@ const submitDelete = (password) => {
 };
 
 const submitResetPassword = () => {
+    statusProfile.value = null;
     userStore
         .resetPassword(user.value.id)
         .then((response) => {
@@ -196,7 +198,6 @@ const submitResetPassword = () => {
                     statusProfile.value = null;
                 }, 5000);
             } else {
-                statusProfile.value = false;
                 resErrors.value = response.data.errors;
             }
         })
