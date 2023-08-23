@@ -144,6 +144,7 @@ const isSuccessNotifUpdateActive = ref(false);
 function updateModal(resComplaint) {
     isModalActive.value = false;
     isSuccessNotifUpdateActive.value = true;
+    notifText.value = "Reclamação respondida com sucesso.";
     complaints.value = complaints.value.map((complaint) => {
         if (complaint.id == resComplaint.id) {
             return resComplaint;
@@ -186,7 +187,7 @@ const submitDelete = (password) => {
 
 <template>
     <NotificationBar
-        v-if="isSuccessNotifActive"
+        v-if="isSuccessNotifActive || isSuccessNotifUpdateActive"
         color="success"
         :icon="mdiCheckCircle"
         table

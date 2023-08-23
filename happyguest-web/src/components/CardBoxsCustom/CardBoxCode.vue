@@ -267,6 +267,7 @@ const clear = () => {
                 label="Email Destinatário"
                 help="O email do destinatário para enviar o código. Opcional."
                 label-for="shareCodeEmail"
+                class="mt-5"
             >
                 <FormControl
                     id="shareCodeEmail"
