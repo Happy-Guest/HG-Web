@@ -193,9 +193,11 @@ const submitResetPassword = () => {
         .then((response) => {
             resMessage.value = response.data.message;
             if (response.status === 200) {
+                isModalResetPasswordActive.value = false;
                 statusProfile.value = true;
                 setTimeout(function () {
                     statusProfile.value = null;
+                    resErrors.value = [];
                 }, 5000);
             } else {
                 resErrors.value = response.data.errors;
