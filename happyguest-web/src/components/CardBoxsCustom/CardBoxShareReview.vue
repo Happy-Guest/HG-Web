@@ -58,6 +58,7 @@ const shareReview = async () => {
 
 const clear = () => {
     form.value.email = "";
+    resErrors.value = [];
 };
 </script>
 
