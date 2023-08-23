@@ -121,7 +121,6 @@ const clear = () => {
 };
 
 const cancel = () => {
-    console.log(region.value);
     update.value = false;
     fillForm(region.value);
 };
