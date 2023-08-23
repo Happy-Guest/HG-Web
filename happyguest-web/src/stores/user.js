@@ -112,6 +112,17 @@ export const useUserStore = defineStore("user", () => {
         }
     }
 
+    async function resetPassword(userId) {
+        try {
+            let response = await axios.post("change-password", {
+                user_id: userId,
+            });
+            return response;
+        } catch (error) {
+            return error.response;
+        }
+    }
+
     function clearStore() {
         users.value = [];
         lastPage.value = null;
@@ -133,6 +144,7 @@ export const useUserStore = defineStore("user", () => {
         deleteUser,
         changeStateUser,
         getCodesByUser,
+        resetPassword,
         clearStore,
     };
 });

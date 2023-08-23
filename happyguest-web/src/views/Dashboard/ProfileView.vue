@@ -93,6 +93,7 @@ const resErrors = ref([]);
 const isModalDeleteActive = ref(false);
 const isModalBlockActive = ref(false);
 const isModalUnblockActive = ref(false);
+const isModalResetPasswordActive = ref(false);
 
 const submitProfile = () => {
     statusPassword.value = null;
@@ -181,6 +182,28 @@ const submitDelete = (password) => {
         })
         .catch(() => {
             resMessage.value = "Ocorreu um erro ao remover o utilizador.";
+        });
+};
+
+const submitResetPassword = () => {
+    userStore
+        .resetPassword(user.value.id)
+        .then((response) => {
+            resMessage.value = response.data.message;
+            if (response.status === 200) {
+                statusProfile.value = true;
+                setTimeout(function () {
+                    statusProfile.value = null;
+                }, 5000);
+            } else {
+                statusProfile.value = false;
+                resErrors.value = response.data.errors;
+            }
+        })
+        .catch(() => {
+            statusProfile.value = false;
+            resMessage.value =
+                "Ocorreu um erro ao repor a palavra-passe do utilizador.";
         });
 };
 
@@ -274,6 +297,20 @@ watch(
             <p v-if="!account">A sua sessão <b>será terminada</b>.</p>
         </CardBoxModal>
         <CardBoxModal
+            v-model="isModalResetPasswordActive"
+            :errors="resErrors"
+            title="Repor Palavra-passe"
+            button="info"
+            :icon-title="mdiLockReset"
+            has-cancel
+            has-close
+            has-password
+            @confirm="submitResetPassword"
+        >
+            <p>Tem a certeza que <b>deseja repor</b> a palavra-passe?</p>
+            <p>A palavra-passe será reposta para <i>(123456789)</i>.</p>
+        </CardBoxModal>
+        <CardBoxModal
             v-model="isModalBlockActive"
             title="Bloquear Utilizador"
             button="warning"
@@ -346,6 +383,18 @@ watch(
                         rounded-full
                         small
                         @click="isModalDeleteActive = true"
+                    />
+                    <BaseButton
+                        v-if="
+                            user.id != authStore.user?.id &&
+                            authStore.user?.role == 'A'
+                        "
+                        :icon="mdiLockReset"
+                        label="Repor Palavra-passe"
+                        color="info"
+                        rounded-full
+                        small
+                        @click="isModalResetPasswordActive = true"
                     />
                 </BaseButtons>
             </SectionTitleLine>
