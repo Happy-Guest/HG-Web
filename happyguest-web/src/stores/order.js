@@ -81,7 +81,7 @@ export const useOrderStore = defineStore("order", () => {
             const response = await axios.patch("orders/" + id, data);
             return response;
         } catch (error) {
-            return error;
+            return error.response;
         }
     }
 

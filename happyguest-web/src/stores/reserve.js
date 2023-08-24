@@ -68,7 +68,7 @@ export const useReserveStore = defineStore("reserve", () => {
             const response = await axios.patch("reserves/" + id, data);
             return response;
         } catch (error) {
-            return error;
+            return error.response;
         }
     }
 

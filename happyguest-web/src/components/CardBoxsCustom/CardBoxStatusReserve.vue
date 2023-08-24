@@ -89,6 +89,7 @@ const updateStatus = () => {
         :button-label="'Atualizar'"
         button="warning"
         :icon="mdiUpdate"
+        has-errors
         has-close
         has-cancel
         :errors="resErrors"
