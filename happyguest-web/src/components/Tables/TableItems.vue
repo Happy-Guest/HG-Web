@@ -72,6 +72,10 @@ const props = defineProps({
         type: Boolean,
         default: false,
     },
+    searchButton: {
+        type: Boolean,
+        default: false,
+    },
 });
 
 const currentPage = ref(0);
@@ -86,7 +90,7 @@ const numPages = computed(() => {
 
 const currentPageHuman = computed(() => currentPage.value + 1);
 
-const emit = defineEmits(["update:not-empty"]);
+const emit = defineEmits(["update:not-empty", "button:search"]);
 
 async function getItems() {
     if (props.serviceId != null) {
@@ -197,9 +201,11 @@ watch(
 );
 
 watch(
-    () => props.search,
+    () => props.searchButton,
     async () => {
-        await reloadTable();
+        if (props.searchButton) {
+            await reloadTable();
+        }
     }
 );
 

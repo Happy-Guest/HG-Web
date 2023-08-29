@@ -43,6 +43,7 @@ const selectOptionsOrder = [
 const filter = ref(selectOptionsFilter[0]);
 const order = ref(selectOptionsOrder[0]);
 const search = ref("");
+const searchButton = ref(false);
 
 watch(filter, async (value) => {
     if (value.value != reserveStore.filterTable) {
@@ -103,9 +104,11 @@ watchEffect(() => {
                         <FormControl
                             id="search"
                             v-model="search"
-                            class="w-36 mr-0 lg:mr-4 lg:mr-6 mb-2 lg:mb-0"
+                            class="w-36 mr-0 lg:mr-4 mb-2 lg:mb-0"
                             :icon="mdiMagnify"
                             :placeholder="'Pesquisar'"
+                            @keyup.enter="searchButton = true"
+                            @focusout="searchButton = true"
                         />
                         <BaseButtons class="justify-center">
                             <BaseButton
@@ -127,7 +130,9 @@ watchEffect(() => {
                     :filter="filter.value"
                     :order="order.value"
                     :search="search"
+                    :search-button="searchButton"
                     @update:not-empty="hasReserves = $event"
+                    @button:search="searchButton = $event"
                 />
                 <CardBoxComponentEmpty
                     v-else

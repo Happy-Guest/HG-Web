@@ -248,6 +248,7 @@ const filter = ref(
 );
 const order = ref(selectOptionsOrder[0]);
 const search = ref("");
+const searchButton = ref(false);
 
 watch(filter, async (value) => {
     if (value.value != serviceStore.filterTableItems) {
@@ -657,9 +658,11 @@ function open(menu_url) {
                         <FormControl
                             id="search"
                             v-model="search"
-                            class="w-36 mr-0 lg:mr-4 lg:mr-6 mb-2 lg:mb-0"
+                            class="w-36 mr-0 lg:mr-4 mb-2 lg:mb-0"
                             :icon="mdiMagnify"
                             :placeholder="'Pesquisar'"
+                            @keyup.enter="searchButton = true"
+                            @focusout="searchButton = true"
                         />
                         <BaseButtons
                             v-if="user.role != 'E'"
@@ -689,6 +692,8 @@ function open(menu_url) {
                     :filter="filter.value"
                     :order="order.value"
                     :search="search"
+                    :search-button="searchButton"
+                    @button:search="searchButton = $event"
                 />
                 <CardBoxComponentEmpty
                     v-else

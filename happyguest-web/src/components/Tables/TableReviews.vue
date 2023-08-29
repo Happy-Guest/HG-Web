@@ -39,6 +39,10 @@ const props = defineProps({
         type: String,
         default: "",
     },
+    searchButton: {
+        type: Boolean,
+        default: false,
+    },
 });
 
 const reviewStore = useReviewStore();
@@ -61,7 +65,7 @@ const selected = ref(null);
 const selectedView = ref(null);
 const selectedShare = ref(null);
 
-const emit = defineEmits(["update:not-empty"]);
+const emit = defineEmits(["update:not-empty", "button:search"]);
 
 async function getReviews() {
     reviews.value = await reviewStore.getReviews(
@@ -140,9 +144,11 @@ watch(
 );
 
 watch(
-    () => props.search,
+    () => props.searchButton,
     async () => {
-        await reloadTable();
+        if (props.searchButton) {
+            await reloadTable();
+        }
     }
 );
 

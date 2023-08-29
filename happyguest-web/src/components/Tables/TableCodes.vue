@@ -39,6 +39,10 @@ const props = defineProps({
         type: String,
         default: "",
     },
+    searchButton: {
+        type: Boolean,
+        default: false,
+    },
 });
 
 const codeStore = useCodeStore();
@@ -64,7 +68,7 @@ const selectedUsed = ref(null);
 const selectedCode = ref(null);
 const selectedId = ref(null);
 
-const emit = defineEmits(["update:not-empty"]);
+const emit = defineEmits(["update:not-empty", "button:search"]);
 
 async function getCodes() {
     codes.value = await codeStore.getCodes(
@@ -137,9 +141,11 @@ watch(
 );
 
 watch(
-    () => props.search,
+    () => props.searchButton,
     async () => {
-        await reloadTable();
+        if (props.searchButton) {
+            await reloadTable();
+        }
     }
 );
 

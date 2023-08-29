@@ -38,6 +38,10 @@ const props = defineProps({
         type: String,
         default: "",
     },
+    searchButton: {
+        type: Boolean,
+        default: false,
+    },
 });
 
 const router = useRouter();
@@ -61,7 +65,7 @@ const isSuccessNotifActive = ref(false);
 const isErrorNotifActive = ref(false);
 const isModalDeleteActive = ref(false);
 
-const emit = defineEmits(["update:not-empty"]);
+const emit = defineEmits(["update:not-empty", "button:search"]);
 
 async function getUsers() {
     users.value = await userStore.getUsers(
@@ -71,6 +75,7 @@ async function getUsers() {
         props.search
     );
     emit("update:not-empty", users.value.length > 0);
+    emit("button:search", false);
 }
 
 watch(currentPageHuman, async () => {
@@ -125,9 +130,11 @@ watch(
 );
 
 watch(
-    () => props.search,
+    () => props.searchButton,
     async () => {
-        await reloadTable();
+        if (props.searchButton) {
+            await reloadTable();
+        }
     }
 );
 

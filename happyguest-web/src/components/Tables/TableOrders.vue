@@ -57,9 +57,13 @@ const props = defineProps({
         type: String,
         default: "",
     },
+    searchButton: {
+        type: Boolean,
+        default: false,
+    },
 });
 
-const emit = defineEmits(["update:not-empty"]);
+const emit = defineEmits(["update:not-empty", "button:search"]);
 
 async function getOrders() {
     orders.value = await orderStore.getOrders(
@@ -114,9 +118,11 @@ watch(
 );
 
 watch(
-    () => props.search,
+    () => props.searchButton,
     async () => {
-        await reloadTable();
+        if (props.searchButton) {
+            await reloadTable();
+        }
     }
 );
 
