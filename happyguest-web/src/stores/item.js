@@ -19,7 +19,7 @@ export const useItemStore = defineStore("item", () => {
         }
     }
 
-    async function loadItems(page, filter, order) {
+    async function loadItems(page, filter, order, search) {
         let response;
         if (page == 0) {
             response = await axios.get("items/", {
@@ -37,6 +37,7 @@ export const useItemStore = defineStore("item", () => {
                 params: {
                     filter: filter,
                     order: order,
+                    search: search,
                     page: page,
                 },
             });
@@ -47,11 +48,11 @@ export const useItemStore = defineStore("item", () => {
         }
     }
 
-    async function getItems(page, filter, order) {
+    async function getItems(page, filter, order, search) {
         if (pagesItems.value.includes(page)) {
             return items.value[pagesItems.value.indexOf(page)];
         }
-        return await loadItems(page, filter, order);
+        return await loadItems(page, filter, order, search);
     }
 
     async function updateItem(id, data) {

@@ -35,6 +35,10 @@ const props = defineProps({
         type: String,
         default: "DESC",
     },
+    search: {
+        type: String,
+        default: "",
+    },
 });
 
 const codeStore = useCodeStore();
@@ -66,7 +70,8 @@ async function getCodes() {
     codes.value = await codeStore.getCodes(
         currentPage.value + 1,
         props.filter,
-        props.order
+        props.order,
+        props.search
     );
     emit("update:not-empty", codes.value.length > 0);
 }
@@ -126,6 +131,13 @@ watch(
 
 watch(
     () => props.order,
+    async () => {
+        await reloadTable();
+    }
+);
+
+watch(
+    () => props.search,
     async () => {
         await reloadTable();
     }

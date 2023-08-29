@@ -5,6 +5,7 @@ import {
     mdiFilterMultiple,
     mdiOrderNumericDescending,
     mdiOrderNumericAscending,
+    mdiMagnify,
 } from "@mdi/js";
 import LayoutAuthenticated from "@/layouts/LayoutAuthenticated.vue";
 import SectionMain from "@/components/Sections/SectionMain.vue";
@@ -40,6 +41,7 @@ const selectOptionsOrder = [
 
 const filter = ref(selectOptionsFilter[0]);
 const order = ref(selectOptionsOrder[0]);
+const search = ref("");
 
 watch(filter, async (value) => {
     if (value.value != userStore.filterTable) {
@@ -85,7 +87,7 @@ watchEffect(() => {
                         <FormControl
                             id="order"
                             v-model="order"
-                            class="w-48 mr-0 lg:mr-4 lg:mr-6 mb-2 lg:mb-0"
+                            class="w-44 mr-0 lg:mr-4 lg:mr-6 mb-2 lg:mb-0"
                             :options="selectOptionsOrder"
                             :icon="
                                 order.value === 'DESC'
@@ -97,9 +99,16 @@ watchEffect(() => {
                         <FormControl
                             id="filter"
                             v-model="filter"
-                            class="w-48 mr-0 lg:mr-4 lg:mr-6 mb-2 lg:mb-0"
+                            class="w-44 mr-0 lg:mr-4 lg:mr-6 mb-2 lg:mb-0"
                             :options="selectOptionsFilter"
                             :icon="mdiFilterMultiple"
+                        />
+                        <FormControl
+                            id="search"
+                            v-model="search"
+                            class="w-36 mr-0 lg:mr-4 lg:mr-6 mb-2 lg:mb-0"
+                            :icon="mdiMagnify"
+                            :placeholder="'Pesquisar'"
                         />
                         <BaseButtons class="justify-center">
                             <BaseButton
@@ -120,6 +129,7 @@ watchEffect(() => {
                     v-if="hasUsers"
                     :filter="filter.value"
                     :order="order.value"
+                    :search="search"
                     @update:not-empty="hasUsers = $event"
                 />
                 <CardBoxComponentEmpty

@@ -5,6 +5,7 @@ import {
     mdiFilterMultiple,
     mdiOrderNumericDescending,
     mdiOrderNumericAscending,
+    mdiMagnify,
 } from "@mdi/js";
 import LayoutAuthenticated from "@/layouts/LayoutAuthenticated.vue";
 import SectionMain from "@/components/Sections/SectionMain.vue";
@@ -45,6 +46,7 @@ const selectOptionsOrder = [
 
 const filter = ref(selectOptionsFilter[0]);
 const order = ref(selectOptionsOrder[0]);
+const search = ref("");
 
 watch(filter, (value) => {
     if (value.value != codeStore.filterTable) {
@@ -107,6 +109,13 @@ watchEffect(() => {
                             :options="selectOptionsFilter"
                             :icon="mdiFilterMultiple"
                         />
+                        <FormControl
+                            id="search"
+                            v-model="search"
+                            class="w-36 mr-0 lg:mr-4 lg:mr-6 mb-2 lg:mb-0"
+                            :icon="mdiMagnify"
+                            :placeholder="'Pesquisar'"
+                        />
                         <BaseButtons class="justify-center">
                             <BaseButton
                                 :icon="mdiPlusBoxMultiple"
@@ -127,6 +136,7 @@ watchEffect(() => {
                     :new-code="newCode"
                     :filter="filter.value"
                     :order="order.value"
+                    :search="search"
                     @update:not-empty="hasCodes = $event"
                 />
                 <CardBoxComponentEmpty

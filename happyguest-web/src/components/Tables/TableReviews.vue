@@ -35,6 +35,10 @@ const props = defineProps({
         type: String,
         default: "DESC",
     },
+    search: {
+        type: String,
+        default: "",
+    },
 });
 
 const reviewStore = useReviewStore();
@@ -63,7 +67,8 @@ async function getReviews() {
     reviews.value = await reviewStore.getReviews(
         currentPage.value + 1,
         props.filter,
-        props.order
+        props.order,
+        props.search
     );
     emit("update:not-empty", reviews.value.length > 0);
 }
@@ -129,6 +134,13 @@ watch(
 
 watch(
     () => props.order,
+    async () => {
+        await reloadTable();
+    }
+);
+
+watch(
+    () => props.search,
     async () => {
         await reloadTable();
     }

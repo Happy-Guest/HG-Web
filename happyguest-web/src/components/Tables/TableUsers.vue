@@ -34,6 +34,10 @@ const props = defineProps({
         type: String,
         default: "DESC",
     },
+    search: {
+        type: String,
+        default: "",
+    },
 });
 
 const router = useRouter();
@@ -63,7 +67,8 @@ async function getUsers() {
     users.value = await userStore.getUsers(
         currentPage.value + 1,
         props.filter,
-        props.order
+        props.order,
+        props.search
     );
     emit("update:not-empty", users.value.length > 0);
 }
@@ -114,6 +119,13 @@ watch(
 
 watch(
     () => props.order,
+    async () => {
+        await reloadTable();
+    }
+);
+
+watch(
+    () => props.search,
     async () => {
         await reloadTable();
     }

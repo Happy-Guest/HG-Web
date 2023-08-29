@@ -51,6 +51,10 @@ const props = defineProps({
         type: String,
         default: "DESC",
     },
+    search: {
+        type: String,
+        default: "",
+    },
 });
 
 const emit = defineEmits(["update:not-empty"]);
@@ -59,7 +63,8 @@ async function getReserves() {
     reserves.value = await reserveStore.getReserves(
         currentPage.value + 1,
         props.filter,
-        props.order
+        props.order,
+        props.search
     );
     emit("update:not-empty", reserves.value.length > 0);
 }
@@ -101,6 +106,13 @@ watch(
 
 watch(
     () => props.filter,
+    async () => {
+        await reloadTable();
+    }
+);
+
+watch(
+    () => props.search,
     async () => {
         await reloadTable();
     }

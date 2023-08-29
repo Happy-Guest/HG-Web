@@ -247,6 +247,7 @@ const filter = ref(
         : selectOptionsFilterObjects[0]
 );
 const order = ref(selectOptionsOrder[0]);
+const search = ref("");
 
 watch(filter, async (value) => {
     if (value.value != serviceStore.filterTableItems) {
@@ -633,7 +634,7 @@ function open(menu_url) {
                         <FormControl
                             id="order"
                             v-model="order"
-                            class="w-48 mr-0 lg:mr-4 mb-2 lg:mb-0"
+                            class="w-44 mr-0 lg:mr-4 mb-2 lg:mb-0"
                             :options="selectOptionsOrder"
                             :icon="
                                 order.value === 'DESC'
@@ -645,13 +646,20 @@ function open(menu_url) {
                         <FormControl
                             id="filter"
                             v-model="filter"
-                            class="w-48 mr-0 lg:mr-4 mb-2 lg:mb-0"
+                            class="w-44 mr-0 lg:mr-4 mb-2 lg:mb-0"
                             :options="
                                 service?.type == 'F'
                                     ? selectOptionsFilterFood
                                     : selectOptionsFilterObjects
                             "
                             :icon="mdiFilterMultiple"
+                        />
+                        <FormControl
+                            id="search"
+                            v-model="search"
+                            class="w-36 mr-0 lg:mr-4 lg:mr-6 mb-2 lg:mb-0"
+                            :icon="mdiMagnify"
+                            :placeholder="'Pesquisar'"
                         />
                         <BaseButtons
                             v-if="user.role != 'E'"
@@ -680,6 +688,7 @@ function open(menu_url) {
                     :service-id="service?.id"
                     :filter="filter.value"
                     :order="order.value"
+                    :search="search"
                 />
                 <CardBoxComponentEmpty
                     v-else

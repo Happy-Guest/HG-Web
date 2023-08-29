@@ -11,7 +11,7 @@ export const useReviewStore = defineStore("review", () => {
     const filterTable = ref(null);
     const orderTable = ref(null);
 
-    async function loadReviews(page, filter, order) {
+    async function loadReviews(page, filter, order, search) {
         let response;
         if (page == 0) {
             response = await axios.get("reviews/", {
@@ -29,6 +29,7 @@ export const useReviewStore = defineStore("review", () => {
                 params: {
                     filter: filter,
                     order: order,
+                    search: search,
                     page: page,
                 },
             });
@@ -39,11 +40,11 @@ export const useReviewStore = defineStore("review", () => {
         }
     }
 
-    async function getReviews(page, filter, order) {
+    async function getReviews(page, filter, order, search) {
         if (pagesReviews.value.includes(page)) {
             return reviews.value[pagesReviews.value.indexOf(page)];
         }
-        return await loadReviews(page, filter, order);
+        return await loadReviews(page, filter, order, search);
     }
 
     async function getReview(id) {

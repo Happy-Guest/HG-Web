@@ -11,7 +11,7 @@ export const useCodeStore = defineStore("code", () => {
     const filterTable = ref(null);
     const orderTable = ref(null);
 
-    async function loadCodes(page, filter, order) {
+    async function loadCodes(page, filter, order, search) {
         let response;
         if (page == 0) {
             response = await axios.get("codes/", {
@@ -29,6 +29,7 @@ export const useCodeStore = defineStore("code", () => {
                 params: {
                     filter: filter,
                     order: order,
+                    search: search,
                     page: page,
                 },
             });
@@ -39,11 +40,11 @@ export const useCodeStore = defineStore("code", () => {
         }
     }
 
-    async function getCodes(page, filter, order) {
+    async function getCodes(page, filter, order, search) {
         if (pagesCodes.value.includes(page)) {
             return codes.value[pagesCodes.value.indexOf(page)];
         }
-        return await loadCodes(page, filter, order);
+        return await loadCodes(page, filter, order, search);
     }
 
     async function getCode(id) {

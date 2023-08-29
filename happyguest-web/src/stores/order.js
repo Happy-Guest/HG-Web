@@ -19,7 +19,7 @@ export const useOrderStore = defineStore("order", () => {
         }
     }
 
-    async function loadOrders(page, filter, order) {
+    async function loadOrders(page, filter, order, search) {
         let response;
         if (page == 0) {
             response = await axios.get("orders/", {
@@ -37,6 +37,7 @@ export const useOrderStore = defineStore("order", () => {
                 params: {
                     filter: filter,
                     order: order,
+                    search: search,
                     page: page,
                 },
             });
@@ -47,11 +48,11 @@ export const useOrderStore = defineStore("order", () => {
         }
     }
 
-    async function getOrders(page, filter, order) {
+    async function getOrders(page, filter, order, search) {
         if (pagesOrders.value.includes(page)) {
             return orders.value[pagesOrders.value.indexOf(page)];
         }
-        return await loadOrders(page, filter, order);
+        return await loadOrders(page, filter, order, search);
     }
 
     async function registerOrder(order) {

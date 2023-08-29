@@ -19,7 +19,7 @@ export const useReserveStore = defineStore("reserve", () => {
         }
     }
 
-    async function loadReserves(page, filter, order) {
+    async function loadReserves(page, filter, order, search) {
         let response;
         if (page == 0) {
             response = await axios.get("reserves/", {
@@ -37,6 +37,7 @@ export const useReserveStore = defineStore("reserve", () => {
                 params: {
                     filter: filter,
                     order: order,
+                    search: search,
                     page: page,
                 },
             });
@@ -47,11 +48,11 @@ export const useReserveStore = defineStore("reserve", () => {
         }
     }
 
-    async function getReserves(page, filter, order) {
+    async function getReserves(page, filter, order, search) {
         if (pagesReserves.value.includes(page)) {
             return reserves.value[pagesReserves.value.indexOf(page)];
         }
-        return await loadReserves(page, filter, order);
+        return await loadReserves(page, filter, order, search);
     }
 
     async function registerReserve(reserve) {

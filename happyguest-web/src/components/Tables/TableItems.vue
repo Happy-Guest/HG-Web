@@ -64,6 +64,10 @@ const props = defineProps({
         type: String,
         default: "DESC",
     },
+    search: {
+        type: String,
+        default: "",
+    },
     newItem: {
         type: Boolean,
         default: false,
@@ -90,13 +94,15 @@ async function getItems() {
             props.serviceId,
             currentPage.value + 1,
             props.filter,
-            props.order
+            props.order,
+            props.search
         );
     } else {
         items.value = await itemStore.getItems(
             currentPage.value + 1,
             props.filter,
-            props.order
+            props.order,
+            props.search
         );
     }
     emit("update:not-empty", items.value.length > 0);
@@ -185,6 +191,13 @@ watch(
 
 watch(
     () => props.order,
+    async () => {
+        await reloadTable();
+    }
+);
+
+watch(
+    () => props.search,
     async () => {
         await reloadTable();
     }

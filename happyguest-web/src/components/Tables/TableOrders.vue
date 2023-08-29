@@ -53,6 +53,10 @@ const props = defineProps({
         type: String,
         default: "DESC",
     },
+    search: {
+        type: String,
+        default: "",
+    },
 });
 
 const emit = defineEmits(["update:not-empty"]);
@@ -61,7 +65,8 @@ async function getOrders() {
     orders.value = await orderStore.getOrders(
         currentPage.value + 1,
         props.filter,
-        props.orderFilter
+        props.orderFilter,
+        props.search
     );
     emit("update:not-empty", orders.value.length > 0);
 }
@@ -103,6 +108,13 @@ watch(
 
 watch(
     () => props.filter,
+    async () => {
+        await reloadTable();
+    }
+);
+
+watch(
+    () => props.search,
     async () => {
         await reloadTable();
     }

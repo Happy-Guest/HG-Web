@@ -32,7 +32,7 @@ export const useServiceStore = defineStore("service", () => {
         }
     }
 
-    async function loadItemsService(idService, page, filter, order) {
+    async function loadItemsService(idService, page, filter, order, search) {
         let response;
         if (page == 0) {
             response = await axios.get("services/" + idService + "/items", {
@@ -50,6 +50,7 @@ export const useServiceStore = defineStore("service", () => {
                 params: {
                     filter: filter,
                     order: order,
+                    search: search,
                     page: page,
                 },
             });
@@ -60,11 +61,11 @@ export const useServiceStore = defineStore("service", () => {
         }
     }
 
-    async function getItemsService(idService, page, filter, order) {
+    async function getItemsService(idService, page, filter, order, search) {
         if (pagesItems.value.includes(page)) {
             return items.value[pagesItems.value.indexOf(page)];
         }
-        return await loadItemsService(idService, page, filter, order);
+        return await loadItemsService(idService, page, filter, order, search);
     }
 
     function clearStore() {

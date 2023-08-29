@@ -20,7 +20,7 @@ export const useUserStore = defineStore("user", () => {
         }
     }
 
-    async function loadUsers(page, filter, order) {
+    async function loadUsers(page, filter, order, search) {
         let response;
         if (page == 0) {
             response = await axios.get("users/", {
@@ -38,6 +38,7 @@ export const useUserStore = defineStore("user", () => {
                 params: {
                     filter: filter,
                     order: order,
+                    search: search,
                     page: page,
                 },
             });
@@ -48,11 +49,11 @@ export const useUserStore = defineStore("user", () => {
         }
     }
 
-    async function getUsers(page, filter, order) {
+    async function getUsers(page, filter, order, search) {
         if (pagesUsers.value.includes(page)) {
             return users.value[pagesUsers.value.indexOf(page)];
         }
-        return await loadUsers(page, filter, order);
+        return await loadUsers(page, filter, order, search);
     }
 
     async function updateUser(userId, data) {

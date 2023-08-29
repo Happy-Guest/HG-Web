@@ -11,7 +11,7 @@ export const useCheckoutStore = defineStore("checkout", () => {
     const filterTable = ref(null);
     const orderTable = ref(null);
 
-    async function loadCheckouts(page, filter, order) {
+    async function loadCheckouts(page, filter, order, search) {
         let response;
         if (page == 0) {
             response = await axios.get("checkouts/", {
@@ -29,6 +29,7 @@ export const useCheckoutStore = defineStore("checkout", () => {
                 params: {
                     filter: filter,
                     order: order,
+                    search: search,
                     page: page,
                 },
             });
@@ -39,11 +40,11 @@ export const useCheckoutStore = defineStore("checkout", () => {
         }
     }
 
-    async function getCheckouts(page, filter, order) {
+    async function getCheckouts(page, filter, order, search) {
         if (pagesCheckouts.value.includes(page)) {
             return checkouts.value[pagesCheckouts.value.indexOf(page)];
         }
-        return await loadCheckouts(page, filter, order);
+        return await loadCheckouts(page, filter, order, search);
     }
 
     async function getCheckout(id) {

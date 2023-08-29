@@ -30,6 +30,10 @@ const props = defineProps({
         type: String,
         default: "DESC",
     },
+    search: {
+        type: String,
+        default: "",
+    },
 });
 
 const checkoutStore = useCheckoutStore();
@@ -56,7 +60,8 @@ async function getCheckouts() {
     checkouts.value = await checkoutStore.getCheckouts(
         currentPage.value + 1,
         props.filter,
-        props.order
+        props.order,
+        props.search
     );
     emit("update:not-empty", checkouts.value.length > 0);
 }
@@ -122,6 +127,13 @@ watch(
 
 watch(
     () => props.order,
+    async () => {
+        await reloadTable();
+    }
+);
+
+watch(
+    () => props.search,
     async () => {
         await reloadTable();
     }

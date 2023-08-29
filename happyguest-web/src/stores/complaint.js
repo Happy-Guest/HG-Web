@@ -12,7 +12,7 @@ export const useComplaintStore = defineStore("complaint", () => {
     const orderTable = ref(null);
     const user = ref(null);
 
-    async function loadComplaints(page, userId, filter, order) {
+    async function loadComplaints(page, userId, filter, order, search) {
         let response;
         if (page == 0) {
             if (userId) {
@@ -39,6 +39,7 @@ export const useComplaintStore = defineStore("complaint", () => {
                     params: {
                         filter: filter,
                         order: order,
+                        search: search,
                         page: page,
                     },
                 });
@@ -50,11 +51,11 @@ export const useComplaintStore = defineStore("complaint", () => {
         }
     }
 
-    async function getComplaints(page, userId, filter, order) {
+    async function getComplaints(page, userId, filter, order, search) {
         if (pagesComplaints.value.includes(page)) {
             return complaints.value[pagesComplaints.value.indexOf(page)];
         }
-        return await loadComplaints(page, userId, filter, order);
+        return await loadComplaints(page, userId, filter, order, search);
     }
 
     async function getComplaint(id) {

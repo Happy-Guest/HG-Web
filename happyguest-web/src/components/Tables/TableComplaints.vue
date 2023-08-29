@@ -34,6 +34,10 @@ const props = defineProps({
         type: String,
         default: "DESC",
     },
+    search: {
+        type: String,
+        default: "",
+    },
 });
 
 const router = useRouter();
@@ -62,7 +66,8 @@ async function getComplaints() {
         currentPage.value + 1,
         props.userId,
         props.filter,
-        props.order
+        props.order,
+        props.search
     );
     emit("update:not-empty", complaints.value.length > 0);
 }
@@ -116,6 +121,13 @@ watch(
 
 watch(
     () => props.order,
+    async () => {
+        await reloadTable();
+    }
+);
+
+watch(
+    () => props.search,
     async () => {
         await reloadTable();
     }
