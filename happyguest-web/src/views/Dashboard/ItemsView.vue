@@ -5,6 +5,7 @@ import {
     mdiOrderNumericAscending,
     mdiFilterMultiple,
     mdiFilePlus,
+    mdiMagnify,
 } from "@mdi/js";
 import LayoutAuthenticated from "@/layouts/LayoutAuthenticated.vue";
 import SectionMain from "@/components/Sections/SectionMain.vue";
@@ -115,7 +116,7 @@ watchEffect(() => {
                         <FormControl
                             id="filter"
                             v-model="filter"
-                            class="w-44 mr-0 lg:mr-4 mb-2 lg:mb-0"
+                            class="w-40 mr-0 lg:mr-4 mb-2 lg:mb-0"
                             :options="selectOptionsFilter"
                             :icon="mdiFilterMultiple"
                         />

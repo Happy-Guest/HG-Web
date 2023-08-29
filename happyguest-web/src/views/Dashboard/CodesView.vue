@@ -94,7 +94,7 @@ watchEffect(() => {
                         <FormControl
                             id="order"
                             v-model="order"
-                            class="w-48 mr-0 lg:mr-6 mb-2 lg:mb-0"
+                            class="w-44 mr-0 lg:mr-6 mb-2 lg:mb-0"
                             :options="selectOptionsOrder"
                             :icon="
                                 order.value === 'DESC'
