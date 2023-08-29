@@ -70,9 +70,10 @@ async function getOrders() {
         currentPage.value + 1,
         props.filter,
         props.orderFilter,
-        props.search
+        props.search ? props.search : null
     );
     emit("update:not-empty", orders.value.length > 0);
+    emit("button:search", false);
 }
 
 onMounted(async () => {

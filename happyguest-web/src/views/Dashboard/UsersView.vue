@@ -72,6 +72,12 @@ watchEffect(() => {
         );
     }
 });
+
+watch(searchButton, (value) => {
+    if (value) {
+        hasUsers.value = true;
+    }
+});
 </script>
 
 <template>
@@ -108,6 +114,7 @@ watchEffect(() => {
                             id="search"
                             v-model="search"
                             class="w-36 mr-0 lg:mr-4 mb-2 lg:mb-0"
+                            title="Pesquise por nome ou email"
                             :icon="mdiMagnify"
                             :placeholder="'Pesquisar'"
                             @keyup.enter="searchButton = true"

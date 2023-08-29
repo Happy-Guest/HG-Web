@@ -75,9 +75,10 @@ async function getCodes() {
         currentPage.value + 1,
         props.filter,
         props.order,
-        props.search
+        props.search ? props.search : null
     );
     emit("update:not-empty", codes.value.length > 0);
+    emit("button:search", false);
 }
 
 watch(currentPageHuman, async () => {

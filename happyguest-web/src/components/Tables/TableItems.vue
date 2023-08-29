@@ -99,7 +99,7 @@ async function getItems() {
             currentPage.value + 1,
             props.filter,
             props.order,
-            props.search
+            props.search ? props.search : null
         );
     } else {
         items.value = await itemStore.getItems(
@@ -110,6 +110,7 @@ async function getItems() {
         );
     }
     emit("update:not-empty", items.value.length > 0);
+    emit("button:search", false);
 }
 
 onMounted(async () => {

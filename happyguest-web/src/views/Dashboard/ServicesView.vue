@@ -267,6 +267,12 @@ watch(order, (value) => {
     serviceStore.orderTableItems = value.value;
 });
 
+watch(searchButton, (value) => {
+    if (value) {
+        hasItems.value = true;
+    }
+});
+
 watchEffect(() => {
     if (serviceStore.filterTableItems) {
         if (service.value?.type == "F") {
@@ -659,6 +665,7 @@ function open(menu_url) {
                             id="search"
                             v-model="search"
                             class="w-36 mr-0 lg:mr-4 mb-2 lg:mb-0"
+                            title="Pesquise por nome"
                             :icon="mdiMagnify"
                             :placeholder="'Pesquisar'"
                             @keyup.enter="searchButton = true"

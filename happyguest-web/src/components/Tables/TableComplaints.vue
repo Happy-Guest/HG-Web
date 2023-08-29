@@ -71,9 +71,10 @@ async function getComplaints() {
         props.userId,
         props.filter,
         props.order,
-        props.search
+        props.search ? props.search : null
     );
     emit("update:not-empty", complaints.value.length > 0);
+    emit("button:search", false);
 }
 
 watch(currentPageHuman, async () => {

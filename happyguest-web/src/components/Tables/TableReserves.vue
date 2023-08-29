@@ -68,9 +68,10 @@ async function getReserves() {
         currentPage.value + 1,
         props.filter,
         props.order,
-        props.search
+        props.search ? props.search : null
     );
     emit("update:not-empty", reserves.value.length > 0);
+    emit("button:search", false);
 }
 
 onMounted(async () => {
