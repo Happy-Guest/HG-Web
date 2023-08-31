@@ -115,6 +115,19 @@ const form = ref({
 
 const onFileChange = (e) => {
     if (e.target.files.length > 0) {
+        // Check if any file is bigger than 10MB
+        for (let i = 0; i < e.target.files.length; i++) {
+            if (e.target.files[i].size > 10485760) {
+                alert(
+                    "O ficheiro " +
+                        e.target.files[i].name +
+                        " é maior que 10MB. Por favor, selecione outro ficheiro."
+                );
+                e.target.value = null;
+                return;
+            }
+        }
+
         form.value.files = [...e.target.files];
     } else {
         form.value.files = null;

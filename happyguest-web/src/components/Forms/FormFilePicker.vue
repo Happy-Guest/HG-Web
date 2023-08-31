@@ -28,6 +28,10 @@ const props = defineProps({
         type: Boolean,
         default: false,
     },
+    maxSize: {
+        type: Number, // 2 MB
+        default: 2097152,
+    },
     isRoundIcon: Boolean,
 });
 
@@ -53,6 +57,22 @@ const upload = (event) => {
     const value = event.target.files || event.dataTransfer.files;
 
     file.value = value[0];
+
+    const selectedFile = value[0];
+
+    if (selectedFile) {
+        if (selectedFile.size <= props.maxSize) {
+            file.value = selectedFile;
+            emit("update:modelValue", file.value);
+        } else {
+            alert(
+                `O ficheiro selecionado é muito grande. O tamanho máximo é de ${
+                    props.maxSize / 1024 / 1024
+                } MB.`
+            );
+            root.value.input.value = null;
+        }
+    }
 
     emit("update:modelValue", file.value);
 };
