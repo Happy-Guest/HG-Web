@@ -71,8 +71,8 @@ const selectStatus = [
     { id: 0, label: "Pendente", value: "P", icon: mdiClockTimeTwoOutline },
     { id: 1, label: "A preparar", value: "W", icon: mdiCog },
     { id: 2, label: "Entregue", value: "DL", icon: mdiPackageCheck },
-    { id: 3, label: "Rejeitada", value: "R", icon: mdiCheck },
-    { id: 4, label: "Cancelada", value: "C", icon: mdiClose },
+    { id: 3, label: "Rejeitado", value: "R", icon: mdiCheck },
+    { id: 4, label: "Cancelado", value: "C", icon: mdiClose },
 ];
 
 const updateStatus = () => {
