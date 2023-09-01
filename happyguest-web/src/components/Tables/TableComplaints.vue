@@ -330,6 +330,7 @@ const submitDelete = (password) => {
                             title="Responder"
                             :icon="mdiEmailFastOutline"
                             small
+                            :disabled="!complaint.userId"
                             @click="
                                 isModalActive = true;
                                 selectedAnswer = complaint.id;

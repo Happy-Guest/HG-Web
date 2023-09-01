@@ -550,6 +550,7 @@ watch(
                         :icon="mdiEmailFastOutline"
                         name="response"
                         :type="form.response ? 'textarea' : 'text'"
+                        :disabled="anonymous"
                     />
                 </FormField>
 
