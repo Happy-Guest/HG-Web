@@ -106,8 +106,10 @@ export const useAuthStore = defineStore("auth", () => {
     async function logout() {
         let response;
         try {
+            await mainStore.sendNotifToken(null);
             response = await axios.post("logout");
             clearUser();
+            mainStore.setNotifs(false, false);
             return true;
         } catch (error) {
             if (error.response.status == 401) {
