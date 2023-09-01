@@ -21,7 +21,7 @@ const itemStore = useItemStore();
 const itemId = ref();
 const itemName = ref();
 const validItem = ref(false);
-const serviceId = ref();
+const service = ref();
 
 const isModalActive = ref(false);
 
@@ -53,8 +53,8 @@ const emit = defineEmits(["update:active", "updated"]);
 watch(
     () => props.serviceId,
     (value) => {
-        if (value != serviceId.value) {
-            serviceId.value = value;
+        if (value != service.value) {
+            service.value = value;
             form.value.items = [];
             itemId.value = "";
             itemName.value = "";
@@ -114,7 +114,7 @@ function addItem() {
 function registerServiceItems() {
     if (form.value.items.length) {
         itemStore
-            .associateItem(null, serviceId.value, form.value.items)
+            .associateItem(null, service.value, form.value.items)
             .then((response) => {
                 notifText.value = response.data.message;
                 if (response.status === 200) {
