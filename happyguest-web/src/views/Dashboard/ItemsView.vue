@@ -122,20 +122,22 @@ watch(searchButton, (value) => {
                         <FormControl
                             id="filter"
                             v-model="filter"
-                            class="w-40 mr-0 lg:mr-4 mb-2 lg:mb-0"
+                            class="w-44 mr-0 lg:mr-4 mb-2 lg:mb-0"
                             :options="selectOptionsFilter"
                             :icon="mdiFilterMultiple"
                         />
-                        <FormControl
-                            id="search"
-                            v-model="search"
-                            class="w-36 mr-0 lg:mr-4 mb-2 lg:mb-0"
-                            title="Pesquise por Nome"
-                            :icon="mdiMagnify"
-                            :placeholder="'Pesquisar'"
-                            @keyup.enter="searchButton = true"
-                            @focusout="searchButton = true"
-                        />
+                        <div class="flex justify-center">
+                            <FormControl
+                                id="search"
+                                v-model="search"
+                                class="w-36 mr-0 lg:mr-4 mb-2 lg:mb-0"
+                                title="Pesquise por Nome"
+                                :icon="mdiMagnify"
+                                :placeholder="'Pesquisar'"
+                                @keyup.enter="searchButton = true"
+                                @focusout="searchButton = true"
+                            />
+                        </div>
                         <BaseButtons class="justify-center">
                             <BaseButton
                                 v-if="user.role != 'E'"

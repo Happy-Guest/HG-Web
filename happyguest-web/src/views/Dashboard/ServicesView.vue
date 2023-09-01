@@ -667,16 +667,18 @@ function updateTable() {
                             "
                             :icon="mdiFilterMultiple"
                         />
-                        <FormControl
-                            id="search"
-                            v-model="search"
-                            class="w-36 mr-0 lg:mr-4 mb-2 lg:mb-0"
-                            title="Pesquise por Nome"
-                            :icon="mdiMagnify"
-                            :placeholder="'Pesquisar'"
-                            @keyup.enter="searchButton = true"
-                            @focusout="searchButton = true"
-                        />
+                        <div class="flex justify-center">
+                            <FormControl
+                                id="search"
+                                v-model="search"
+                                class="w-36 mr-0 lg:mr-4 mb-2 lg:mb-0"
+                                title="Pesquise por Nome"
+                                :icon="mdiMagnify"
+                                :placeholder="'Pesquisar'"
+                                @keyup.enter="searchButton = true"
+                                @focusout="searchButton = true"
+                            />
+                        </div>
                         <BaseButtons
                             v-if="user.role != 'E'"
                             class="justify-center"

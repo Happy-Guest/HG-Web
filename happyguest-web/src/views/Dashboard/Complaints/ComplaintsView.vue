@@ -104,16 +104,18 @@ watch(searchButton, (value) => {
                             :options="selectOptionsFilter"
                             :icon="mdiFilterMultiple"
                         />
-                        <FormControl
-                            id="search"
-                            v-model="search"
-                            class="w-36 mr-0 lg:mr-4 mb-2 lg:mb-0"
-                            title="Pesquise por Nome do Cliente"
-                            :icon="mdiMagnify"
-                            :placeholder="'Pesquisar'"
-                            @keyup.enter="searchButton = true"
-                            @focusout="searchButton = true"
-                        />
+                        <div class="flex justify-center">
+                            <FormControl
+                                id="search"
+                                v-model="search"
+                                class="w-36 mr-0 lg:mr-4 mb-2 lg:mb-0"
+                                title="Pesquise por Nome do Cliente"
+                                :icon="mdiMagnify"
+                                :placeholder="'Pesquisar'"
+                                @keyup.enter="searchButton = true"
+                                @focusout="searchButton = true"
+                            />
+                        </div>
                         <BaseButtons class="justify-center">
                             <BaseButton
                                 :icon="mdiFilePlus"
