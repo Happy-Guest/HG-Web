@@ -8,7 +8,7 @@ gerir os dados de uma unidade hoteleira.
 1. Instalação: 
     * npm install
 2. URL:
-    * WEB -> http://127.0.0.1:5173/happyguest-web/
+    * WEB -> [http://127.0.0.1:5173/happyguest-web/](https://happyguest.joaopinto.pt/)
     
 3. Iniciar:
     * npm run dev
