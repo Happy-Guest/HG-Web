@@ -80,7 +80,7 @@ const upload = (event) => {
 
 <template>
     <div class="flex items-stretch justify-start relative">
-        <label class="inline-flex">
+        <label class="inline-flex" for="file">
             <BaseButton
                 as="a"
                 :class="{
@@ -96,6 +96,7 @@ const upload = (event) => {
             />
             <input
                 v-if="!disabled"
+                id="file"
                 ref="root"
                 type="file"
                 class="absolute top-0 left-0 w-full h-full opacity-0 outline-none cursor-pointer -z-1"

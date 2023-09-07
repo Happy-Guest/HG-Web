@@ -290,6 +290,7 @@ watch(
             :errors="resErrors"
             title="Remover Utilizador"
             button="danger"
+            id-modal="delete-user"
             :icon-title="mdiTrashCan"
             has-cancel
             has-close
@@ -304,6 +305,7 @@ watch(
             :errors="resErrors"
             title="Repor Palavra-passe"
             button="info"
+            id-modal="reset-password-user"
             :icon-title="mdiLockReset"
             has-cancel
             has-close
@@ -465,9 +467,12 @@ watch(
                             />
                         </FormField>
                         <div class="w-full sm:w-1/6 flex justify-center">
-                            <FormField label="Foto" help="Opcional">
+                            <FormField
+                                label="Foto"
+                                help="Opcional"
+                                label-for="file"
+                            >
                                 <FormFilePicker
-                                    id="userPhoto"
                                     v-model="profileForm.photo"
                                     label="Enviar"
                                     is-round-icon

@@ -57,6 +57,10 @@ const props = defineProps({
         type: [String, Number, Boolean],
         default: null,
     },
+    idModal: {
+        type: String,
+        default: "password",
+    },
 });
 
 const emit = defineEmits(["update:modelValue", "cancel", "confirm"]);
@@ -124,10 +128,10 @@ window.addEventListener("keydown", (e) => {
                     v-if="hasPassword"
                     label="Palavra-passe"
                     help="Confirme a sua palavra-passe. Obrigatório"
-                    label-for="password"
+                    :label-for="idModal"
                 >
                     <FormControl
-                        id="password"
+                        :id="idModal"
                         v-model="password"
                         :icon="mdiAsterisk"
                         name="password"

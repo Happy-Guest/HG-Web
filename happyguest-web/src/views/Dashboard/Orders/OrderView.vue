@@ -433,7 +433,11 @@ const updateStatus = () => {
                     <FormField
                         label="Quarto"
                         help="O quarto para entrega. Obrigatório."
-                        label-for="room"
+                        :label-for="
+                            router.currentRoute.value.params?.id
+                                ? 'roomOrder'
+                                : 'room'
+                        "
                         class="w-full mb-4 sm:mb-0"
                     >
                         <FormControl

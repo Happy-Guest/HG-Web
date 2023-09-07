@@ -155,8 +155,10 @@ function format(date) {
                         help="Insira o nome da conta. Obrigatório"
                         class="mb-4 sm:mb-0 w-full sm:w-5/6"
                         no-margin
+                        label-for="name"
                     >
                         <FormControl
+                            id="name"
                             v-model="form.name"
                             :icon="mdiAccount"
                             type="text"
@@ -166,7 +168,11 @@ function format(date) {
                         />
                     </FormField>
                     <div class="w-full sm:w-1/6 flex justify-center">
-                        <FormField label="Foto" help="Opcional">
+                        <FormField
+                            label="Foto"
+                            help="Opcional"
+                            label-for="file"
+                        >
                             <FormFilePicker
                                 v-model="form.photo"
                                 label="Enviar"
@@ -184,8 +190,10 @@ function format(date) {
                         label="Email"
                         help="Insira o email da conta. Obrigatório"
                         no-margin
+                        label-for="email"
                     >
                         <FormControl
+                            id="email"
                             v-model="form.email"
                             :icon="mdiEmail"
                             type="email"
@@ -198,8 +206,10 @@ function format(date) {
                         label="Tipo"
                         help="Selecione o tipo de utilizador. Obrigatório"
                         no-margin
+                        label-for="type"
                     >
                         <FormControl
+                            id="type"
                             v-model="form.type"
                             :options="selectOptions"
                             :icon="form.type.icon"
@@ -214,8 +224,10 @@ function format(date) {
                         label="Nº Telefone"
                         help="Insira o número de telefone. Opcional"
                         no-margin
+                        label-for="phone"
                     >
                         <FormControl
+                            id="phone"
                             v-model="form.phone"
                             :icon="mdiCellphone"
                             type="number"
@@ -259,8 +271,10 @@ function format(date) {
                         label="Palavra-passe"
                         help="Insira a palavra-passe. Deve conter pelo menos 5 caracteres. Obrigatório"
                         no-margin
+                        label-for="password"
                     >
                         <FormControl
+                            id="password"
                             v-model="form.password"
                             :icon="mdiFormTextboxPassword"
                             type="password"
@@ -273,8 +287,10 @@ function format(date) {
                     <FormField
                         label="Confirmar Palavra-passe"
                         help="Confirme a palavra-passe. Obrigatório."
+                        label-for="password_confirmation"
                     >
                         <FormControl
+                            id="password_confirmation"
                             v-model="form.password_confirmation"
                             :icon="mdiFormTextboxPassword"
                             type="password"
